@@ -87,6 +87,6 @@ public class StageSelectManager : MonoBehaviour
         GameSettings.selectedWorld = selected.world;
         GameSettings.selectedStage = selected.stage;
 
-        SceneManager.LoadScene("ワープ・ルーム");
+        SceneManager.LoadScene("演出");
     }
 }
