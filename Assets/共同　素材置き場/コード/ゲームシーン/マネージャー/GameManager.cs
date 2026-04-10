@@ -7,14 +7,11 @@ public class GameManager : MonoBehaviour
     public int targetRoomCount = 5;
     public float roomDuration = 3f;
 
-    
-
-
     [Header("カウントダウン設定")]
     public float countdownInterval = 1f;
 
     [Header("暗転設定")]
-    public GameObject fadePanel; // 黒パネル
+    public GameObject fadePanel;
     public float fadeDuration = 0.5f;
 
     [Header("参照")]
@@ -24,11 +21,12 @@ public class GameManager : MonoBehaviour
     public RoomCounterUI roomCounterUI;
     public CountdownUI countdownUI;
 
+    [Header("デス演出")]
+    public GameObject deathEffectPrefab;
+    public ResultUI resultUI;
+
     private int currentCount = 0;
     private bool isGameRunning = false;
-
-    
-
 
     void Start()
     {
@@ -37,17 +35,16 @@ public class GameManager : MonoBehaviour
 
         if (playerSpawner == null)
             playerSpawner = FindFirstObjectByType<PlayerSpawner>();
-  
-    roomManager.currentLevel = GameSettings.selectedWorld;
-    targetRoomCount = GameSettings.selectedStage * 3; // 例：1-3なら3部屋
 
-        // 最初は暗転オフ
+        roomManager.currentLevel = GameSettings.selectedWorld;
+        targetRoomCount = GameSettings.selectedStage * 3;
+
         if (fadePanel != null)
             fadePanel.SetActive(false);
 
-        StartCoroutine(GameFlow());
-
         roomCounterUI.Init(targetRoomCount);
+
+        StartCoroutine(GameFlow());
     }
 
     IEnumerator GameFlow()
@@ -62,54 +59,68 @@ public class GameManager : MonoBehaviour
     }
 
     IEnumerator SpawnAndPlayRoomLoop()
-{
-    while (currentCount < targetRoomCount)
     {
-        // 🔥 部屋生成
-        GameObject room = roomManager.SpawnRoom();
+        while (currentCount < targetRoomCount)
+        {
+            GameObject room = roomManager.SpawnRoom();
 
-        Transform spawnPoint = room.GetComponent<Room>().GetSpawnPoint();
-        playerSpawner.SpawnPlayer(spawnPoint);
+            Transform spawnPoint = room.GetComponent<Room>().GetSpawnPoint();
+            playerSpawner.SpawnPlayer(spawnPoint);
 
-        room.GetComponent<Room>().OnRoomStart();
+            room.GetComponent<Room>().OnRoomStart();
 
-        // 🎯 タイマー開始（ここ！）
-        if (timerUI != null)
-            timerUI.StartTimer(roomDuration);
+            // 🎯 タイマー開始
+            if (timerUI != null)
+                timerUI.StartTimer(roomDuration);
 
-        // 🔥 生存時間
-        yield return new WaitForSeconds(roomDuration);
+            yield return new WaitForSeconds(roomDuration);
 
-        // 🎯 タイマー停止
-        if (timerUI != null)
-            timerUI.StopTimer();
+            // 🎯 タイマー停止
+            if (timerUI != null)
+                timerUI.StopTimer();
 
-        room.GetComponent<Room>().OnRoomEnd();
+            room.GetComponent<Room>().OnRoomEnd();
 
-        // 🔥 暗転
-        if (fadePanel != null)
-            fadePanel.SetActive(true);
+            if (fadePanel != null)
+                fadePanel.SetActive(true);
 
-        yield return new WaitForSeconds(fadeDuration);
+            yield return new WaitForSeconds(fadeDuration);
 
-        roomManager.ClearCurrentRoom();
-        playerSpawner.DespawnPlayer();
+            roomManager.ClearCurrentRoom();
+            playerSpawner.DespawnPlayer();
 
-        if (fadePanel != null)
-            fadePanel.SetActive(false);
+            if (fadePanel != null)
+                fadePanel.SetActive(false);
 
             if (roomCounterUI != null)
-    roomCounterUI.DecreaseRoom();
+                roomCounterUI.DecreaseRoom();
 
-        currentCount++;
+            currentCount++;
+        }
     }
-}
 
     IEnumerator Countdown()
-{
-    yield return StartCoroutine(countdownUI.PlayCountdown());
-}
+    {
+        if (countdownUI != null)
+        {
+            yield return StartCoroutine(countdownUI.PlayCountdown());
+        }
+        else
+        {
+            int count = 3;
 
+            while (count > 0)
+            {
+                Debug.Log(count);
+                yield return new WaitForSeconds(countdownInterval);
+                count--;
+            }
+
+            Debug.Log("START!");
+        }
+    }
+
+    // 🔥 即爆散版
     public void GameOver()
     {
         if (!isGameRunning) return;
@@ -118,17 +129,34 @@ public class GameManager : MonoBehaviour
 
         StopAllCoroutines();
 
+        StartCoroutine(GameOverSequence());
+    }
+
+    IEnumerator GameOverSequence()
+    {
         Debug.Log("GAME OVER");
 
-        if (fadePanel != null)
-            fadePanel.SetActive(true);
-
-        if (roomManager != null)
-            roomManager.ClearCurrentRoom();
+        // 🎯 タイマー止める
+        if (timerUI != null)
+            timerUI.StopTimer();
 
         PlayerController player = FindFirstObjectByType<PlayerController>();
+
+        // 💥 即爆散
         if (player != null)
-            player.DisableControl();
+        {
+            if (deathEffectPrefab != null)
+                Instantiate(deathEffectPrefab, player.transform.position, Quaternion.identity);
+
+            Destroy(player.gameObject);
+        }
+
+        // 🔥 少し余韻（ここだけ通常時間）
+        yield return new WaitForSeconds(0.8f);
+
+        // 🎯 リザルト表示
+        if (resultUI != null)
+            resultUI.Show();
     }
 
     void GameClear()
@@ -140,5 +168,4 @@ public class GameManager : MonoBehaviour
         if (fadePanel != null)
             fadePanel.SetActive(true);
     }
-  
 }
