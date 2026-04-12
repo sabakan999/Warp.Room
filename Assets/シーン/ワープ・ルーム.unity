@@ -736,7 +736,8 @@ MonoBehaviour:
   level2Rooms: []
   level3Rooms:
   - {fileID: 4529084442889480405, guid: b5e5c3fb68e7ac746a8545f4f6969e17, type: 3}
-  testRooms: []
+  testRooms:
+  - {fileID: 4529084442889480405, guid: d5c445e371efc464681bde9b6b887cd3, type: 3}
   useTestRooms: 1
   currentLevel: 1
 --- !u!4 &632989893
