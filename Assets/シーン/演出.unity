@@ -362,17 +362,21 @@ MonoBehaviour:
   spacing: 2
   baseDelay: 0.25
   speedUpRate: 0.85
+  endlessStackTime: 3
+  endlessResultWait: 2
+  endlessSpeedLockCount: 9
   audioSource: {fileID: 292721446}
   baseNote: {fileID: 8300000, guid: d8242d977cbd4614b8091670db9b3b25, type: 3}
   finishSound: {fileID: 8300000, guid: a9f51efb56a69b640b4f4e31adaee4c0, type: 3}
+  infinitySound: {fileID: 8300000, guid: 3af82ed0575300d41beb7a029b3d44ee, type: 3}
   startPitch: 0.8
   pitchStep: 0.08
   maxPitch: 2
+  endlessMaxPitch: 1.6
   roomText: {fileID: 636669019}
   camTransform: {fileID: 1805982222}
-  cameraOffset: 2.5
   cameraSpeed: 5
-  cameraSpeedStep: 10
+  cameraSpeedStep: 7
 --- !u!4 &410912417
 Transform:
   m_ObjectHideFlags: 0
