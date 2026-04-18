@@ -375,8 +375,8 @@ MonoBehaviour:
   endlessMaxPitch: 1.6
   roomText: {fileID: 636669019}
   camTransform: {fileID: 1805982222}
-  cameraSpeed: 5
-  cameraSpeedStep: 7
+  cameraSpeed: 6
+  cameraSpeedStep: 8
 --- !u!4 &410912417
 Transform:
   m_ObjectHideFlags: 0

@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
     public GameObject deathEffectPrefab;
     public ResultUI resultUI;
 
+    [Header("プレイヤー状態")]
+    public bool hasBarrier = false; // 🔥 追加（保持用）
+
     private int currentCount = 0;
     private bool isGameRunning = false;
 
@@ -120,7 +123,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // 🔥 即爆散版
     public void GameOver()
     {
         if (!isGameRunning) return;
@@ -136,13 +138,11 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("GAME OVER");
 
-        // 🎯 タイマー止める
         if (timerUI != null)
             timerUI.StopTimer();
 
         PlayerController player = FindFirstObjectByType<PlayerController>();
 
-        // 💥 即爆散
         if (player != null)
         {
             if (deathEffectPrefab != null)
@@ -151,10 +151,11 @@ public class GameManager : MonoBehaviour
             Destroy(player.gameObject);
         }
 
-        // 🔥 少し余韻（ここだけ通常時間）
+        // 🔥 バリアリセット（ゲーム終了なので）
+        hasBarrier = false;
+
         yield return new WaitForSeconds(0.8f);
 
-        // 🎯 リザルト表示
         if (resultUI != null)
             resultUI.Show();
     }
@@ -167,5 +168,8 @@ public class GameManager : MonoBehaviour
 
         if (fadePanel != null)
             fadePanel.SetActive(true);
+
+        // 🔥 クリア時もリセットしたいなら
+        hasBarrier = false;
     }
 }

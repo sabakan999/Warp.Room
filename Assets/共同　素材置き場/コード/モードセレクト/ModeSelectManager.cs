@@ -1,26 +1,28 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class ModeSelectManager : MonoBehaviour
 {
-    [Header("カーソル")]
-    public RectTransform cursor;
-
     [Header("選択肢UI")]
     public RectTransform normalButton;
     public RectTransform endlessButton;
+
+    [Header("拡大設定")]
+    public float selectedScale = 1.2f;
+    public float normalScale = 1.0f;
+    public float scaleTime = 0.15f;
 
     [Header("次シーン")]
     public string normalNextScene = "ステージセレクト";
     public string endlessNextScene = "ワープ・ルーム";
 
     private int selectedIndex = 0; // 0=ノーマル 1=エンドレス
-
     private float prevV = 0f;
 
     void Start()
     {
-        UpdateCursor();
+        UpdateSelection(true);
     }
 
     void Update()
@@ -46,17 +48,39 @@ public class ModeSelectManager : MonoBehaviour
 
         prevV = v;
 
-        UpdateCursor();
+        UpdateSelection(false);
     }
 
-    void UpdateCursor()
+    void UpdateSelection(bool instant)
     {
-        if (cursor == null) return;
+        if (normalButton == null || endlessButton == null)
+            return;
 
-        if (selectedIndex == 0)
-            cursor.position = normalButton.position;
+        float nScale = (selectedIndex == 0) ? selectedScale : normalScale;
+        float eScale = (selectedIndex == 1) ? selectedScale : normalScale;
+
+        if (instant)
+        {
+            normalButton.localScale = Vector3.one * nScale;
+            endlessButton.localScale = Vector3.one * eScale;
+        }
         else
-            cursor.position = endlessButton.position;
+        {
+            // 🔥 既存Tweenを消す（超重要）
+            normalButton.DOKill();
+            endlessButton.DOKill();
+
+            // 🔥 新しくTween（リンク付き）
+            normalButton
+                .DOScale(nScale, scaleTime)
+                .SetEase(Ease.OutBack)
+                .SetLink(normalButton.gameObject);
+
+            endlessButton
+                .DOScale(eScale, scaleTime)
+                .SetEase(Ease.OutBack)
+                .SetLink(endlessButton.gameObject);
+        }
     }
 
     void HandleSubmit()
@@ -70,18 +94,17 @@ public class ModeSelectManager : MonoBehaviour
 
     void SelectMode()
     {
+        // 🔥 全Tween停止（シーン遷移対策）
+        DOTween.KillAll();
+
         if (selectedIndex == 0)
         {
-            // ノーマル
             GameSettings.isEndlessMode = false;
             SceneManager.LoadScene(normalNextScene);
         }
         else
         {
-            // エンドレス
             GameSettings.isEndlessMode = true;
-
-            // エンドレスは仮でそのままゲームへ
             SceneManager.LoadScene(endlessNextScene);
         }
     }

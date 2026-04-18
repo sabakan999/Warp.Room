@@ -158,6 +158,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01d382c678887804c9c2a232d445808c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  barrierPrefab: {fileID: 3559161471569584393, guid: 1c00214aaf565bc4388e38bcd894d42a, type: 3}
+  invincibleTime: 0.5
+  blinkInterval: 0.1
 --- !u!61 &2764431948611483441
 BoxCollider2D:
   m_ObjectHideFlags: 0

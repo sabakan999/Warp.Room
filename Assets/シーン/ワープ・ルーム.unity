@@ -733,11 +733,12 @@ MonoBehaviour:
   - {fileID: 4529084442889480405, guid: fdca6d2a6a85b3b4ba4bd52e2c5c63a2, type: 3}
   - {fileID: 4529084442889480405, guid: 790c55bdaba857845b8b9c7464e0c9e4, type: 3}
   - {fileID: 4529084442889480405, guid: fa5c7949fb53d554d8d217a148404f27, type: 3}
+  - {fileID: 4529084442889480405, guid: 7bb22cc4fc9ac6649a1888e69d417281, type: 3}
   level2Rooms: []
   level3Rooms:
   - {fileID: 4529084442889480405, guid: b5e5c3fb68e7ac746a8545f4f6969e17, type: 3}
   testRooms:
-  - {fileID: 4529084442889480405, guid: b5e5c3fb68e7ac746a8545f4f6969e17, type: 3}
+  - {fileID: 4529084442889480405, guid: 7bb22cc4fc9ac6649a1888e69d417281, type: 3}
   useTestRooms: 1
   currentLevel: 1
 --- !u!4 &632989893
