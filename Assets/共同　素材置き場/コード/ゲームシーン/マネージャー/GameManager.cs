@@ -22,11 +22,11 @@ public class GameManager : MonoBehaviour
     public CountdownUI countdownUI;
 
     [Header("デス演出")]
-    public GameObject deathEffectPrefab;
+    public GameObject deathEffectPrefab; // ←一本化
     public ResultUI resultUI;
 
     [Header("プレイヤー状態")]
-    public bool hasBarrier = false; // 🔥 追加（保持用）
+    public bool hasBarrier = false;
 
     private int currentCount = 0;
     private bool isGameRunning = false;
@@ -39,13 +39,28 @@ public class GameManager : MonoBehaviour
         if (playerSpawner == null)
             playerSpawner = FindFirstObjectByType<PlayerSpawner>();
 
-        roomManager.currentLevel = GameSettings.selectedWorld;
-        targetRoomCount = GameSettings.selectedStage * 3;
+        // =========================
+        // モード分岐
+        // =========================
+        if (!GameSettings.isEndlessMode)
+        {
+            roomManager.currentLevel = GameSettings.selectedWorld;
+            targetRoomCount = GameSettings.selectedStage * 3;
+
+            if (roomCounterUI != null)
+                roomCounterUI.Init(targetRoomCount);
+        }
+        else
+        {
+            // 🔥 エンドレスは全レベル出す
+            roomManager.currentLevel = -1;
+        }
+
+        if (roomCounterUI != null)
+    roomCounterUI.Init(targetRoomCount);
 
         if (fadePanel != null)
             fadePanel.SetActive(false);
-
-        roomCounterUI.Init(targetRoomCount);
 
         StartCoroutine(GameFlow());
     }
@@ -58,48 +73,68 @@ public class GameManager : MonoBehaviour
 
         yield return StartCoroutine(SpawnAndPlayRoomLoop());
 
-        GameClear();
+        // 🔥 エンドレスはクリアしない
+        if (!GameSettings.isEndlessMode)
+            GameClear();
     }
 
     IEnumerator SpawnAndPlayRoomLoop()
     {
-        while (currentCount < targetRoomCount)
+        if (!GameSettings.isEndlessMode)
         {
-            GameObject room = roomManager.SpawnRoom();
+            // 通常
+            while (currentCount < targetRoomCount)
+            {
+                yield return StartCoroutine(PlayOneRoom());
+                currentCount++;
+            }
+        }
+        else
+        {
+            // エンドレス
+            while (true)
+            {
+                yield return StartCoroutine(PlayOneRoom());
+                currentCount++;
+            }
+        }
+    }
 
-            Transform spawnPoint = room.GetComponent<Room>().GetSpawnPoint();
-            playerSpawner.SpawnPlayer(spawnPoint);
+    IEnumerator PlayOneRoom()
+    {
+        GameObject room = roomManager.SpawnRoom();
 
-            room.GetComponent<Room>().OnRoomStart();
+        Transform spawnPoint = room.GetComponent<Room>().GetSpawnPoint();
+        playerSpawner.SpawnPlayer(spawnPoint);
 
-            // 🎯 タイマー開始
-            if (timerUI != null)
-                timerUI.StartTimer(roomDuration);
+        room.GetComponent<Room>().OnRoomStart();
 
-            yield return new WaitForSeconds(roomDuration);
+        if (timerUI != null)
+            timerUI.StartTimer(roomDuration);
 
-            // 🎯 タイマー停止
-            if (timerUI != null)
-                timerUI.StopTimer();
+        yield return new WaitForSeconds(roomDuration);
 
-            room.GetComponent<Room>().OnRoomEnd();
+        if (timerUI != null)
+            timerUI.StopTimer();
 
-            if (fadePanel != null)
-                fadePanel.SetActive(true);
+        room.GetComponent<Room>().OnRoomEnd();
 
-            yield return new WaitForSeconds(fadeDuration);
+        if (fadePanel != null)
+            fadePanel.SetActive(true);
 
-            roomManager.ClearCurrentRoom();
             playerSpawner.DespawnPlayer();
 
-            if (fadePanel != null)
-                fadePanel.SetActive(false);
+        yield return new WaitForSeconds(fadeDuration);
 
-            if (roomCounterUI != null)
-                roomCounterUI.DecreaseRoom();
+        roomManager.ClearCurrentRoom();
+        playerSpawner.DespawnPlayer();
 
-            currentCount++;
-        }
+        if (fadePanel != null)
+            fadePanel.SetActive(false);
+
+        // 通常のみ減算
+        if (roomCounterUI != null)
+    roomCounterUI.DecreaseRoom();
     }
 
     IEnumerator Countdown()
@@ -151,7 +186,6 @@ public class GameManager : MonoBehaviour
             Destroy(player.gameObject);
         }
 
-        // 🔥 バリアリセット（ゲーム終了なので）
         hasBarrier = false;
 
         yield return new WaitForSeconds(0.8f);
@@ -169,7 +203,6 @@ public class GameManager : MonoBehaviour
         if (fadePanel != null)
             fadePanel.SetActive(true);
 
-        // 🔥 クリア時もリセットしたいなら
         hasBarrier = false;
     }
 }

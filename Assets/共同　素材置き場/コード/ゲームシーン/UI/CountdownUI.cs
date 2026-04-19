@@ -1,4 +1,4 @@
-using UnityEngine;
+using UnityEngine; 
 using UnityEngine.UI;
 using System.Collections;
 using DG.Tweening;
@@ -10,6 +10,10 @@ public class CountdownUI : MonoBehaviour
 
     public float interval = 1f;
 
+    [Header("効果音")]
+    public AudioSource audioSource;   // ★追加
+    public AudioClip countSE;         // ★追加（3,2,1用）
+
     public IEnumerator PlayCountdown()
     {
         gameObject.SetActive(true);
@@ -17,6 +21,12 @@ public class CountdownUI : MonoBehaviour
         for (int i = 0; i < numbers.Length; i++)
         {
             countdownImage.sprite = numbers[i];
+
+            // 🔊 3・2・1のときだけ鳴らす（GOは鳴らさないなら）
+            if (i < 3 && audioSource != null && countSE != null)
+            {
+                audioSource.PlayOneShot(countSE);
+            }
 
             // 初期状態
             countdownImage.transform.localScale = Vector3.zero;
