@@ -738,7 +738,7 @@ MonoBehaviour:
   level3Rooms:
   - {fileID: 4529084442889480405, guid: b5e5c3fb68e7ac746a8545f4f6969e17, type: 3}
   testRooms:
-  - {fileID: 4529084442889480405, guid: 7bb22cc4fc9ac6649a1888e69d417281, type: 3}
+  - {fileID: 4372789117832830614, guid: c443634be07203e46987f66a00a504cb, type: 3}
   useTestRooms: 1
   currentLevel: 1
 --- !u!4 &632989893
@@ -968,6 +968,7 @@ MonoBehaviour:
   countdownUI: {fileID: 684445904}
   deathEffectPrefab: {fileID: 2647199871919440428, guid: 2c849b37cf1c43e43a506cac9a877585, type: 3}
   resultUI: {fileID: 573728586}
+  hasBarrier: 0
 --- !u!4 &778569784
 Transform:
   m_ObjectHideFlags: 0
