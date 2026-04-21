@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     private int currentCount = 0;
     private bool isGameRunning = false;
 
+    public BGMManager bgmManager;
+
     void Start()
     {
         if (roomManager == null)
@@ -68,6 +70,8 @@ public class GameManager : MonoBehaviour
     IEnumerator GameFlow()
     {
         yield return StartCoroutine(Countdown());
+
+         bgmManager.PlayNormalBGM();
 
         isGameRunning = true;
 

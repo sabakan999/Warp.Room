@@ -21,7 +21,9 @@ public class ConveyorBelt : MonoBehaviour
         if (rb == null)
             return;
 
+        // =========================
         // ベルト方向
+        // =========================
         Vector2 dir = moveDirection.normalized;
 
         if (useLocalDirection)
@@ -29,11 +31,15 @@ public class ConveyorBelt : MonoBehaviour
             dir = transform.TransformDirection(moveDirection).normalized;
         }
 
-        // 🔥 プレイヤーコードが毎FixedUpdateで速度上書きしてるので、
-        // ベルト側は「位置を直接動かす」方式にする
-        Vector2 moveAmount = dir * moveSpeed * Time.fixedDeltaTime;
+        // =========================
+        // 🔥 「押す」処理（重要）
+        // =========================
+        Vector2 velocity = rb.linearVelocity;
 
-        rb.MovePosition(rb.position + moveAmount);
+        velocity.x += dir.x * moveSpeed * Time.fixedDeltaTime;
+
+        // Y方向は絶対に触らない（ジャンプ保護）
+        rb.linearVelocity = velocity;
     }
 
     bool IsTargetTag(string objTag)
@@ -43,7 +49,6 @@ public class ConveyorBelt : MonoBehaviour
             if (objTag == tag)
                 return true;
         }
-
         return false;
     }
 }
