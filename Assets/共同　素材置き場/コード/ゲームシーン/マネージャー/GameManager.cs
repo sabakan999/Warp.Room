@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     public CountdownUI countdownUI;
 
     [Header("デス演出")]
-    public GameObject deathEffectPrefab; // ←一本化
+    public GameObject deathEffectPrefab;
     public ResultUI resultUI;
 
     [Header("プレイヤー状態")]
@@ -30,8 +30,10 @@ public class GameManager : MonoBehaviour
 
     private int currentCount = 0;
     private bool isGameRunning = false;
+    private bool isClearing = false;
 
     public BGMManager bgmManager;
+    public ClearSequence clearSequence;
 
     void Start()
     {
@@ -48,18 +50,14 @@ public class GameManager : MonoBehaviour
         {
             roomManager.currentLevel = GameSettings.selectedWorld;
             targetRoomCount = GameSettings.selectedStage * 3;
-
-            if (roomCounterUI != null)
-                roomCounterUI.Init(targetRoomCount);
         }
         else
         {
-            // 🔥 エンドレスは全レベル出す
             roomManager.currentLevel = -1;
         }
 
         if (roomCounterUI != null)
-    roomCounterUI.Init(targetRoomCount);
+            roomCounterUI.Init(targetRoomCount);
 
         if (fadePanel != null)
             fadePanel.SetActive(false);
@@ -71,34 +69,36 @@ public class GameManager : MonoBehaviour
     {
         yield return StartCoroutine(Countdown());
 
-         bgmManager.PlayNormalBGM();
+        if (bgmManager != null)
+            bgmManager.PlayNormalBGM();
 
         isGameRunning = true;
 
         yield return StartCoroutine(SpawnAndPlayRoomLoop());
-
-        // 🔥 エンドレスはクリアしない
-        if (!GameSettings.isEndlessMode)
-            GameClear();
     }
 
     IEnumerator SpawnAndPlayRoomLoop()
     {
         if (!GameSettings.isEndlessMode)
         {
-            // 通常
             while (currentCount < targetRoomCount)
             {
                 yield return StartCoroutine(PlayOneRoom());
+
+                // 🔥 クリアで抜ける
+                if (isClearing) yield break;
+
                 currentCount++;
             }
         }
         else
         {
-            // エンドレス
             while (true)
             {
                 yield return StartCoroutine(PlayOneRoom());
+
+                if (isClearing) yield break;
+
                 currentCount++;
             }
         }
@@ -121,24 +121,36 @@ public class GameManager : MonoBehaviour
         if (timerUI != null)
             timerUI.StopTimer();
 
+        // =========================
+        // 🔥 最後の部屋判定
+        // =========================
+        bool isLastRoom = (!GameSettings.isEndlessMode && currentCount + 1 >= targetRoomCount);
+
+        if (isLastRoom)
+        {
+            GameClear();
+            yield break;
+        }
+
+        // =========================
+        // 通常ワープ処理
+        // =========================
         room.GetComponent<Room>().OnRoomEnd();
 
         if (fadePanel != null)
             fadePanel.SetActive(true);
 
-            playerSpawner.DespawnPlayer();
+        playerSpawner.DespawnPlayer();
 
         yield return new WaitForSeconds(fadeDuration);
 
         roomManager.ClearCurrentRoom();
-        playerSpawner.DespawnPlayer();
 
         if (fadePanel != null)
             fadePanel.SetActive(false);
 
-        // 通常のみ減算
         if (roomCounterUI != null)
-    roomCounterUI.DecreaseRoom();
+            roomCounterUI.DecreaseRoom();
     }
 
     IEnumerator Countdown()
@@ -180,6 +192,9 @@ public class GameManager : MonoBehaviour
         if (timerUI != null)
             timerUI.StopTimer();
 
+        if (bgmManager != null)
+            bgmManager.StopBGM();
+
         PlayerController player = FindFirstObjectByType<PlayerController>();
 
         if (player != null)
@@ -200,12 +215,25 @@ public class GameManager : MonoBehaviour
 
     void GameClear()
     {
+        if (isClearing) return;
+
+        isClearing = true;
         isGameRunning = false;
 
-        Debug.Log("CLEAR!");
+        StopAllCoroutines();
 
-        if (fadePanel != null)
-            fadePanel.SetActive(true);
+        if (timerUI != null)
+            timerUI.StopTimer();
+
+        if (bgmManager != null)
+            bgmManager.StopBGM();
+
+        PlayerController player = FindFirstObjectByType<PlayerController>();
+
+        if (clearSequence != null && player != null)
+        {
+            clearSequence.Play(player.transform);
+        }
 
         hasBarrier = false;
     }

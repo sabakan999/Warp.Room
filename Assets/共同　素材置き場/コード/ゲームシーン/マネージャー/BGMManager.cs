@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class BGMManager : MonoBehaviour
 {
@@ -7,27 +8,65 @@ public class BGMManager : MonoBehaviour
 
     [Header("BGM")]
     public AudioClip normalBGM;
+    public AudioClip resultBGM;
 
-    private void Awake()
-    {
-        // 何もしない（シングルトン廃止）
-    }
+    [Header("フェード設定")]
+    public float fadeTime = 0.5f;
 
-    // 🔥 通常BGM再生（カウントダウン後に呼ぶ）
+    // =========================
+    // 🎵 通常BGM
+    // =========================
     public void PlayNormalBGM()
     {
         if (bgmSource == null || normalBGM == null) return;
 
-        bgmSource.Stop(); // 念のため毎回リセット
+        bgmSource.DOKill();
+
+        bgmSource.Stop();
         bgmSource.clip = normalBGM;
         bgmSource.loop = true;
+
+        bgmSource.volume = 0f;
         bgmSource.Play();
+
+        // 🔥 フェードイン
+        bgmSource.DOFade(1f, fadeTime);
     }
 
-    // 🔥 停止
+    // =========================
+    // 🎵 リザルトBGM
+    // =========================
+    public void PlayResultBGM()
+    {
+        if (bgmSource == null || resultBGM == null) return;
+
+        bgmSource.DOKill();
+
+        bgmSource.Stop();
+        bgmSource.clip = resultBGM;
+        bgmSource.loop = true;
+
+        bgmSource.volume = 0f;
+        bgmSource.Play();
+
+        // 🔥 フェードイン
+        bgmSource.DOFade(1f, fadeTime);
+    }
+
+    // =========================
+    // 🔇 停止（フェードアウト）
+    // =========================
     public void StopBGM()
     {
-        if (bgmSource != null)
-            bgmSource.Stop();
+        if (bgmSource == null) return;
+
+        bgmSource.DOKill();
+
+        // 🔥 フェードアウトしてから停止
+        bgmSource.DOFade(0f, fadeTime)
+            .OnComplete(() =>
+            {
+                bgmSource.Stop();
+            });
     }
 }

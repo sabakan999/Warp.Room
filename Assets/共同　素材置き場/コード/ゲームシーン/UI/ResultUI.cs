@@ -34,6 +34,8 @@ public class ResultUI : MonoBehaviour
     private bool isActive = false;
     private bool isDeciding = false;
 
+    public BGMManager bgmManager;
+
     void Start()
     {
         if (panel != null)
@@ -56,6 +58,10 @@ public class ResultUI : MonoBehaviour
     {
         if (panel != null)
             panel.SetActive(true);
+
+         if (bgmManager != null)
+        bgmManager.PlayResultBGM();
+
 
         isActive = true;
         isDeciding = false;
