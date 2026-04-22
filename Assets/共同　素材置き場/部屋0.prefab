@@ -359,7 +359,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Room
   playerSpawnPoint: {fileID: 2965769524850844955}
-  effects: []
 --- !u!1 &5136770005776904163
 GameObject:
   m_ObjectHideFlags: 0
