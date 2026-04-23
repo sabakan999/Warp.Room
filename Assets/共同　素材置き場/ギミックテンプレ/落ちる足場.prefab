@@ -60,13 +60,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03e97868afe5c9f409441d8e48bbb096, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FallingPlatform
-  fallDelay: 0
-  respawn: 0
+  fallDelay: 1
+  fallSpeed: 5
+  respawn: 1
   respawnTime: 3
   startColor: {r: 1, g: 1, b: 1, a: 1}
   dangerColor: {r: 1, g: 0, b: 0, a: 1}
-  playerLayerName: Player
-  platformLayerName: "\u843D\u3061\u308B\u8DB3\u5834"
+  collideLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  oneWayThreshold: 0.1
 --- !u!212 &200281790203388869
 SpriteRenderer:
   serializedVersion: 2

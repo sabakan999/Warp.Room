@@ -3,7 +3,12 @@ using UnityEngine;
 public class Turret : MonoBehaviour
 {
     public GameObject missilePrefab;
+
+    [Header("発射間隔")]
     public float interval = 2f;
+
+    [Header("初回発射までの待機時間（0で即発射）")]
+    public float firstDelay = 0f;
 
     // インスペクターで選べる方向
     public enum FireDirection
@@ -17,23 +22,44 @@ public class Turret : MonoBehaviour
     public FireDirection fireDirection = FireDirection.Right;
 
     float timer;
+    bool hasFiredOnce = false; // 🔥 初回判定
 
-    SpriteRenderer sr; // 🔽 追加
+    SpriteRenderer sr;
 
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
-        UpdateVisual(); // 🔽 初期向き設定
+        UpdateVisual();
+
+        // 🔥 初回タイマー調整
+        timer = -firstDelay;
     }
 
     void Update()
     {
         timer += Time.deltaTime;
 
-        if (timer >= interval)
+        // =========================
+        // 🔥 発射条件
+        // =========================
+        if (!hasFiredOnce)
         {
-            Fire();
-            timer = 0f;
+            // 初回
+            if (timer >= 0f)
+            {
+                Fire();
+                hasFiredOnce = true;
+                timer = 0f;
+            }
+        }
+        else
+        {
+            // 2回目以降
+            if (timer >= interval)
+            {
+                Fire();
+                timer = 0f;
+            }
         }
     }
 
@@ -55,20 +81,16 @@ public class Turret : MonoBehaviour
     {
         switch (fireDirection)
         {
-            case FireDirection.Right:
-                return Vector2.right;
-            case FireDirection.Left:
-                return Vector2.left;
-            case FireDirection.Up:
-                return Vector2.up;
-            case FireDirection.Down:
-                return Vector2.down;
+            case FireDirection.Right: return Vector2.right;
+            case FireDirection.Left:  return Vector2.left;
+            case FireDirection.Up:    return Vector2.up;
+            case FireDirection.Down:  return Vector2.down;
         }
 
         return Vector2.right;
     }
 
-    // 🔽 見た目更新（ここが本体）
+    // 見た目更新
     void UpdateVisual()
     {
         if (sr == null) return;

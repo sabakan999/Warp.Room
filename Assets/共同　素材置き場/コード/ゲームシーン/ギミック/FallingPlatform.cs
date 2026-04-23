@@ -8,28 +8,28 @@ public class FallingPlatform : MonoBehaviour
     [Header("落下までの時間")]
     public float fallDelay = 1f;
 
+    [Header("落下速度")]
+    public float fallSpeed = 5f;
+
     [Header("復活するか")]
     public bool respawn = false;
 
     [Header("復活時間")]
     public float respawnTime = 3f;
 
-    [Header("初期色")]
+    [Header("色")]
     public Color startColor = Color.white;
-
-    [Header("危険色")]
     public Color dangerColor = Color.red;
 
-    [Header("レイヤー設定")]
-    public string playerLayerName = "Player";
-    public string platformLayerName = "Platform";
+    [Header("当たり判定を許可するレイヤー")]
+    public LayerMask collideLayers;
+
+    [Header("一方通行設定")]
+    public float oneWayThreshold = 0.1f; // 上から判定の余裕
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private Collider2D col;
-
-    private int playerLayer;
-    private int platformLayer;
 
     private Vector3 startPosition;
 
@@ -45,82 +45,90 @@ public class FallingPlatform : MonoBehaviour
         col = GetComponent<Collider2D>();
 
         rb.bodyType = RigidbodyType2D.Kinematic;
+
         startPosition = transform.position;
-
         sr.color = startColor;
-
-        // レイヤー取得
-        playerLayer = LayerMask.NameToLayer(playerLayerName);
-        platformLayer = LayerMask.NameToLayer(platformLayerName);
     }
 
     void Update()
     {
-        if (!isStepped || isFalling) return;
-
-        timer += Time.deltaTime;
-
-        // 色変化
-        if (fallDelay > 0f)
+        // =========================
+        // ⏳ カウント
+        // =========================
+        if (isStepped && !isFalling)
         {
-            float t = Mathf.Clamp01(timer / fallDelay);
-            sr.color = Color.Lerp(startColor, dangerColor, t);
-        }
+            timer += Time.deltaTime;
 
-        if (timer >= fallDelay)
-        {
-            Fall();
-        }
-    }
-
-    void Fall()
-    {
-        if (isFalling) return;
-
-        isFalling = true;
-        rb.bodyType = RigidbodyType2D.Dynamic;
-
-        // 👇 Player以外との衝突を無効化
-        for (int i = 0; i < 32; i++)
-        {
-            if (i != playerLayer)
+            if (fallDelay > 0f)
             {
-                Physics2D.IgnoreLayerCollision(platformLayer, i, true);
+                float t = Mathf.Clamp01(timer / fallDelay);
+                sr.color = Color.Lerp(startColor, dangerColor, t);
+            }
+
+            if (timer >= fallDelay)
+            {
+                isFalling = true;
             }
         }
 
-        // 復活予約
-        if (respawn && !respawnScheduled)
+        // =========================
+        // ⬇ 落下（物理じゃなく移動）
+        // =========================
+        if (isFalling)
         {
-            respawnScheduled = true;
-            Invoke(nameof(Respawn), respawnTime);
+            transform.position += Vector3.down * fallSpeed * Time.deltaTime;
+
+            if (respawn && !respawnScheduled)
+            {
+                respawnScheduled = true;
+                Invoke(nameof(Respawn), respawnTime);
+            }
         }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (isFalling) return;
+        // =========================
+        // 🎯 レイヤー制限
+        // =========================
+        if ((collideLayers.value & (1 << collision.gameObject.layer)) == 0)
+            return;
 
-        if (collision.gameObject.CompareTag("Player"))
+        // =========================
+        // ⬆ 上から乗ったか判定
+        // =========================
+        foreach (ContactPoint2D contact in collision.contacts)
         {
-            isStepped = true;
-
-            if (fallDelay <= 0f)
+            // 接触点が上からならOK
+            if (contact.normal.y < -0.5f)
             {
-                sr.color = dangerColor;
-                Fall();
+                isStepped = true;
+
+                if (fallDelay <= 0f)
+                {
+                    sr.color = dangerColor;
+                    isFalling = true;
+                }
+
+                return;
             }
         }
+
+        // 横や下からはすり抜け
+        Physics2D.IgnoreCollision(col, collision.collider, true);
     }
 
     void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            isStepped = false;
-            timer = 0f;
-            sr.color = startColor;
-        }
+        if ((collideLayers.value & (1 << collision.gameObject.layer)) == 0)
+            return;
+
+        isStepped = false;
+        timer = 0f;
+        sr.color = startColor;
+
+        // 念のため衝突戻す
+        Physics2D.IgnoreCollision(col, collision.collider, false);
     }
 
     void Respawn()
@@ -136,19 +144,12 @@ public class FallingPlatform : MonoBehaviour
 
     void ResetPlatform()
     {
-        rb.bodyType = RigidbodyType2D.Kinematic;
         transform.position = startPosition;
 
         timer = 0f;
         isStepped = false;
         isFalling = false;
         respawnScheduled = false;
-
-        // 👇 衝突を元に戻す
-        for (int i = 0; i < 32; i++)
-        {
-            Physics2D.IgnoreLayerCollision(platformLayer, i, false);
-        }
 
         if (sr != null)
             sr.color = startColor;

@@ -80,7 +80,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: d4449a0c476c2a74fae1fbdfd5f163e8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -106,4 +106,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Turret
   missilePrefab: {fileID: 4140650707860529773, guid: 63e89980e1df65744be866bbc8e2164c, type: 3}
   interval: 1
+  firstDelay: 1
   fireDirection: 0

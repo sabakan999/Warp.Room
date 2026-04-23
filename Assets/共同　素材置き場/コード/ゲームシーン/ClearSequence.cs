@@ -43,6 +43,7 @@ public class ClearSequence : MonoBehaviour
 
     private bool canInput = false;
 
+      
     public void Play(Transform targetPlayer)
     {
         player = targetPlayer;
@@ -90,7 +91,7 @@ public class ClearSequence : MonoBehaviour
         // 🔒 プレイヤー停止
         var pc = player.GetComponent<PlayerController>();
         if (pc != null) pc.enabled = false;
-
+     
         if (anim != null) anim.enabled = false;
         if (col != null) col.enabled = false;
 

@@ -10,6 +10,11 @@ public class BGMManager : MonoBehaviour
     public AudioClip normalBGM;
     public AudioClip resultBGM;
 
+    [Header("音量設定")]
+    [Range(0f, 1f)] public float masterVolume = 1f;   // 全体音量
+    [Range(0f, 1f)] public float normalVolume = 1f;   // 通常BGM音量
+    [Range(0f, 1f)] public float resultVolume = 1f;   // リザルト音量
+
     [Header("フェード設定")]
     public float fadeTime = 0.5f;
 
@@ -29,8 +34,9 @@ public class BGMManager : MonoBehaviour
         bgmSource.volume = 0f;
         bgmSource.Play();
 
-        // 🔥 フェードイン
-        bgmSource.DOFade(1f, fadeTime);
+        float targetVolume = masterVolume * normalVolume;
+
+        bgmSource.DOFade(targetVolume, fadeTime);
     }
 
     // =========================
@@ -49,8 +55,9 @@ public class BGMManager : MonoBehaviour
         bgmSource.volume = 0f;
         bgmSource.Play();
 
-        // 🔥 フェードイン
-        bgmSource.DOFade(1f, fadeTime);
+        float targetVolume = masterVolume * resultVolume;
+
+        bgmSource.DOFade(targetVolume, fadeTime);
     }
 
     // =========================
@@ -62,11 +69,30 @@ public class BGMManager : MonoBehaviour
 
         bgmSource.DOKill();
 
-        // 🔥 フェードアウトしてから停止
         bgmSource.DOFade(0f, fadeTime)
             .OnComplete(() =>
             {
                 bgmSource.Stop();
             });
+    }
+
+    // =========================
+    // 🔊 リアルタイム音量変更
+    // =========================
+    public void SetMasterVolume(float volume)
+    {
+        masterVolume = volume;
+        UpdateVolume();
+    }
+
+    void UpdateVolume()
+    {
+        if (bgmSource == null) return;
+
+        float baseVolume = (bgmSource.clip == normalBGM)
+            ? normalVolume
+            : resultVolume;
+
+        bgmSource.volume = masterVolume * baseVolume;
     }
 }

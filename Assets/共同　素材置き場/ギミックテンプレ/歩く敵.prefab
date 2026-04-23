@@ -141,7 +141,7 @@ MonoBehaviour:
   wallCheckDistance: 0.1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 320
 --- !u!95 &6341859292766755073
 Animator:
   serializedVersion: 7

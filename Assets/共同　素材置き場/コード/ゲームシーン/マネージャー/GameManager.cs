@@ -14,6 +14,11 @@ public class GameManager : MonoBehaviour
     public GameObject fadePanel;
     public float fadeDuration = 0.5f;
 
+    [Header("SE（ワープ）")]
+    public AudioSource audioSource;
+    public AudioClip warpStartSE; // 暗転開始
+    public AudioClip warpEndSE;   // 暗転終了
+
     [Header("参照")]
     public RoomManager roomManager;
     public PlayerSpawner playerSpawner;
@@ -43,9 +48,6 @@ public class GameManager : MonoBehaviour
         if (playerSpawner == null)
             playerSpawner = FindFirstObjectByType<PlayerSpawner>();
 
-        // =========================
-        // モード分岐
-        // =========================
         if (!GameSettings.isEndlessMode)
         {
             roomManager.currentLevel = GameSettings.selectedWorld;
@@ -85,7 +87,6 @@ public class GameManager : MonoBehaviour
             {
                 yield return StartCoroutine(PlayOneRoom());
 
-                // 🔥 クリアで抜ける
                 if (isClearing) yield break;
 
                 currentCount++;
@@ -121,9 +122,6 @@ public class GameManager : MonoBehaviour
         if (timerUI != null)
             timerUI.StopTimer();
 
-        // =========================
-        // 🔥 最後の部屋判定
-        // =========================
         bool isLastRoom = (!GameSettings.isEndlessMode && currentCount + 1 >= targetRoomCount);
 
         if (isLastRoom)
@@ -133,11 +131,14 @@ public class GameManager : MonoBehaviour
         }
 
         // =========================
-        // 通常ワープ処理
+        // 🔥 通常ワープ処理
         // =========================
         room.GetComponent<Room>().OnRoomEnd();
 
+        // 🎵 暗転開始SE
+       
         if (fadePanel != null)
+            PlaySE(warpStartSE);
             fadePanel.SetActive(true);
 
         playerSpawner.DespawnPlayer();
@@ -145,6 +146,9 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(fadeDuration);
 
         roomManager.ClearCurrentRoom();
+
+        // 🎵 暗転終了SE
+        PlaySE(warpEndSE);
 
         if (fadePanel != null)
             fadePanel.SetActive(false);
@@ -236,5 +240,14 @@ public class GameManager : MonoBehaviour
         }
 
         hasBarrier = false;
+    }
+
+    // =========================
+    // 🔊 SE再生
+    // =========================
+    void PlaySE(AudioClip clip)
+    {
+        if (audioSource == null || clip == null) return;
+        audioSource.PlayOneShot(clip);
     }
 }
