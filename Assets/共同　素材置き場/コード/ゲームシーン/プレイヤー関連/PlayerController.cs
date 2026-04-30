@@ -20,6 +20,11 @@ public class PlayerController : MonoBehaviour
     [Header("見た目")]
     [SerializeField] private SpriteRenderer spriteRenderer;
 
+    // 🔥 追加：吸引状態
+    [Header("ブラックホール影響")]
+    public bool isPulled = false;
+    public float pulledControlPower = 0.5f; // 操作弱体（0〜1）
+
     private Rigidbody2D rb;
     private float moveInput;
     private bool isGrounded;
@@ -59,12 +64,23 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
-        float targetSpeed = moveInput * moveSpeed;
+        float control = isPulled ? pulledControlPower : 1f;
+        float targetSpeed = moveInput * moveSpeed * control;
 
-        if (moveInput == 0)
-            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+        if (!isPulled)
+        {
+            // ✅ 通常移動（今まで通り）
+            if (moveInput == 0)
+                rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            else
+                rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y);
+        }
         else
-            rb.linearVelocity = new Vector2(targetSpeed, rb.linearVelocity.y);
+        {
+            // 🔥 吸引中：AddForceで自然に動く
+            float speedDiff = targetSpeed - rb.linearVelocity.x;
+            rb.AddForce(new Vector2(speedDiff, 0f), ForceMode2D.Force);
+        }
     }
 
     void Jump()

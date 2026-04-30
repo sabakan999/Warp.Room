@@ -146,6 +146,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 320
   spriteRenderer: {fileID: 0}
+  isPulled: 0
+  pulledControlPower: 1
 --- !u!114 &8657955575403704075
 MonoBehaviour:
   m_ObjectHideFlags: 0

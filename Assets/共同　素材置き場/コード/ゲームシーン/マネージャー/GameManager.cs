@@ -16,8 +16,8 @@ public class GameManager : MonoBehaviour
 
     [Header("SE（ワープ）")]
     public AudioSource audioSource;
-    public AudioClip warpStartSE; // 暗転開始
-    public AudioClip warpEndSE;   // 暗転終了
+    public AudioClip warpStartSE;
+    public AudioClip warpEndSE;
 
     [Header("参照")]
     public RoomManager roomManager;
@@ -36,6 +36,9 @@ public class GameManager : MonoBehaviour
     private int currentCount = 0;
     private bool isGameRunning = false;
     private bool isClearing = false;
+
+    // 🔥 無限用カウント
+    private int endlessClearCount = 0;
 
     public BGMManager bgmManager;
     public ClearSequence clearSequence;
@@ -56,6 +59,7 @@ public class GameManager : MonoBehaviour
         else
         {
             roomManager.currentLevel = -1;
+            endlessClearCount = 0; // 初期化
         }
 
         if (roomCounterUI != null)
@@ -100,6 +104,7 @@ public class GameManager : MonoBehaviour
 
                 if (isClearing) yield break;
 
+                // 🔥 無限はここでは増やさない（下で増やす）
                 currentCount++;
             }
         }
@@ -122,6 +127,12 @@ public class GameManager : MonoBehaviour
         if (timerUI != null)
             timerUI.StopTimer();
 
+        // 🔥 ここが「クリア確定タイミング」
+        if (GameSettings.isEndlessMode)
+        {
+            endlessClearCount++;
+        }
+
         bool isLastRoom = (!GameSettings.isEndlessMode && currentCount + 1 >= targetRoomCount);
 
         if (isLastRoom)
@@ -131,15 +142,15 @@ public class GameManager : MonoBehaviour
         }
 
         // =========================
-        // 🔥 通常ワープ処理
+        // 🔥 ワープ処理
         // =========================
         room.GetComponent<Room>().OnRoomEnd();
 
-        // 🎵 暗転開始SE
-       
         if (fadePanel != null)
+        {
             PlaySE(warpStartSE);
             fadePanel.SetActive(true);
+        }
 
         playerSpawner.DespawnPlayer();
 
@@ -147,7 +158,6 @@ public class GameManager : MonoBehaviour
 
         roomManager.ClearCurrentRoom();
 
-        // 🎵 暗転終了SE
         PlaySE(warpEndSE);
 
         if (fadePanel != null)
@@ -214,7 +224,12 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.8f);
 
         if (resultUI != null)
+        {
+            if (GameSettings.isEndlessMode)
+                resultUI.SetEndlessResult(endlessClearCount);
+
             resultUI.Show();
+        }
     }
 
     void GameClear()
@@ -243,7 +258,15 @@ public class GameManager : MonoBehaviour
     }
 
     // =========================
-    // 🔊 SE再生
+    // 🔥 外部取得用
+    // =========================
+    public int GetEndlessClearCount()
+    {
+        return endlessClearCount;
+    }
+
+    // =========================
+    // 🔊 SE
     // =========================
     void PlaySE(AudioClip clip)
     {

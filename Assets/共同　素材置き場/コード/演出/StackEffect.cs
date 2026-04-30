@@ -23,16 +23,19 @@ public class StackEffect : MonoBehaviour
     public float endlessResultWait = 2f;
     public int endlessSpeedLockCount = 9;
 
+    [Header("通常モード遷移待ち ★ここだけ使う")]
+    public float afterTextWait = 1.5f;
+
     [Header("音（単発）")]
     public AudioSource audioSource;
     public AudioClip baseNote;
     public AudioClip finishSound;
     public AudioClip infinitySound;
-    public AudioClip resultSound; // ★追加
+    public AudioClip resultSound;
 
     [Header("ループ音（ドラムロール）")]
-    public AudioSource loopSource; // ★追加
-    public AudioClip drumRoll;     // ★追加
+    public AudioSource loopSource;
+    public AudioClip drumRoll;
 
     [Header("ピッチ設定")]
     public float startPitch = 0.8f;
@@ -73,7 +76,6 @@ public class StackEffect : MonoBehaviour
         float delay = baseDelay;
         float currentPitch = startPitch;
 
-        // 🎵 ドラムロール開始
         StartDrumRoll();
 
         // =========================
@@ -95,14 +97,15 @@ public class StackEffect : MonoBehaviour
             }
 
             StopCamera();
-            StopDrumRoll(); // ★追加
+            StopDrumRoll();
 
             PlayFinish();
-            PlayResultSound(); // ★追加
+            PlayResultSound();
 
             ShowRoomText(count.ToString());
 
-            yield return new WaitForSeconds(1.2f);
+            // 🔥 通常モードだけ待つ
+            yield return new WaitForSeconds(afterTextWait);
         }
         // =========================
         // エンドレスモード
@@ -126,15 +129,14 @@ public class StackEffect : MonoBehaviour
                 i++;
             }
 
-            // ∞表示
-            StopDrumRoll(); // ★追加
+            StopDrumRoll();
 
             PlayInfinity();
-            PlayResultSound(); // ★追加
+            PlayResultSound();
 
             ShowRoomText("∞");
 
-            // 表示後も積む
+            // 表示後も積む（ここがエンドレスのテンポ）
             float resultTimer = 0f;
 
             while (resultTimer < endlessResultWait)
@@ -156,14 +158,13 @@ public class StackEffect : MonoBehaviour
             }
 
             StopCamera();
+
+            // ❌ ここでは待たない（←今回のポイント）
         }
 
         SceneManager.LoadScene("ワープ・ルーム");
     }
 
-    // =========================
-    // 🧱 ブロック生成
-    // =========================
     void SpawnBlock(int index)
     {
         if (blockPrefab == null || parent == null)
@@ -178,9 +179,6 @@ public class StackEffect : MonoBehaviour
         block.transform.DOScale(1f, 0.15f).SetEase(Ease.OutBack);
     }
 
-    // =========================
-    // 🎥 カメラ＆加速
-    // =========================
     void HandleCameraAndSpeed(int index, ref float delay, bool isEndless)
     {
         if (index == 2)
@@ -199,9 +197,6 @@ public class StackEffect : MonoBehaviour
         }
     }
 
-    // =========================
-    // 🎵 積み音
-    // =========================
     void PlayStackSound(ref float currentPitch, float pitchLimit)
     {
         if (audioSource == null || baseNote == null)
@@ -214,9 +209,6 @@ public class StackEffect : MonoBehaviour
         currentPitch = Mathf.Min(currentPitch, pitchLimit);
     }
 
-    // =========================
-    // 🥁 ドラムロール
-    // =========================
     void StartDrumRoll()
     {
         if (loopSource != null && drumRoll != null)
@@ -235,9 +227,6 @@ public class StackEffect : MonoBehaviour
         }
     }
 
-    // =========================
-    // 🔔 結果音
-    // =========================
     void PlayResultSound()
     {
         if (audioSource != null && resultSound != null && !GameSettings.isEndlessMode)
@@ -279,18 +268,12 @@ public class StackEffect : MonoBehaviour
         }
     }
 
-    // =========================
-    // 🎥 カメラ停止
-    // =========================
     void StopCamera()
     {
         cameraMoving = false;
         cameraSpeed = 0f;
     }
 
-    // =========================
-    // 📝 テキスト表示
-    // =========================
     void ShowRoomText(string text)
     {
         if (roomText == null)

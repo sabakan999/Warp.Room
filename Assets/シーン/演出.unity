@@ -365,6 +365,7 @@ MonoBehaviour:
   endlessStackTime: 3
   endlessResultWait: 2
   endlessSpeedLockCount: 9
+  afterTextWait: 2
   audioSource: {fileID: 292721446}
   baseNote: {fileID: 8300000, guid: d9b66bdaea53a514d91b7097b48c9239, type: 3}
   finishSound: {fileID: 8300000, guid: 6140742a4210ee24fb54e88353f3b8b4, type: 3}

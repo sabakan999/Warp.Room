@@ -11,7 +11,7 @@ public class RoomManager : MonoBehaviour
     public List<GameObject> level2Rooms;
     public List<GameObject> level3Rooms;
 
-    [Header("テスト用（最初に優先）")]
+    [Header("テスト用")]
     public List<GameObject> testRooms;
     public bool useTestRooms = true;
 
@@ -21,66 +21,118 @@ public class RoomManager : MonoBehaviour
     private bool usedTestRoom = false;
     private GameObject currentRoom;
 
+    private GameObject lastRoomPrefab = null;
+
+    // 🔥 進行度
+    private int progress = 0;
+
     // =========================
-    // 部屋生成（GameManagerから呼ばれる）
+    public void SetProgress(int value)
+    {
+        progress = value;
+    }
+
     // =========================
     public GameObject SpawnRoom()
     {
         GameObject roomPrefab = null;
 
-        // 🔥 テスト部屋優先
+        // テスト部屋
         if (useTestRooms && !usedTestRoom && testRooms != null && testRooms.Count > 0)
         {
-            int index = Random.Range(0, testRooms.Count);
-            roomPrefab = testRooms[index];
-
+            roomPrefab = testRooms[Random.Range(0, testRooms.Count)];
             usedTestRoom = true;
         }
         else
         {
-            List<GameObject> targetList = GetRoomListByLevel();
-
-            if (targetList == null || targetList.Count == 0)
-            {
-                Debug.LogError("部屋リストが空！");
-                return null;
-            }
-
-            int index = Random.Range(0, targetList.Count);
-            roomPrefab = targetList[index];
+            roomPrefab = GetRoomByMode();
         }
 
         currentRoom = Instantiate(roomPrefab, spawnPoint.position, Quaternion.identity);
-
         return currentRoom;
     }
 
     // =========================
-    // レベルに応じたリスト取得
+    GameObject GetRoomByMode()
+    {
+        // 🔥 無限モード
+        if (currentLevel == -1)
+        {
+            return GetWeightedRandomRoom();
+        }
+
+        // 通常
+        var list = GetRoomListByLevel();
+        return GetRandomRoomAvoidRepeat(list);
+    }
+
+    // =========================
+    // 🔥 重み付き抽選（ここが本体）
+    // =========================
+    GameObject GetWeightedRandomRoom()
+    {
+        float w1 = Mathf.Max(1f, 10f - progress * 0.5f);
+        float w2 = Mathf.Clamp(2f + progress * 0.3f, 2f, 10f);
+        float w3 = Mathf.Clamp(progress * 0.5f, 1f, 15f);
+
+        float total = w1 + w2 + w3;
+        float rand = Random.Range(0f, total);
+
+        List<GameObject> selectedList;
+
+        if (rand < w1)
+            selectedList = level1Rooms;
+        else if (rand < w1 + w2)
+            selectedList = level2Rooms;
+        else
+            selectedList = level3Rooms;
+
+        return GetRandomRoomAvoidRepeat(selectedList);
+    }
+
+    // =========================
+    GameObject GetRandomRoomAvoidRepeat(List<GameObject> list)
+    {
+        if (list == null || list.Count == 0)
+        {
+            Debug.LogError("部屋リスト空！");
+            return null;
+        }
+
+        if (list.Count == 1)
+            return list[0];
+
+        GameObject selected = null;
+        int safety = 0;
+
+        do
+        {
+            selected = list[Random.Range(0, list.Count)];
+            safety++;
+        }
+        while (selected == lastRoomPrefab && safety < 10);
+
+        lastRoomPrefab = selected;
+
+        return selected;
+    }
+
     // =========================
     List<GameObject> GetRoomListByLevel()
     {
         switch (currentLevel)
         {
-            case 1:
-                return level1Rooms;
-            case 2:
-                return level2Rooms;
-            case 3:
-                return level3Rooms;
-            default:
-                return level1Rooms;
+            case 1: return level1Rooms;
+            case 2: return level2Rooms;
+            case 3: return level3Rooms;
+            default: return level1Rooms;
         }
     }
 
     // =========================
-    // 現在の部屋削除
-    // =========================
     public void ClearCurrentRoom()
     {
         if (currentRoom != null)
-        {
             Destroy(currentRoom);
-        }
     }
 }

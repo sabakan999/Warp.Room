@@ -9,32 +9,44 @@ public class BGMManager : MonoBehaviour
     [Header("BGM")]
     public AudioClip normalBGM;
     public AudioClip resultBGM;
+    public AudioClip endlessBGM; // ★追加
 
     [Header("音量設定")]
-    [Range(0f, 1f)] public float masterVolume = 1f;   // 全体音量
-    [Range(0f, 1f)] public float normalVolume = 1f;   // 通常BGM音量
-    [Range(0f, 1f)] public float resultVolume = 1f;   // リザルト音量
+    [Range(0f, 1f)] public float masterVolume = 1f;
+    [Range(0f, 1f)] public float normalVolume = 1f;
+    [Range(0f, 1f)] public float resultVolume = 1f;
+    [Range(0f, 1f)] public float endlessVolume = 1f; // ★追加
 
     [Header("フェード設定")]
     public float fadeTime = 0.5f;
 
     // =========================
-    // 🎵 通常BGM
+    // 🎵 通常 or 無限BGM
     // =========================
     public void PlayNormalBGM()
     {
-        if (bgmSource == null || normalBGM == null) return;
+        if (bgmSource == null) return;
 
         bgmSource.DOKill();
 
         bgmSource.Stop();
-        bgmSource.clip = normalBGM;
-        bgmSource.loop = true;
 
+        // 🔥 モードで分岐
+        if (GameSettings.isEndlessMode && endlessBGM != null)
+        {
+            bgmSource.clip = endlessBGM;
+        }
+        else
+        {
+            if (normalBGM == null) return;
+            bgmSource.clip = normalBGM;
+        }
+
+        bgmSource.loop = true;
         bgmSource.volume = 0f;
         bgmSource.Play();
 
-        float targetVolume = masterVolume * normalVolume;
+        float targetVolume = GetCurrentTargetVolume();
 
         bgmSource.DOFade(targetVolume, fadeTime);
     }
@@ -61,7 +73,7 @@ public class BGMManager : MonoBehaviour
     }
 
     // =========================
-    // 🔇 停止（フェードアウト）
+    // 🔇 停止
     // =========================
     public void StopBGM()
     {
@@ -89,10 +101,23 @@ public class BGMManager : MonoBehaviour
     {
         if (bgmSource == null) return;
 
-        float baseVolume = (bgmSource.clip == normalBGM)
-            ? normalVolume
-            : resultVolume;
+        bgmSource.volume = GetCurrentTargetVolume();
+    }
 
-        bgmSource.volume = masterVolume * baseVolume;
+    // =========================
+    // 🔥 現在のBGMに応じた音量
+    // =========================
+    float GetCurrentTargetVolume()
+    {
+        if (bgmSource.clip == normalBGM)
+            return masterVolume * normalVolume;
+
+        if (bgmSource.clip == resultBGM)
+            return masterVolume * resultVolume;
+
+        if (bgmSource.clip == endlessBGM)
+            return masterVolume * endlessVolume;
+
+        return masterVolume;
     }
 }

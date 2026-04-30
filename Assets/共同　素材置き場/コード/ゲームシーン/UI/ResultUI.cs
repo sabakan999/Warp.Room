@@ -5,12 +5,16 @@ using DG.Tweening;
 
 public class ResultUI : MonoBehaviour
 {
-    [Header("パネル")]
+    [Header("通常パネル")]
     public GameObject panel;
-
-    [Header("選択テキスト")]
     public RectTransform retryText;
     public RectTransform stageSelectText;
+
+    [Header("無限パネル")]
+    public GameObject endlessPanel;
+    public RectTransform endlessRetryText;
+    public RectTransform endlessBackText;
+    public Text endlessCountText;
 
     [Header("色設定")]
     public Color normalColor = Color.white;
@@ -29,6 +33,9 @@ public class ResultUI : MonoBehaviour
     private Text retryLabel;
     private Text stageLabel;
 
+    private Text endlessRetryLabel;
+    private Text endlessBackLabel;
+
     private int selectedIndex = 0;
     private float prevH = 0f;
     private bool isActive = false;
@@ -36,14 +43,21 @@ public class ResultUI : MonoBehaviour
 
     public BGMManager bgmManager;
 
+    private bool isEndless = false;
+
+    // 🔥 追加：無限スコア保持
+    private int endlessScore = 0;
+
     void Start()
     {
-        if (panel != null)
-            panel.SetActive(false);
+        if (panel != null) panel.SetActive(false);
+        if (endlessPanel != null) endlessPanel.SetActive(false);
 
-        // 🔥 Text取得
         retryLabel = retryText.GetComponent<Text>();
         stageLabel = stageSelectText.GetComponent<Text>();
+
+        endlessRetryLabel = endlessRetryText.GetComponent<Text>();
+        endlessBackLabel = endlessBackText.GetComponent<Text>();
     }
 
     void Update()
@@ -54,24 +68,51 @@ public class ResultUI : MonoBehaviour
         HandleSubmit();
     }
 
-    public void Show()
+    // =========================
+    // 🔥 GameManagerから呼ぶ用
+    // =========================
+    public void SetEndlessResult(int score)
     {
-        if (panel != null)
-            panel.SetActive(true);
-
-         if (bgmManager != null)
-        bgmManager.PlayResultBGM();
-
-
-        isActive = true;
-        isDeciding = false;
-        selectedIndex = 0;
-
-        UpdateSelection(true);
+        endlessScore = score;
     }
 
     // =========================
-    // 🎮 入力処理
+    // 表示
+    // =========================
+    public void Show()
+    {
+        isEndless = GameSettings.isEndlessMode;
+
+        if (bgmManager != null)
+            bgmManager.PlayResultBGM();
+
+        selectedIndex = 0;
+        prevH = 0f;
+        isActive = true;
+        isDeciding = false;
+
+        if (panel != null) panel.SetActive(false);
+        if (endlessPanel != null) endlessPanel.SetActive(false);
+
+        if (!isEndless)
+        {
+            panel.SetActive(true);
+            UpdateNormalSelection(true);
+        }
+        else
+        {
+            endlessPanel.SetActive(true);
+
+            // 🔥 修正：GameSettingsじゃなく自分の値使う
+            if (endlessCountText != null)
+                endlessCountText.text = endlessScore.ToString();
+
+            UpdateEndlessSelection(true);
+        }
+    }
+
+    // =========================
+    // 入力
     // =========================
     void HandleMove()
     {
@@ -104,21 +145,27 @@ public class ResultUI : MonoBehaviour
     }
 
     // =========================
-    // 🎯 見た目更新
+    // 見た目
     // =========================
     void UpdateSelection(bool instant)
+    {
+        if (!isEndless)
+            UpdateNormalSelection(instant);
+        else
+            UpdateEndlessSelection(instant);
+    }
+
+    void UpdateNormalSelection(bool instant)
     {
         float retryScale = (selectedIndex == 0) ? selectedScale : normalScale;
         float stageScale = (selectedIndex == 1) ? selectedScale : normalScale;
 
-        // 🔥 色変更
         if (retryLabel != null)
             retryLabel.color = (selectedIndex == 0) ? selectedColor : normalColor;
 
         if (stageLabel != null)
             stageLabel.color = (selectedIndex == 1) ? selectedColor : normalColor;
 
-        // 🔥 拡大
         if (instant)
         {
             retryText.localScale = Vector3.one * retryScale;
@@ -134,8 +181,34 @@ public class ResultUI : MonoBehaviour
         }
     }
 
+    void UpdateEndlessSelection(bool instant)
+    {
+        float retryScale = (selectedIndex == 0) ? selectedScale : normalScale;
+        float backScale = (selectedIndex == 1) ? selectedScale : normalScale;
+
+        if (endlessRetryLabel != null)
+            endlessRetryLabel.color = (selectedIndex == 0) ? selectedColor : normalColor;
+
+        if (endlessBackLabel != null)
+            endlessBackLabel.color = (selectedIndex == 1) ? selectedColor : normalColor;
+
+        if (instant)
+        {
+            endlessRetryText.localScale = Vector3.one * retryScale;
+            endlessBackText.localScale = Vector3.one * backScale;
+        }
+        else
+        {
+            endlessRetryText.DOKill();
+            endlessBackText.DOKill();
+
+            endlessRetryText.DOScale(retryScale, scaleTime).SetEase(Ease.OutBack);
+            endlessBackText.DOScale(backScale, scaleTime).SetEase(Ease.OutBack);
+        }
+    }
+
     // =========================
-    // 🔥 決定処理（音待ち）
+    // 決定
     // =========================
     System.Collections.IEnumerator DecideCoroutine()
     {
@@ -143,10 +216,7 @@ public class ResultUI : MonoBehaviour
 
         PlaySE(decideSE);
 
-        float wait = 0.2f;
-        if (decideSE != null)
-            wait = decideSE.length;
-
+        float wait = (decideSE != null) ? decideSE.length : 0.2f;
         yield return new WaitForSeconds(wait);
 
         if (selectedIndex == 0)
@@ -155,12 +225,12 @@ public class ResultUI : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene("ステージセレクト");
+            SceneManager.LoadScene("モードセレクト");
         }
     }
 
     // =========================
-    // 🔊 SE
+    // SE
     // =========================
     void PlaySE(AudioClip clip)
     {
