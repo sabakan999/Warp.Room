@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic; // 🔥 追加
 
 public class ClearSequence : MonoBehaviour
 {
@@ -12,8 +13,11 @@ public class ClearSequence : MonoBehaviour
     private Animator anim;
 
     public Camera mainCamera;
-    public GameObject clearText; // CLEAR画像
-    public GameObject returnText; // 「スペースで戻る」
+    public GameObject clearText;
+    public GameObject returnText;
+
+    [Header("演出開始時に消すUI")]
+    public List<GameObject> hideUIObjects = new List<GameObject>(); // 🔥 追加
 
     [Header("演出設定")]
     public float slowTimeScale = 0.2f;
@@ -39,11 +43,10 @@ public class ClearSequence : MonoBehaviour
     public AudioClip riseSE;
     public AudioClip chargeSE;
     public AudioClip impactSE;
-    public AudioClip decideSE; // 🔥追加
+    public AudioClip decideSE;
 
     private bool canInput = false;
 
-      
     public void Play(Transform targetPlayer)
     {
         player = targetPlayer;
@@ -56,7 +59,20 @@ public class ClearSequence : MonoBehaviour
         if (returnText != null)
             returnText.SetActive(false);
 
+        // 🔥 ここでUI消す
+        HideUIObjects();
+
         StartCoroutine(Sequence());
+    }
+
+    // 🔥 追加：UIを消す処理
+    void HideUIObjects()
+    {
+        foreach (var obj in hideUIObjects)
+        {
+            if (obj != null)
+                obj.SetActive(false);
+        }
     }
 
     void Update()
@@ -73,7 +89,6 @@ public class ClearSequence : MonoBehaviour
     {
         Time.timeScale = slowTimeScale;
 
-        // 🎥 カメラ寄り
         if (mainCamera != null)
         {
             mainCamera.transform
@@ -88,10 +103,9 @@ public class ClearSequence : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(0.4f);
 
-        // 🔒 プレイヤー停止
         var pc = player.GetComponent<PlayerController>();
         if (pc != null) pc.enabled = false;
-     
+
         if (anim != null) anim.enabled = false;
         if (col != null) col.enabled = false;
 
@@ -101,7 +115,6 @@ public class ClearSequence : MonoBehaviour
             rb.simulated = false;
         }
 
-        // 🚀 上昇
         if (sr != null && risingSprite != null)
             sr.sprite = risingSprite;
 
@@ -121,7 +134,6 @@ public class ClearSequence : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(riseDuration);
 
-        // 🧠 タメ
         if (sr != null && chargeSprite != null)
             sr.sprite = chargeSprite;
 
@@ -137,7 +149,6 @@ public class ClearSequence : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(chargeTime);
 
-        // 💥 点火
         if (sr != null && reachedSprite != null)
             sr.sprite = reachedSprite;
 
@@ -170,7 +181,6 @@ public class ClearSequence : MonoBehaviour
                 .SetUpdate(true);
         }
 
-        // 🎉 CLEAR表示
         if (clearText != null)
         {
             clearText.SetActive(true);
@@ -186,7 +196,6 @@ public class ClearSequence : MonoBehaviour
                 });
         }
 
-        // 🔥 少し待ってから入力解禁
         yield return new WaitForSecondsRealtime(0.7f);
 
         if (returnText != null)
@@ -215,10 +224,7 @@ public class ClearSequence : MonoBehaviour
 
         PlaySE(decideSE);
 
-        float wait = 0.2f;
-        if (decideSE != null)
-            wait = decideSE.length;
-
+        float wait = (decideSE != null) ? decideSE.length : 0.2f;
         yield return new WaitForSeconds(wait);
 
         SceneManager.LoadScene("ステージセレクト");

@@ -45,7 +45,6 @@ public class ResultUI : MonoBehaviour
 
     private bool isEndless = false;
 
-    // 🔥 追加：無限スコア保持
     private int endlessScore = 0;
 
     void Start()
@@ -68,17 +67,11 @@ public class ResultUI : MonoBehaviour
         HandleSubmit();
     }
 
-    // =========================
-    // 🔥 GameManagerから呼ぶ用
-    // =========================
     public void SetEndlessResult(int score)
     {
         endlessScore = score;
     }
 
-    // =========================
-    // 表示
-    // =========================
     public void Show()
     {
         isEndless = GameSettings.isEndlessMode;
@@ -103,7 +96,6 @@ public class ResultUI : MonoBehaviour
         {
             endlessPanel.SetActive(true);
 
-            // 🔥 修正：GameSettingsじゃなく自分の値使う
             if (endlessCountText != null)
                 endlessCountText.text = endlessScore.ToString();
 
@@ -111,9 +103,6 @@ public class ResultUI : MonoBehaviour
         }
     }
 
-    // =========================
-    // 入力
-    // =========================
     void HandleMove()
     {
         float h = Input.GetAxisRaw("Horizontal");
@@ -144,9 +133,6 @@ public class ResultUI : MonoBehaviour
         }
     }
 
-    // =========================
-    // 見た目
-    // =========================
     void UpdateSelection(bool instant)
     {
         if (!isEndless)
@@ -176,8 +162,8 @@ public class ResultUI : MonoBehaviour
             retryText.DOKill();
             stageSelectText.DOKill();
 
-            retryText.DOScale(retryScale, scaleTime).SetEase(Ease.OutBack);
-            stageSelectText.DOScale(stageScale, scaleTime).SetEase(Ease.OutBack);
+            retryText.DOScale(retryScale, scaleTime).SetEase(Ease.OutBack).SetLink(retryText.gameObject);
+            stageSelectText.DOScale(stageScale, scaleTime).SetEase(Ease.OutBack).SetLink(stageSelectText.gameObject);
         }
     }
 
@@ -202,14 +188,11 @@ public class ResultUI : MonoBehaviour
             endlessRetryText.DOKill();
             endlessBackText.DOKill();
 
-            endlessRetryText.DOScale(retryScale, scaleTime).SetEase(Ease.OutBack);
-            endlessBackText.DOScale(backScale, scaleTime).SetEase(Ease.OutBack);
+            endlessRetryText.DOScale(retryScale, scaleTime).SetEase(Ease.OutBack).SetLink(endlessRetryText.gameObject);
+            endlessBackText.DOScale(backScale, scaleTime).SetEase(Ease.OutBack).SetLink(endlessBackText.gameObject);
         }
     }
 
-    // =========================
-    // 決定
-    // =========================
     System.Collections.IEnumerator DecideCoroutine()
     {
         isDeciding = true;
@@ -219,19 +202,37 @@ public class ResultUI : MonoBehaviour
         float wait = (decideSE != null) ? decideSE.length : 0.2f;
         yield return new WaitForSeconds(wait);
 
-        if (selectedIndex == 0)
+        // 🔥 モードで分岐
+        if (!isEndless)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            // 通常モード
+            if (selectedIndex == 0)
+            {
+                // リトライ
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+            else
+            {
+                // ステージセレクト
+                SceneManager.LoadScene("ステージセレクト");
+            }
         }
         else
         {
-            SceneManager.LoadScene("モードセレクト");
+            // 無限モード
+            if (selectedIndex == 0)
+            {
+                // リトライ
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+            else
+            {
+                // モードセレクト
+                SceneManager.LoadScene("モードセレクト");
+            }
         }
     }
 
-    // =========================
-    // SE
-    // =========================
     void PlaySE(AudioClip clip)
     {
         if (audioSource == null || clip == null) return;

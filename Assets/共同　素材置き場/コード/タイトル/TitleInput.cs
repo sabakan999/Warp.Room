@@ -8,7 +8,7 @@ public class TitleInput : MonoBehaviour
     public string nextScene = "モードセレクト";
 
     [Header("UIまとめ")]
-    public GameObject titleRoot; // タイトルUIや演出の親
+    public GameObject titleRoot;
 
     [Header("暗転")]
     public GameObject fadePanel;
@@ -18,13 +18,20 @@ public class TitleInput : MonoBehaviour
     [Header("BGM")]
     public AudioSource bgmSource;
 
+    [Header("SE（決定音）")]
+    public AudioSource seSource;
+    public AudioClip decideSE;
+
+    public TitleTeleportPlayer teleportPlayer;
+
+    // 🔥 ロゴ停止用
+    public TitleLogoAnimator logoAnimator;
+
     private bool canInput = false;
     private bool isTransitioning = false;
 
-public TitleTeleportPlayer teleportPlayer;
     void Start()
     {
-        // 🔥 最初は全部隠す
         if (titleRoot != null)
             titleRoot.SetActive(false);
 
@@ -39,31 +46,25 @@ public TitleTeleportPlayer teleportPlayer;
 
     IEnumerator TitleIntro()
     {
-        // ⏳ 1秒待つ（何もない状態）
         yield return new WaitForSeconds(firstDelay);
 
-        // 🌑 暗転ON
         if (fadePanel != null)
             fadePanel.SetActive(true);
 
         yield return new WaitForSeconds(fadeTime);
 
-        // ✨ UI＆演出出現
         if (titleRoot != null)
             titleRoot.SetActive(true);
 
         if (teleportPlayer != null)
-             teleportPlayer.StartTeleport();
+            teleportPlayer.StartTeleport();
 
-        // 🎵 BGM開始
         if (bgmSource != null)
             bgmSource.Play();
 
-        // 🌑 暗転OFF
         if (fadePanel != null)
             fadePanel.SetActive(false);
 
-        // 🎮 入力解禁
         canInput = true;
     }
 
@@ -76,12 +77,28 @@ public TitleTeleportPlayer teleportPlayer;
             Input.GetKeyDown(KeyCode.Space))
         {
             isTransitioning = true;
-            GoNext();
+            StartCoroutine(GoNextCoroutine());
         }
     }
 
-    void GoNext()
+    IEnumerator GoNextCoroutine()
     {
+        // 🔥 先にアニメ停止（重要）
+        if (logoAnimator != null)
+            logoAnimator.StopAllAnimations();
+
+        // 🔊 SE再生
+        if (seSource != null && decideSE != null)
+        {
+            seSource.PlayOneShot(decideSE);
+            yield return new WaitForSeconds(decideSE.length);
+        }
+        else
+        {
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        // 🔥 シーン遷移
         SceneManager.LoadScene(nextScene);
     }
 }

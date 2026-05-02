@@ -20,10 +20,15 @@ public class PlayerController : MonoBehaviour
     [Header("見た目")]
     [SerializeField] private SpriteRenderer spriteRenderer;
 
-    // 🔥 追加：吸引状態
+    // 🔥 ブラックホール影響
     [Header("ブラックホール影響")]
     public bool isPulled = false;
-    public float pulledControlPower = 0.5f; // 操作弱体（0〜1）
+    public float pulledControlPower = 0.5f;
+
+    // 🔊 追加：ジャンプSE
+    [Header("SE")]
+    public AudioSource audioSource;
+    public AudioClip jumpSE;
 
     private Rigidbody2D rb;
     private float moveInput;
@@ -69,7 +74,6 @@ public class PlayerController : MonoBehaviour
 
         if (!isPulled)
         {
-            // ✅ 通常移動（今まで通り）
             if (moveInput == 0)
                 rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             else
@@ -77,7 +81,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // 🔥 吸引中：AddForceで自然に動く
             float speedDiff = targetSpeed - rb.linearVelocity.x;
             rb.AddForce(new Vector2(speedDiff, 0f), ForceMode2D.Force);
         }
@@ -87,6 +90,12 @@ public class PlayerController : MonoBehaviour
     {
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+
+        // 🔊 ジャンプSE
+        if (audioSource != null && jumpSE != null)
+        {
+            audioSource.PlayOneShot(jumpSE);
+        }
     }
 
     void CheckGround()

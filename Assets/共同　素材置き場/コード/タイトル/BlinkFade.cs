@@ -5,11 +5,12 @@ using UnityEngine.UI;
 public class BlinkFade : MonoBehaviour
 {
     [Header("点滅設定")]
-    public float fadeTime = 0.8f;     // フェード時間
-    public float minAlpha = 0.2f;     // 最低透明度
-    public float maxAlpha = 1f;       // 最大透明度
+    public float fadeTime = 0.8f;
+    public float minAlpha = 0.2f;
+    public float maxAlpha = 1f;
 
-    private Graphic graphic; // Text / Image 両対応
+    private Graphic graphic;
+    private Tween blinkTween; // 🔥 追加
 
     void Start()
     {
@@ -30,10 +31,18 @@ public class BlinkFade : MonoBehaviour
         c.a = maxAlpha;
         graphic.color = c;
 
-        // 🔁 無限フェード
-        graphic
+        // 🔥 Tweenを保持 + 自動Kill
+        blinkTween = graphic
             .DOFade(minAlpha, fadeTime)
             .SetEase(Ease.InOutSine)
-            .SetLoops(-1, LoopType.Yoyo);
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetLink(gameObject); // ← これが超重要
+    }
+
+    void OnDestroy()
+    {
+        // 🔥 念のため完全停止
+        if (blinkTween != null && blinkTween.IsActive())
+            blinkTween.Kill();
     }
 }

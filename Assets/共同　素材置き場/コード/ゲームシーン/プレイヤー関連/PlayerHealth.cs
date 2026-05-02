@@ -20,12 +20,17 @@ public class PlayerHealth : MonoBehaviour
     public float blinkInterval = 0.1f;
     private SpriteRenderer spriteRenderer;
 
+    // 🔊 SE
+    [Header("SE")]
+    public AudioClip damageSE;
+    public AudioClip barrierBreakSE;
+    public AudioClip barrierGetSE;
+
     void Start()
     {
         gameManager = FindFirstObjectByType<GameManager>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
-        // 🔥 バリア状態を復元
         if (gameManager != null && gameManager.hasBarrier)
         {
             hasBarrier = true;
@@ -43,9 +48,12 @@ public class PlayerHealth : MonoBehaviour
         hasBarrier = true;
 
         if (gameManager != null)
-            gameManager.hasBarrier = true; // 🔥 保存
+            gameManager.hasBarrier = true;
 
         CreateBarrierVisual();
+
+        // 🔊 バリア獲得音
+        SEManager.Instance?.PlaySE(barrierGetSE);
 
         Debug.Log("バリア獲得");
     }
@@ -76,16 +84,22 @@ public class PlayerHealth : MonoBehaviour
             hasBarrier = false;
 
             if (gameManager != null)
-                gameManager.hasBarrier = false; // 🔥 同期
+                gameManager.hasBarrier = false;
 
             if (barrierInstance != null)
                 Destroy(barrierInstance);
+
+            // 🔊 バリア破壊音
+            SEManager.Instance?.PlaySE(barrierBreakSE);
 
             Debug.Log("バリアで防いだ");
 
             StartCoroutine(InvincibleRoutine());
             return;
         }
+
+        // 🔊 ダメージ音（ここ重要：死ぬ前に鳴る）
+        SEManager.Instance?.PlaySE(damageSE);
 
         Die();
     }
@@ -121,7 +135,6 @@ public class PlayerHealth : MonoBehaviour
                 spriteRenderer.enabled = !spriteRenderer.enabled;
 
             yield return new WaitForSeconds(blinkInterval);
-
             timer += blinkInterval;
         }
 

@@ -10,18 +10,45 @@ public class TitleLogoAnimator : MonoBehaviour
 
     float BIG = 1200f; // 画面外ぶっ飛び用
 
+    private Coroutine loopCoroutine;
+    private bool isStopped = false;
+
     void OnEnable()
     {
         basePos = transform.localPosition;
         baseScale = transform.localScale;
         baseRot = transform.localRotation;
 
-        StartCoroutine(RandomActionLoop());
+        isStopped = false;
+        loopCoroutine = StartCoroutine(RandomActionLoop());
+    }
+
+    void OnDisable()
+    {
+        StopAllAnimations();
+    }
+
+    // 🔥 外部から停止できるように
+    public void StopAllAnimations()
+    {
+        if (isStopped) return;
+        isStopped = true;
+
+        if (loopCoroutine != null)
+            StopCoroutine(loopCoroutine);
+
+        StopAllCoroutines();
+        transform.DOKill();
+
+        // 安全リセット
+        transform.localPosition = basePos;
+        transform.localScale = baseScale;
+        transform.localRotation = baseRot;
     }
 
     IEnumerator RandomActionLoop()
     {
-        while (true)
+        while (!isStopped)
         {
             float wait = Random.Range(2f, 5f);
             yield return new WaitForSeconds(wait);
@@ -138,7 +165,7 @@ public class TitleLogoAnimator : MonoBehaviour
     }
 
     // =========================
-    // 🎬 長編
+    // 🎬 長編（全部復活）
     // =========================
 
     IEnumerator Story_JumpAndSmash()
@@ -150,26 +177,17 @@ public class TitleLogoAnimator : MonoBehaviour
         yield return transform.DOScale(baseScale, 0.3f).SetEase(Ease.OutBack).WaitForCompletion();
     }
 
-   IEnumerator Story_LostAndReturn()
-{
-    float offscreenX = 2000f; // ← 好きなだけ増やしてOK（1500〜3000推奨）
+    IEnumerator Story_LostAndReturn()
+    {
+        float offscreenX = 2000f;
 
-    // 画面外へぶっ飛び
-    yield return transform
-        .DOLocalMoveX(offscreenX, 0.5f)
-        .SetEase(Ease.InQuad)
-        .WaitForCompletion();
+        yield return transform.DOLocalMoveX(offscreenX, 0.5f).SetEase(Ease.InQuad).WaitForCompletion();
+        yield return new WaitForSeconds(1f);
 
-    yield return new WaitForSeconds(1f);
+        transform.localPosition = new Vector3(-offscreenX, basePos.y, 0);
 
-    // 左から出現
-    transform.localPosition = new Vector3(-offscreenX, basePos.y, 0);
-
-    yield return transform
-        .DOLocalMove(basePos, 1f)
-        .SetEase(Ease.OutCubic)
-        .WaitForCompletion();
-}
+        yield return transform.DOLocalMove(basePos, 1f).SetEase(Ease.OutCubic).WaitForCompletion();
+    }
 
     IEnumerator Story_PanicShake()
     {
@@ -205,10 +223,6 @@ public class TitleLogoAnimator : MonoBehaviour
         yield return transform.DOScale(baseScale * 0.3f, 0.2f).WaitForCompletion();
         yield return transform.DOScale(baseScale, 0.5f).SetEase(Ease.OutBack).WaitForCompletion();
     }
-
-    // =========================
-    // 🧠 人間っぽい
-    // =========================
 
     IEnumerator Story_DoZeAndWake()
     {
@@ -256,7 +270,6 @@ public class TitleLogoAnimator : MonoBehaviour
     IEnumerator Story_RunAway()
     {
         yield return transform.DOLocalMoveX(basePos.x + BIG, 0.6f).SetEase(Ease.InQuad).WaitForCompletion();
-
         yield return new WaitForSeconds(0.5f);
 
         transform.localPosition = new Vector3(basePos.x - BIG, basePos.y, 0);
@@ -267,7 +280,6 @@ public class TitleLogoAnimator : MonoBehaviour
     IEnumerator Story_FlyUp()
     {
         yield return transform.DOLocalMoveY(basePos.y + BIG, 0.5f).SetEase(Ease.OutQuad).WaitForCompletion();
-
         yield return new WaitForSeconds(1f);
 
         transform.localPosition = new Vector3(basePos.x, basePos.y + BIG, 0);
@@ -275,9 +287,6 @@ public class TitleLogoAnimator : MonoBehaviour
         yield return transform.DOLocalMove(basePos, 0.6f).SetEase(Ease.InQuad).WaitForCompletion();
     }
 
-    // =========================
-    // 🔄 リセット
-    // =========================
     void ResetTransform()
     {
         transform.DOKill();
@@ -285,4 +294,8 @@ public class TitleLogoAnimator : MonoBehaviour
         transform.localScale = baseScale;
         transform.localRotation = baseRot;
     }
+    void OnDestroy()
+{
+    transform.DOKill();
+}
 }
