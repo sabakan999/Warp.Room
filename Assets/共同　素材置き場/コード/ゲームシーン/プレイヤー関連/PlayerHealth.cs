@@ -1,9 +1,11 @@
+
 using UnityEngine;
 using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
     private bool isDead = false;
+    public bool hasCurse = false;
 
     private GameManager gameManager;
 
@@ -143,4 +145,28 @@ public class PlayerHealth : MonoBehaviour
 
         isInvincible = false;
     }
+
+    // =========================
+// 👻 呪い取得
+// =========================
+public void AddCurse()
+{
+    hasCurse = true;
+}
+
+// =========================
+// ✨ 呪い解除
+// =========================
+public void RemoveCurse()
+{
+    hasCurse = false;
+}
+
+// =========================
+// 👻 呪い所持確認
+// =========================
+public bool HasCurse()
+{
+    return hasCurse;
+}
 }

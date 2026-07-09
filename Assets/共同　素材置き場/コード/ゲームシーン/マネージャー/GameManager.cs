@@ -127,6 +127,14 @@ public class GameManager : MonoBehaviour
         if (timerUI != null)
             timerUI.StopTimer();
 
+        PlayerHealth health = FindFirstObjectByType<PlayerHealth>();
+
+        if (health != null && health.hasCurse)
+         {
+            health.TakeDamage();
+            yield break;
+         }
+
         // 🔥 ここが「クリア確定タイミング」
         if (GameSettings.isEndlessMode)
         {
