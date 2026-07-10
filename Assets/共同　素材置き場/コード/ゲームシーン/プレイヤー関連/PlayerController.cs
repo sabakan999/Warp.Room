@@ -22,6 +22,12 @@ public class PlayerController : MonoBehaviour
 
     // 🔥 ブラックホール影響
     [Header("ブラックホール影響")]
+
+     [Header("行動禁止系フラグ")]
+    private bool canJump = true;
+    private bool canMove = true;
+
+     
     public bool isPulled = false;
     public float pulledControlPower = 0.5f;
 
@@ -69,6 +75,12 @@ public class PlayerController : MonoBehaviour
 
     void Move()
     {
+
+        if (!canMove)
+        {
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            return;
+        }
         float control = isPulled ? pulledControlPower : 1f;
         float targetSpeed = moveInput * moveSpeed * control;
 
@@ -88,6 +100,12 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
+
+        if (!canJump)
+        {
+
+            return;
+        }
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
         rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 
@@ -132,4 +150,15 @@ public class PlayerController : MonoBehaviour
     {
         return isGrounded;
     }
+    //禁止系の受け付け
+
+    public void SetJumpEnabled(bool enable)
+{
+    canJump = enable;
+}
+
+public void SetMoveEnabled(bool enable)
+{
+    canMove = enable;
+}
 }
