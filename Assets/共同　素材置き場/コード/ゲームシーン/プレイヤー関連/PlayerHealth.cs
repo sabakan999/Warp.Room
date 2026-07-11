@@ -5,7 +5,7 @@ using System.Collections;
 public class PlayerHealth : MonoBehaviour
 {
     private bool isDead = false;
-    public bool hasCurse = false;
+    
 
     private GameManager gameManager;
 
@@ -28,6 +28,10 @@ public class PlayerHealth : MonoBehaviour
     public AudioClip barrierBreakSE;
     public AudioClip barrierGetSE;
 
+    [Header("呪い")]
+    public bool hasCurse = false;
+    public ParticleSystem curseEffect;
+
     void Start()
     {
         gameManager = FindFirstObjectByType<GameManager>();
@@ -38,6 +42,10 @@ public class PlayerHealth : MonoBehaviour
             hasBarrier = true;
             CreateBarrierVisual();
         }
+
+         if (curseEffect != null)
+            curseEffect.Stop();
+
     }
 
     // =========================
@@ -152,6 +160,9 @@ public class PlayerHealth : MonoBehaviour
 public void AddCurse()
 {
     hasCurse = true;
+
+    if (curseEffect != null)
+        curseEffect.Play();
 }
 
 // =========================
@@ -160,6 +171,10 @@ public void AddCurse()
 public void RemoveCurse()
 {
     hasCurse = false;
+    
+    if (curseEffect != null)
+        curseEffect.Stop();
+        curseEffect.Clear();
 }
 
 // =========================
