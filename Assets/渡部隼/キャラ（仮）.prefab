@@ -406,7 +406,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 320
-  spriteRenderer: {fileID: 0}
+  spriteRenderer: {fileID: 3028719608908454810}
   isPulled: 0
   pulledControlPower: 1
   audioSource: {fileID: 1111564222753234807}
@@ -431,6 +431,7 @@ MonoBehaviour:
   barrierGetSE: {fileID: 8300000, guid: fb8e6e53be60cef49a263ef57f4121ae, type: 3}
   hasCurse: 0
   curseEffect: {fileID: 8052906676701906341}
+  curseUIPrefab: {fileID: 0}
 --- !u!61 &2764431948611483441
 BoxCollider2D:
   m_ObjectHideFlags: 0

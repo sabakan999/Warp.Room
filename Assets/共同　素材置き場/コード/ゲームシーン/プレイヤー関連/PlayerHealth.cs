@@ -1,11 +1,9 @@
-
 using UnityEngine;
 using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
     private bool isDead = false;
-    
 
     private GameManager gameManager;
 
@@ -32,21 +30,29 @@ public class PlayerHealth : MonoBehaviour
     public bool hasCurse = false;
     public ParticleSystem curseEffect;
 
-    void Start()
+   
+
+   
+    private CurseUI curseUI;
+void Start()
+{
+    gameManager = FindFirstObjectByType<GameManager>();
+    spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+    curseUI = FindFirstObjectByType<CurseUI>();
+
+    if (curseUI != null)
+        curseUI.Hide();
+
+    if (gameManager != null && gameManager.hasBarrier)
     {
-        gameManager = FindFirstObjectByType<GameManager>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-
-        if (gameManager != null && gameManager.hasBarrier)
-        {
-            hasBarrier = true;
-            CreateBarrierVisual();
-        }
-
-         if (curseEffect != null)
-            curseEffect.Stop();
-
+        hasBarrier = true;
+        CreateBarrierVisual();
     }
+
+    if (curseEffect != null)
+        curseEffect.Stop();
+}
 
     // =========================
     // 🛡 バリア取得
@@ -62,7 +68,6 @@ public class PlayerHealth : MonoBehaviour
 
         CreateBarrierVisual();
 
-        // 🔊 バリア獲得音
         SEManager.Instance?.PlaySE(barrierGetSE);
 
         Debug.Log("バリア獲得");
@@ -99,7 +104,6 @@ public class PlayerHealth : MonoBehaviour
             if (barrierInstance != null)
                 Destroy(barrierInstance);
 
-            // 🔊 バリア破壊音
             SEManager.Instance?.PlaySE(barrierBreakSE);
 
             Debug.Log("バリアで防いだ");
@@ -108,7 +112,6 @@ public class PlayerHealth : MonoBehaviour
             return;
         }
 
-        // 🔊 ダメージ音（ここ重要：死ぬ前に鳴る）
         SEManager.Instance?.PlaySE(damageSE);
 
         Die();
@@ -118,17 +121,20 @@ public class PlayerHealth : MonoBehaviour
     // 💀 死亡
     // =========================
     void Die()
-    {
-        isDead = true;
+{
+    isDead = true;
 
-        Debug.Log("Player Dead");
+    Debug.Log("Player Dead");
 
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        rb.linearVelocity = Vector2.zero;
-        rb.simulated = false;
+    if (curseUI != null)
+        curseUI.gameObject.SetActive(false);
 
-        gameManager.GameOver();
-    }
+    Rigidbody2D rb = GetComponent<Rigidbody2D>();
+    rb.linearVelocity = Vector2.zero;
+    rb.simulated = false;
+
+    gameManager.GameOver();
+}
 
     // =========================
     // ⏱ 無敵＋点滅
@@ -155,33 +161,43 @@ public class PlayerHealth : MonoBehaviour
     }
 
     // =========================
-// 👻 呪い取得
-// =========================
-public void AddCurse()
+    // 👻 呪い取得
+    // =========================
+   public void AddCurse()
 {
+    if (hasCurse) return;
+
     hasCurse = true;
 
     if (curseEffect != null)
         curseEffect.Play();
+
+    if (curseUI != null)
+        curseUI.Show();
 }
 
-// =========================
-// ✨ 呪い解除
-// =========================
-public void RemoveCurse()
+    // =========================
+    // ✨ 呪い解除
+    // =========================
+    public void RemoveCurse()
 {
     hasCurse = false;
-    
+
     if (curseEffect != null)
+    {
         curseEffect.Stop();
         curseEffect.Clear();
+    }
+
+    if (curseUI != null)
+         curseUI.Hide();
 }
 
-// =========================
-// 👻 呪い所持確認
-// =========================
-public bool HasCurse()
-{
-    return hasCurse;
-}
+    // =========================
+    // 👻 呪い所持確認
+    // =========================
+    public bool HasCurse()
+    {
+        return hasCurse;
+    }
 }
