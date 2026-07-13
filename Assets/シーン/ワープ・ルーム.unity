@@ -1027,6 +1027,9 @@ MonoBehaviour:
   - {fileID: 4529084442889480405, guid: 20c507932b894ca4dba4d63dc14fd2c8, type: 3}
   - {fileID: 4529084442889480405, guid: fa5c7949fb53d554d8d217a148404f27, type: 3}
   - {fileID: 4529084442889480405, guid: 60039f665f2752b4aaf032303a79b17c, type: 3}
+  - {fileID: 4529084442889480405, guid: 60039f665f2752b4aaf032303a79b17c, type: 3}
+  - {fileID: 4529084442889480405, guid: 75438ef79f940694bbf61a16c68d1bc0, type: 3}
+  - {fileID: 4529084442889480405, guid: 9ab9c08a2d26a9146a9c22b77367722b, type: 3}
   level2Rooms:
   - {fileID: 4529084442889480405, guid: 0fe66b8d1647ab347acd1f0c26b69ff6, type: 3}
   - {fileID: 4529084442889480405, guid: a72a68e75226a2442b7fa8894af5e23f, type: 3}
@@ -1039,7 +1042,7 @@ MonoBehaviour:
   - {fileID: 4529084442889480405, guid: a855e764a946e014194ee2ee7690d29e, type: 3}
   - {fileID: 4529084442889480405, guid: b5e5c3fb68e7ac746a8545f4f6969e17, type: 3}
   testRooms:
-  - {fileID: 4529084442889480405, guid: f54823ad5548a8341ae2ff42c83a7721, type: 3}
+  - {fileID: 4529084442889480405, guid: 56e71f75ac82cdf48a21895443cc8cd8, type: 3}
   useTestRooms: 1
   currentLevel: 1
 --- !u!4 &632989893

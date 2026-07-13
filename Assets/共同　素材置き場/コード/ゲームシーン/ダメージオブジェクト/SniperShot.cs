@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using DG.Tweening;
 
@@ -26,6 +25,18 @@ public class SniperShot : MonoBehaviour
     public float hitStayTime = 1f;
     public float hitFadeTime = 1f;
 
+    [Header("破片エフェクト")]
+    public ParticleSystem hitParticle;
+
+    [Header("カメラシェイク")]
+    public float shakeDuration = 0.2f;
+    public float shakeStrength = 0.35f;
+
+    [Header("SE")]
+    public AudioSource audioSource;
+    public AudioClip lockOnSE;
+    public AudioClip shotSE;
+
     private SpriteRenderer targetSR;
     private SpriteRenderer hitSR;
 
@@ -44,9 +55,10 @@ public class SniperShot : MonoBehaviour
         }
 
         if (damageArea != null)
-        {
             damageArea.SetActive(false);
-        }
+
+        if (hitParticle != null)
+            hitParticle.gameObject.SetActive(false);
 
         StartCoroutine(SniperRoutine());
     }
@@ -55,13 +67,15 @@ public class SniperShot : MonoBehaviour
     {
         yield return new WaitForSeconds(startDelay);
 
-        // ====================
-        // エイム表示
-        // ====================
+        //====================
+        // ターゲット表示
+        //====================
 
         if (targetMark != null)
         {
             targetMark.SetActive(true);
+
+            PlaySE(lockOnSE);
 
             if (targetSR != null)
             {
@@ -77,15 +91,15 @@ public class SniperShot : MonoBehaviour
             }
         }
 
-        // ====================
+        //====================
         // ロックオン待機
-        // ====================
+        //====================
 
         yield return new WaitForSeconds(shootDelay);
 
-        // ====================
+        //====================
         // 発射
-        // ====================
+        //====================
 
         if (targetMark != null)
             targetMark.SetActive(false);
@@ -102,17 +116,37 @@ public class SniperShot : MonoBehaviour
             }
         }
 
+        // 効果音
+        PlaySE(shotSE);
+
+        // カメラシェイク
+        if (Camera.main != null)
+        {
+            Camera.main.transform
+                .DOShakePosition(
+                    shakeDuration,
+                    shakeStrength
+                );
+        }
+
+        // 破片パーティクル
+        if (hitParticle != null)
+        {
+            hitParticle.gameObject.SetActive(true);
+            hitParticle.Play();
+        }
+
         StartCoroutine(DamageRoutine());
 
-        // ====================
+        //====================
         // 着弾跡維持
-        // ====================
+        //====================
 
         yield return new WaitForSeconds(hitStayTime);
 
-        // ====================
+        //====================
         // フェードアウト
-        // ====================
+        //====================
 
         if (hitSR != null)
         {
@@ -136,5 +170,13 @@ public class SniperShot : MonoBehaviour
         yield return new WaitForSeconds(damageDuration);
 
         damageArea.SetActive(false);
+    }
+
+    void PlaySE(AudioClip clip)
+    {
+        if (audioSource == null || clip == null)
+            return;
+
+        audioSource.PlayOneShot(clip);
     }
 }
