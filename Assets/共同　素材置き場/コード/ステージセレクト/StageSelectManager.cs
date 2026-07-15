@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using System.Collections;
 
 public class StageSelectManager : MonoBehaviour
@@ -7,6 +8,11 @@ public class StageSelectManager : MonoBehaviour
     public StageButton[,] buttons = new StageButton[3, 3];
 
     public RectTransform cursor;
+
+    [Header("カーソル")]
+    public float cursorMoveSpeed = 15f;
+    public float blinkSpeed = 2f;
+    public float selectBlinkSpeed = 12f;
 
     [Header("戻る設定")]
     public string modeSelectSceneName = "モードセレクト";
@@ -23,7 +29,10 @@ public class StageSelectManager : MonoBehaviour
     float prevH = 0f;
     float prevV = 0f;
 
-    bool isTransitioning = false; // 🔥 連打防止
+    bool isTransitioning = false;
+
+    private Vector3 targetCursorPosition;
+    private Image cursorImage;
 
     void Start()
     {
@@ -41,16 +50,25 @@ public class StageSelectManager : MonoBehaviour
             index++;
         }
 
+        cursorImage = cursor.GetComponent<Image>();
+
         UpdateCursor();
+
+        if (cursor != null)
+            targetCursorPosition = cursor.position;
     }
 
     void Update()
     {
-        if (isTransitioning) return; // 🔥 遷移中は操作無効
+        if (!isTransitioning)
+        {
+            HandleMove();
+            HandleSubmit();
+            HandleBack();
+        }
 
-        HandleMove();
-        HandleSubmit();
-        HandleBack();
+        UpdateCursorMove();
+        UpdateCursorBlink();
     }
 
     void HandleMove()
@@ -89,9 +107,7 @@ public class StageSelectManager : MonoBehaviour
         prevV = v;
 
         if (moved)
-        {
             PlaySE(moveSE);
-        }
 
         UpdateCursor();
     }
@@ -100,10 +116,48 @@ public class StageSelectManager : MonoBehaviour
     {
         StageButton target = buttons[x, y];
 
-        if (target != null && cursor != null)
+        if (target != null)
+            targetCursorPosition = target.transform.position;
+    }
+
+    void UpdateCursorMove()
+    {
+        if (cursor == null) return;
+
+        cursor.position = Vector3.Lerp(
+            cursor.position,
+            targetCursorPosition,
+            cursorMoveSpeed * Time.deltaTime
+        );
+    }
+
+    void UpdateCursorBlink()
+    {
+        if (cursorImage == null)
+            return;
+
+        Color c = cursorImage.color;
+
+        if (isTransitioning)
         {
-            cursor.position = target.transform.position;
+            // 決定時：100%⇔0%
+            c.a = Mathf.Lerp(
+                0f,
+                1f,
+                (Mathf.Sin(Time.time * selectBlinkSpeed * Mathf.PI) + 1f) * 0.5f
+            );
         }
+        else
+        {
+            // 通常時：100%⇔40%
+            c.a = Mathf.Lerp(
+                0.4f,
+                1f,
+                (Mathf.Sin(Time.time * blinkSpeed * Mathf.PI) + 1f) * 0.5f
+            );
+        }
+
+        cursorImage.color = c;
     }
 
     void HandleSubmit()
@@ -134,6 +188,7 @@ public class StageSelectManager : MonoBehaviour
         PlaySE(decideSE);
 
         float wait = (decideSE != null) ? decideSE.length : 0.2f;
+
         yield return new WaitForSeconds(wait);
 
         GameSettings.selectedWorld = selected.world;
@@ -149,6 +204,7 @@ public class StageSelectManager : MonoBehaviour
         PlaySE(backSE);
 
         float wait = (backSE != null) ? backSE.length : 0.2f;
+
         yield return new WaitForSeconds(wait);
 
         SceneManager.LoadScene(modeSelectSceneName);
@@ -160,6 +216,7 @@ public class StageSelectManager : MonoBehaviour
     void PlaySE(AudioClip clip)
     {
         if (audioSource == null || clip == null) return;
+
         audioSource.PlayOneShot(clip);
     }
 }
