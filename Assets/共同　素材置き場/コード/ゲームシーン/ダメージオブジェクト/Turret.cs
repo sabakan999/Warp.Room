@@ -4,6 +4,16 @@ public class Turret : MonoBehaviour
 {
     public GameObject missilePrefab;
 
+    [Header("発射エフェクト")]
+    public GameObject fireEffectPrefab;
+    public float effectLifeTime = 0.5f;
+
+    [Header("煙の発射位置")]
+    public Transform effectRight;
+    public Transform effectLeft;
+    public Transform effectUp;
+    public Transform effectDown;
+
     [Header("発射間隔")]
     public float interval = 2f;
 
@@ -22,7 +32,7 @@ public class Turret : MonoBehaviour
     public FireDirection fireDirection = FireDirection.Right;
 
     float timer;
-    bool hasFiredOnce = false; // 🔥 初回判定
+    bool hasFiredOnce = false;
 
     SpriteRenderer sr;
 
@@ -31,7 +41,6 @@ public class Turret : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         UpdateVisual();
 
-        // 🔥 初回タイマー調整
         timer = -firstDelay;
     }
 
@@ -39,12 +48,8 @@ public class Turret : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        // =========================
-        // 🔥 発射条件
-        // =========================
         if (!hasFiredOnce)
         {
-            // 初回
             if (timer >= 0f)
             {
                 Fire();
@@ -54,7 +59,6 @@ public class Turret : MonoBehaviour
         }
         else
         {
-            // 2回目以降
             if (timer >= interval)
             {
                 Fire();
@@ -65,6 +69,81 @@ public class Turret : MonoBehaviour
 
     void Fire()
     {
+        // =========================
+        // 発射エフェクト
+        // =========================
+
+        Transform effectPoint = GetEffectPoint();
+
+        if (fireEffectPrefab != null && effectPoint != null)
+        {
+            GameObject effect = Instantiate(
+                fireEffectPrefab,
+                effectPoint.position,
+                Quaternion.identity,
+                transform.parent
+            );
+
+            Vector3 originalScale = effect.transform.localScale;
+
+            switch (fireDirection)
+            {
+                case FireDirection.Right:
+                    effect.transform.rotation = Quaternion.identity;
+                    effect.transform.localScale = originalScale;
+                    break;
+
+                case FireDirection.Left:
+                    effect.transform.rotation = Quaternion.identity;
+                    effect.transform.localScale =
+                        new Vector3(
+                            -originalScale.x,
+                            originalScale.y,
+                            originalScale.z
+                        );
+                    break;
+
+                case FireDirection.Up:
+                    effect.transform.rotation =
+                        Quaternion.Euler(0, 0, 90);
+                    effect.transform.localScale = originalScale;
+                    break;
+
+                case FireDirection.Down:
+                    effect.transform.rotation =
+                        Quaternion.Euler(0, 0, -90);
+                    effect.transform.localScale = originalScale;
+                    break;
+            }
+
+            Animator anim = effect.GetComponent<Animator>();
+
+            if (anim != null)
+            {
+                RuntimeAnimatorController controller =
+                    anim.runtimeAnimatorController;
+
+                if (controller != null &&
+                    controller.animationClips.Length > 0)
+                {
+                    Destroy(effect,
+                        controller.animationClips[0].length);
+                }
+                else
+                {
+                    Destroy(effect, effectLifeTime);
+                }
+            }
+            else
+            {
+                Destroy(effect, effectLifeTime);
+            }
+        }
+
+        // =========================
+        // ミサイル生成（今まで通り中心）
+        // =========================
+
         GameObject missile = Instantiate(
             missilePrefab,
             transform.position,
@@ -72,9 +151,28 @@ public class Turret : MonoBehaviour
             transform.parent
         );
 
-        Vector2 dir = GetDirectionVector();
+        missile.GetComponent<Missile>()
+            .SetDirection(GetDirectionVector());
+    }
 
-        missile.GetComponent<Missile>().SetDirection(dir);
+    Transform GetEffectPoint()
+    {
+        switch (fireDirection)
+        {
+            case FireDirection.Right:
+                return effectRight;
+
+            case FireDirection.Left:
+                return effectLeft;
+
+            case FireDirection.Up:
+                return effectUp;
+
+            case FireDirection.Down:
+                return effectDown;
+        }
+
+        return effectRight;
     }
 
     Vector2 GetDirectionVector()

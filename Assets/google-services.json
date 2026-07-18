@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "46148906752",
+    "project_id": "endlessranking-b6fbe",
+    "storage_bucket": "endlessranking-b6fbe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46148906752:android:1ceaf0a46ff4c1a3280de5",
+        "android_client_info": {
+          "package_name": "com.WarpRoom.ISC"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFNRy6rodYzLvKTlqMtDZayrSXzRCAnXQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
