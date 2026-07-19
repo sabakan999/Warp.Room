@@ -32,7 +32,8 @@ public class AreaEffect : MonoBehaviour
 
         // ズームアウト演出
         transform.DOScale(originalScale, appearTime)
-            .SetEase(Ease.OutCubic);
+            .SetEase(Ease.OutCubic)
+            .SetLink(gameObject);
 
       // 効果音
 if (audioSource != null && appearSE != null)

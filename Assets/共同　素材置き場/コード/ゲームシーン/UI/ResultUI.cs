@@ -16,6 +16,15 @@ public class ResultUI : MonoBehaviour
     public RectTransform endlessBackText;
     public Text endlessCountText;
 
+    [Header("ランキング（1～3位）")]
+   public Text firstText;
+public Text secondText;
+public Text thirdText;
+
+
+    [Header("4～10位")]
+    public Text rankingText;
+
     [Header("色設定")]
     public Color normalColor = Color.white;
     public Color selectedColor = Color.yellow;
@@ -44,7 +53,6 @@ public class ResultUI : MonoBehaviour
     public BGMManager bgmManager;
 
     private bool isEndless = false;
-
     private int endlessScore = 0;
 
     void Start()
@@ -84,8 +92,11 @@ public class ResultUI : MonoBehaviour
         isActive = true;
         isDeciding = false;
 
-        if (panel != null) panel.SetActive(false);
-        if (endlessPanel != null) endlessPanel.SetActive(false);
+        if (panel != null)
+            panel.SetActive(false);
+
+        if (endlessPanel != null)
+            endlessPanel.SetActive(false);
 
         if (!isEndless)
         {
@@ -99,11 +110,22 @@ public class ResultUI : MonoBehaviour
             if (endlessCountText != null)
                 endlessCountText.text = endlessScore.ToString();
 
+            // ランキング登録
+            if (RankingManager.Instance != null)
+            {
+                RankingManager.Instance.AddScore(
+                    GameSettings.playerName,
+                    endlessScore
+                );
+
+                RefreshRanking();
+            }
+
             UpdateEndlessSelection(true);
         }
     }
 
-    void HandleMove()
+        void HandleMove()
     {
         float h = Input.GetAxisRaw("Horizontal");
 
@@ -162,8 +184,15 @@ public class ResultUI : MonoBehaviour
             retryText.DOKill();
             stageSelectText.DOKill();
 
-            retryText.DOScale(retryScale, scaleTime).SetEase(Ease.OutBack).SetLink(retryText.gameObject);
-            stageSelectText.DOScale(stageScale, scaleTime).SetEase(Ease.OutBack).SetLink(stageSelectText.gameObject);
+            retryText
+                .DOScale(retryScale, scaleTime)
+                .SetEase(Ease.OutBack)
+                .SetLink(retryText.gameObject);
+
+            stageSelectText
+                .DOScale(stageScale, scaleTime)
+                .SetEase(Ease.OutBack)
+                .SetLink(stageSelectText.gameObject);
         }
     }
 
@@ -188,12 +217,19 @@ public class ResultUI : MonoBehaviour
             endlessRetryText.DOKill();
             endlessBackText.DOKill();
 
-            endlessRetryText.DOScale(retryScale, scaleTime).SetEase(Ease.OutBack).SetLink(endlessRetryText.gameObject);
-            endlessBackText.DOScale(backScale, scaleTime).SetEase(Ease.OutBack).SetLink(endlessBackText.gameObject);
+            endlessRetryText
+                .DOScale(retryScale, scaleTime)
+                .SetEase(Ease.OutBack)
+                .SetLink(endlessRetryText.gameObject);
+
+            endlessBackText
+                .DOScale(backScale, scaleTime)
+                .SetEase(Ease.OutBack)
+                .SetLink(endlessBackText.gameObject);
         }
     }
 
-    System.Collections.IEnumerator DecideCoroutine()
+        System.Collections.IEnumerator DecideCoroutine()
     {
         isDeciding = true;
 
@@ -202,40 +238,116 @@ public class ResultUI : MonoBehaviour
         float wait = (decideSE != null) ? decideSE.length : 0.2f;
         yield return new WaitForSeconds(wait);
 
-        // 🔥 モードで分岐
         if (!isEndless)
         {
-            // 通常モード
             if (selectedIndex == 0)
             {
-                // リトライ
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                SceneManager.LoadScene(
+                    SceneManager.GetActiveScene().name
+                );
             }
             else
             {
-                // ステージセレクト
                 SceneManager.LoadScene("ステージセレクト");
             }
         }
         else
         {
-            // 無限モード
             if (selectedIndex == 0)
             {
-                // リトライ
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                SceneManager.LoadScene(
+                    SceneManager.GetActiveScene().name
+                );
             }
             else
             {
-                // モードセレクト
                 SceneManager.LoadScene("モードセレクト");
+            }
+        }
+    }
+
+    void RefreshRanking()
+    {
+        
+
+        if (RankingManager.Instance == null)
+            return;
+
+        var list = RankingManager.Instance.rankings;
+
+        //------------------------
+        // 1位
+        //------------------------
+        if (list.Count >= 1)
+        {
+           firstText.text =
+    list[0].score+"warp"+
+    " " + list[0].playerName
+    ;
+        }
+
+        //------------------------
+        // 2位
+        //------------------------
+        if (list.Count >= 2)
+        {
+            secondText.text =
+    list[1].score+
+    "warp"+" " +
+    list[1].playerName ;
+        }
+
+        //------------------------
+        // 3位
+        //------------------------
+        if (list.Count >= 3)
+        {
+           thirdText.text =
+    list[2].score+"warp"+" " +list[2].playerName
+    ;
+        }
+
+        //------------------------
+        // 4～10位
+        //------------------------
+        if (rankingText != null)
+        {
+            rankingText.text = "";
+
+            for (int i = 3; i < 10; i++)
+            {
+                if (i < list.Count)
+                {
+                    rankingText.text +=
+                        (i + 1) +
+                        ". " +
+                         list[i].playerName+
+                        " " +
+                        list[i].score
+                        ;
+                }
+                else
+                {
+                    rankingText.text +=
+                        (i + 1) +
+                        ". -----";
+                }
+
+                if (i== 6)
+                    rankingText.text += "\n";
+                else
+                    rankingText.text += "　";
+                
+                
             }
         }
     }
 
     void PlaySE(AudioClip clip)
     {
-        if (audioSource == null || clip == null) return;
+        if (audioSource == null || clip == null)
+            return;
+
         audioSource.PlayOneShot(clip);
     }
 }

@@ -85,7 +85,8 @@ public class SniperShot : MonoBehaviour
 
                 targetSR
                     .DOFade(1f, aimFadeTime)
-                    .SetEase(Ease.Linear);
+                    .SetEase(Ease.Linear)
+                    .SetLink(gameObject);
 
                 yield return new WaitForSeconds(aimFadeTime);
             }
@@ -126,7 +127,8 @@ public class SniperShot : MonoBehaviour
                 .DOShakePosition(
                     shakeDuration,
                     shakeStrength
-                );
+                )
+                .SetLink(gameObject);
         }
 
         // 破片パーティクル
@@ -152,7 +154,8 @@ public class SniperShot : MonoBehaviour
         {
             hitSR
                 .DOFade(0f, hitFadeTime)
-                .SetEase(Ease.OutQuad);
+                .SetEase(Ease.OutQuad)
+                .SetLink(gameObject);
 
             yield return new WaitForSeconds(hitFadeTime);
         }

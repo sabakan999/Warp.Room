@@ -5,4 +5,6 @@ public static class GameSettings
 
     // 🔥 モード
     public static bool isEndlessMode = false;
+
+    public static string playerName = "";
 }

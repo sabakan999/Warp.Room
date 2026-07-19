@@ -99,7 +99,8 @@ public class Bomb : MonoBehaviour
 
         bombSprite.transform
             .DOScale(bombOriginalScale * warningScale, 1f)
-            .SetEase(Ease.Linear);
+            .SetEase(Ease.Linear)
+            .SetLink(gameObject);
     }
 
     void Explode()
@@ -121,7 +122,8 @@ public class Bomb : MonoBehaviour
                 .DOShakePosition(
                     shakeDuration,
                     shakeStrength
-                );
+                )
+                .SetLink(gameObject);
         }
 
         ShowFire(upFire, useUp);
@@ -152,7 +154,8 @@ public class Bomb : MonoBehaviour
         // パッと伸びる
         fire.transform
             .DOScale(targetScale, 0.08f)
-            .SetEase(Ease.OutQuad);
+            .SetEase(Ease.OutQuad)
+            .SetLink(gameObject);
     }
 
     IEnumerator HideFire()
@@ -187,7 +190,8 @@ public class Bomb : MonoBehaviour
                 ),
                 0.08f
             )
-            .SetEase(Ease.InQuad);
+            .SetEase(Ease.InQuad)
+            .SetLink(gameObject);
     }
 
     void DisableAllFire()

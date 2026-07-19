@@ -95,7 +95,8 @@ public class BeamCannon : MonoBehaviour
 
             cannonVisual.transform
                 .DOLocalMove(cannonEndPos, appearTime)
-                .SetEase(Ease.OutBack);
+                .SetEase(Ease.OutBack)
+                .SetLink(gameObject);
         }
 
         yield return new WaitForSeconds(appearTime);
@@ -162,7 +163,8 @@ public class BeamCannon : MonoBehaviour
                 90,
                 false,
                 true
-            );
+            ).SetLink(gameObject)
+            ;
         }
 
         // レーザー表示
@@ -181,7 +183,8 @@ public class BeamCannon : MonoBehaviour
 
                 beamRenderer
                     .DOColor(beamOriginalColor, 0.1f)
-                    .SetEase(Ease.OutQuad);
+                    .SetEase(Ease.OutQuad)
+                    .SetLink(gameObject);
             }
 
             beamVisual.localScale = new Vector3(
@@ -192,7 +195,8 @@ public class BeamCannon : MonoBehaviour
 
             beamVisual
                 .DOScaleX(beamOriginalScale.x, beamExtendTime)
-                .SetEase(Ease.OutCubic);
+                .SetEase(Ease.OutCubic)
+                .SetLink(gameObject);
         }
 
         // 判定ON
@@ -212,12 +216,14 @@ public class BeamCannon : MonoBehaviour
 
             disappear.Join(
                 beamVisual.DOScaleY(0f, beamDisappearTime)
+                .SetLink(gameObject)
             );
 
             if (beamRenderer != null)
             {
                 disappear.Join(
                     beamRenderer.DOFade(0f, beamDisappearTime)
+                    .SetLink(gameObject)
                 );
             }
 
@@ -231,4 +237,6 @@ public class BeamCannon : MonoBehaviour
                 beamRenderer.color = beamOriginalColor;
         }
     }
+
+    
 }
