@@ -9,6 +9,16 @@ public class ModeSelectManager : MonoBehaviour
     public RectTransform normalButton;
     public RectTransform endlessButton;
 
+    [Header("2ページ目")]
+    public GameObject page1;
+    public GameObject page2;
+
+    public RectTransform rankingButton;
+    public RectTransform settingButton;
+
+    public CanvasGroup rankingFrame;
+    public CanvasGroup settingFrame;
+
     [Header("装飾フレーム")]
     public CanvasGroup normalFrame;
     public CanvasGroup endlessFrame;
@@ -24,6 +34,8 @@ public class ModeSelectManager : MonoBehaviour
     [Header("次シーン")]
     public string normalNextScene = "ステージセレクト";
     public string endlessNextScene = "ワープ・ルーム";
+    public string rankingScene = "ランキング";
+    public string settingScene = "設定";
 
     [Header("SE")]
     public AudioSource audioSource;
@@ -34,17 +46,23 @@ public class ModeSelectManager : MonoBehaviour
     private float prevH = 0f;
     private bool isDeciding = false; // 入力ロック
 
+    private int pageIndex = 0;      //0=ゲーム 1=その他
+    private float prevV = 0f;
+
     void Start()
     {
         UpdateSelection(true);
         UpdateFrame(true);
+        UpdatePage(true);
+
+        
     }
 
     void Update()
     {
         if (isDeciding) return;
-
         HandleMove();
+        HandlePageMove();
         HandleSubmit();
     }
 
@@ -80,67 +98,151 @@ public class ModeSelectManager : MonoBehaviour
     // 🎯 ボタン拡大
     // =========================
     void UpdateSelection(bool instant)
+{
+    if (pageIndex == 0)
     {
-        if (normalButton == null || endlessButton == null)
-            return;
-
-        float nScale = (selectedIndex == 0) ? selectedScale : normalScale;
-        float eScale = (selectedIndex == 1) ? selectedScale : normalScale;
-
-        if (instant)
-        {
-            normalButton.localScale = Vector3.one * nScale;
-            endlessButton.localScale = Vector3.one * eScale;
-        }
-        else
-        {
-            normalButton.DOKill();
-            endlessButton.DOKill();
-
-            normalButton
-                .DOScale(nScale, scaleTime)
-                .SetEase(Ease.OutBack)
-                .SetLink(normalButton.gameObject);
-
-            endlessButton
-                .DOScale(eScale, scaleTime)
-                .SetEase(Ease.OutBack)
-                .SetLink(endlessButton.gameObject);
-        }
+        UpdateGameSelection(instant);
     }
+    else
+    {
+        UpdateOtherSelection(instant);
+    }
+}
+
+void UpdateGameSelection(bool instant)
+{
+    float normalScale =
+        (selectedIndex == 0) ? selectedScale : this.normalScale;
+
+    float endlessScale =
+        (selectedIndex == 1) ? selectedScale : this.normalScale;
+
+    if (instant)
+    {
+        normalButton.localScale = Vector3.one * normalScale;
+        endlessButton.localScale = Vector3.one * endlessScale;
+    }
+    else
+    {
+        normalButton.DOKill();
+        endlessButton.DOKill();
+
+        normalButton
+            .DOScale(normalScale, scaleTime)
+            .SetEase(Ease.OutBack)
+            .SetLink(normalButton.gameObject);
+
+        endlessButton
+            .DOScale(endlessScale, scaleTime)
+            .SetEase(Ease.OutBack)
+            .SetLink(endlessButton.gameObject);
+    }
+}
+
+void UpdateOtherSelection(bool instant)
+{
+    float rankingScale =
+        (selectedIndex == 0) ? selectedScale : normalScale;
+
+    float settingScale =
+        (selectedIndex == 1) ? selectedScale : normalScale;
+
+    if (instant)
+    {
+        rankingButton.localScale = Vector3.one * rankingScale;
+        settingButton.localScale = Vector3.one * settingScale;
+    }
+    else
+    {
+        rankingButton.DOKill();
+        settingButton.DOKill();
+
+        rankingButton
+            .DOScale(rankingScale, scaleTime)
+            .SetEase(Ease.OutBack)
+            .SetLink(rankingButton.gameObject);
+
+        settingButton
+            .DOScale(settingScale, scaleTime)
+            .SetEase(Ease.OutBack)
+            .SetLink(settingButton.gameObject);
+    }
+}
 
     // =========================
     // 🎨 フレーム
     // =========================
-    void UpdateFrame(bool instant)
+   void UpdateFrame(bool instant)
+{
+    if (pageIndex == 0)
     {
-        if (normalFrame == null || endlessFrame == null)
-            return;
-
-        float nAlpha = (selectedIndex == 0) ? 1f : 0f;
-        float eAlpha = (selectedIndex == 1) ? 1f : 0f;
-
-        if (instant)
-        {
-            normalFrame.alpha = nAlpha;
-            endlessFrame.alpha = eAlpha;
-        }
-        else
-        {
-            normalFrame.DOKill();
-            endlessFrame.DOKill();
-
-            normalFrame
-                .DOFade(nAlpha, fadeTime)
-                .SetEase(Ease.OutQuad)
-                .SetLink(normalFrame.gameObject);
-
-            endlessFrame
-                .DOFade(eAlpha, fadeTime)
-                .SetEase(Ease.OutQuad)
-                .SetLink(endlessFrame.gameObject);
-        }
+        UpdateGameFrame(instant);
     }
+    else
+    {
+        UpdateOtherFrame(instant);
+    }
+}
+
+void UpdateGameFrame(bool instant)
+{
+    float normalAlpha =
+        (selectedIndex == 0) ? 1f : 0f;
+
+    float endlessAlpha =
+        (selectedIndex == 1) ? 1f : 0f;
+
+    if (instant)
+    {
+        normalFrame.alpha = normalAlpha;
+        endlessFrame.alpha = endlessAlpha;
+    }
+    else
+    {
+        normalFrame.DOKill();
+        endlessFrame.DOKill();
+
+        normalFrame
+            .DOFade(normalAlpha, fadeTime)
+            .SetEase(Ease.OutQuad)
+            .SetLink(normalFrame.gameObject);
+
+        endlessFrame
+            .DOFade(endlessAlpha, fadeTime)
+            .SetEase(Ease.OutQuad)
+            .SetLink(endlessFrame.gameObject);
+    }
+}
+
+void UpdateOtherFrame(bool instant)
+{
+    float rankingAlpha =
+        (selectedIndex == 0) ? 1f : 0f;
+
+    float settingAlpha =
+        (selectedIndex == 1) ? 1f : 0f;
+
+    if (instant)
+    {
+        rankingFrame.alpha = rankingAlpha;
+        settingFrame.alpha = settingAlpha;
+    }
+    else
+    {
+        rankingFrame.DOKill();
+        settingFrame.DOKill();
+
+        rankingFrame
+            .DOFade(rankingAlpha, fadeTime)
+            .SetEase(Ease.OutQuad)
+            .SetLink(rankingFrame.gameObject);
+
+        settingFrame
+            .DOFade(settingAlpha, fadeTime)
+            .SetEase(Ease.OutQuad)
+            .SetLink(settingFrame.gameObject);
+    }
+}
 
     // =========================
     // 🎮 決定
@@ -171,16 +273,44 @@ public class ModeSelectManager : MonoBehaviour
 
         yield return new WaitForSeconds(waitTime);
 
-        if (selectedIndex == 0)
-        {
-            GameSettings.isEndlessMode = false;
-            SceneManager.LoadScene(normalNextScene);
-        }
-        else
-        {
-            GameSettings.isEndlessMode = true;
-            SceneManager.LoadScene(endlessNextScene);
-        }
+       if (pageIndex == 0)
+{
+    //==================
+    // ゲームページ
+    //==================
+
+    if (selectedIndex == 0)
+    {
+        // ノーマル
+        GameSettings.isEndlessMode = false;
+        SceneManager.LoadScene(normalNextScene);
+    }
+    else
+    {
+        // エンドレス
+        GameSettings.isEndlessMode = true;
+
+        // 名前入力へ
+        SceneManager.LoadScene(endlessNextScene);
+    }
+}
+else
+{
+    //==================
+    // その他ページ
+    //==================
+
+    if (selectedIndex == 0)
+    {
+        // ランキング
+        SceneManager.LoadScene(rankingScene);
+    }
+    else
+    {
+        // 設定
+        SceneManager.LoadScene(settingScene);
+    }
+}
     }
 
     // =========================
@@ -193,4 +323,41 @@ public class ModeSelectManager : MonoBehaviour
 
         audioSource.PlayOneShot(clip);
     }
+
+    void HandlePageMove()
+{
+    float v = Input.GetAxisRaw("Vertical");
+
+    int prevPage = pageIndex;
+
+    if (v > 0.5f && prevV <= 0.5f)
+        pageIndex--;
+
+    else if (v < -0.5f && prevV >= -0.5f)
+        pageIndex++;
+
+    pageIndex = Mathf.Clamp(pageIndex, 0, 1);
+
+    prevV = v;
+
+    if (prevPage != pageIndex)
+    {
+        selectedIndex = 0;
+
+        PlaySE(moveSE);
+
+        UpdatePage(false);
+        UpdateSelection(true);
+        UpdateFrame(true);
+    }
+}
+
+void UpdatePage(bool instant)
+{
+    if(page1!=null)
+        page1.SetActive(pageIndex==0);
+
+    if(page2!=null)
+        page2.SetActive(pageIndex==1);
+}
 }
