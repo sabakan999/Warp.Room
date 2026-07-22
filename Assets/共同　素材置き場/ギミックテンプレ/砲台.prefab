@@ -117,6 +117,7 @@ MonoBehaviour:
   effectDown: {fileID: 2731055506202494764}
   interval: 1
   firstDelay: 1
+  fireSE: {fileID: 8300000, guid: c09bc2cdfc74cfc449f4a1422a02a350, type: 3}
   fireDirection: 0
 --- !u!1 &2929853343793204069
 GameObject:

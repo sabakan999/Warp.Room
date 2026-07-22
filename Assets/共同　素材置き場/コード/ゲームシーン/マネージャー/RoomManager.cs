@@ -132,6 +132,10 @@ public class RoomManager : MonoBehaviour
     // =========================
     public void ClearCurrentRoom()
     {
+        if (MultiSEManager.Instance != null)
+        {
+          MultiSEManager.Instance.StopAllSE();
+        }
         if (currentRoom != null)
             Destroy(currentRoom);
     }

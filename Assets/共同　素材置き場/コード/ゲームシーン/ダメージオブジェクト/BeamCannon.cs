@@ -34,6 +34,10 @@ public class BeamCannon : MonoBehaviour
     public float appearDistance = 1f;
     public float appearTime = 0.3f;
 
+    [Header("SE")]
+    public AudioClip warningSE;
+    public AudioClip beamSE;
+
     private Vector3 cannonStartPos;
     private Vector3 cannonEndPos;
     private Vector3 beamOriginalScale;
@@ -105,6 +109,10 @@ public class BeamCannon : MonoBehaviour
         if (warningLine != null)
             warningLine.SetActive(true);
 
+        if (warningSE != null)
+             MultiSEManager.Instance.PlaySE(warningSE);
+
+
         yield return new WaitForSeconds(warningTime);
 
         // 警告非表示
@@ -153,6 +161,11 @@ public class BeamCannon : MonoBehaviour
         // 発射前の溜め
         yield return new WaitForSeconds(flashLeadTime);
 
+        if (warningSE != null)
+         MultiSEManager.Instance.StopSE(warningSE);
+        
+        if (beamSE != null)
+         MultiSEManager.Instance.PlaySE(beamSE);
         // カメラシェイク
         if (Camera.main != null)
         {

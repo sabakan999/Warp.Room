@@ -40,6 +40,10 @@ public class Bomb : MonoBehaviour
     public float shakeDuration = 0.2f;
     public float shakeStrength = 0.4f;
 
+    [Header("SE")]
+    public AudioClip warningSE;
+    public AudioClip explodeSE;
+
     private float timer;
     private bool exploded;
     private bool warningStarted;
@@ -94,6 +98,11 @@ public class Bomb : MonoBehaviour
 
     void StartWarningAnimation()
     {
+       if (warningSE != null)
+        {
+            MultiSEManager.Instance.PlaySE(warningSE);
+        }
+        
         if (bombSprite == null)
             return;
 
@@ -106,6 +115,14 @@ public class Bomb : MonoBehaviour
     void Explode()
     {
         exploded = true;
+
+        MultiSEManager.Instance.StopSE(warningSE);
+
+        if (explodeSE != null)
+        {
+            
+           MultiSEManager.Instance.PlaySE(explodeSE);
+        }
 
         // 爆弾消す
         if (bombSprite != null)

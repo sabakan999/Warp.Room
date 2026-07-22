@@ -20,6 +20,9 @@ public class Turret : MonoBehaviour
     [Header("初回発射までの待機時間（0で即発射）")]
     public float firstDelay = 0f;
 
+    [Header("SE")]
+    public AudioClip fireSE;
+
     // インスペクターで選べる方向
     public enum FireDirection
     {
@@ -69,6 +72,11 @@ public class Turret : MonoBehaviour
 
     void Fire()
     {
+
+        if (fireSE != null)
+        {
+            MultiSEManager.Instance.PlaySE(fireSE);
+        }
         // =========================
         // 発射エフェクト
         // =========================

@@ -14,6 +14,10 @@ public class DVDEnemy : MonoBehaviour
     private Rigidbody2D rb;
     private int spriteIndex = 0;
 
+    [Header("SE")]
+    public AudioSource audioSource;
+    public AudioClip bounceSE;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -31,6 +35,10 @@ public class DVDEnemy : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         ChangeSprite();
+        if (audioSource != null && bounceSE != null)
+    {
+        audioSource.PlayOneShot(bounceSE);
+    }
     }
 
     void ChangeSprite()

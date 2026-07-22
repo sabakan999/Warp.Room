@@ -67,6 +67,8 @@ MonoBehaviour:
   flashLeadTime: 0.2
   appearDistance: 1
   appearTime: 0.3
+  warningSE: {fileID: 8300000, guid: d2d180f72de392b4ab47ee680234975b, type: 3}
+  beamSE: {fileID: 8300000, guid: dc0201e40af44dc42bf8cb7a39b02754, type: 3}
 --- !u!1 &3586472435079755769
 GameObject:
   m_ObjectHideFlags: 0
