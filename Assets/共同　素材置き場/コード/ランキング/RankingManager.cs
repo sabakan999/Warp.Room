@@ -59,7 +59,7 @@ public class RankingManager : MonoBehaviour
                 rankings.Count - MaxRanking
             );
         }
-
+        RankingAPI.Instance.PostScore(playerName, score);
         SaveRanking();
     }
 
