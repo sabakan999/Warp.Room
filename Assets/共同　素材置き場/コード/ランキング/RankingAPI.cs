@@ -9,10 +9,12 @@ public class RankingAPI : MonoBehaviour
 
     [Header("PHP URL")]
     public string postURL =
-        "http://2025isc1240103.watson.jp/post_score.php";
+        "http://2025isc1240103.watson.jp/upload_score.php";
 
     public string getURL =
         "http://2025isc1240103.watson.jp/get_ranking.php";
+
+   
 
     void Awake()
     {
@@ -64,23 +66,23 @@ public class RankingAPI : MonoBehaviour
     //====================================
     // ランキング取得
     //====================================
-    public void GetRanking()
-    {
-        StartCoroutine(GetRoutine());
-    }
+    public void GetRanking(System.Action onComplete)
+{
+    StartCoroutine(GetRoutine(onComplete));
+}
 
-    IEnumerator GetRoutine()
+    IEnumerator GetRoutine(System.Action onComplete)
     {
         UnityWebRequest request =
             UnityWebRequest.Get(getURL);
 
         yield return request.SendWebRequest();
 
-#if UNITY_2020_2_OR_NEWER
+    #if UNITY_2020_2_OR_NEWER
         if (request.result != UnityWebRequest.Result.Success)
-#else
+    #else
         if (request.isNetworkError || request.isHttpError)
-#endif
+    #endif
         {
             Debug.LogError(request.error);
         }
@@ -98,6 +100,9 @@ public class RankingAPI : MonoBehaviour
 
             Debug.Log("ランキング取得完了");
         }
+
+        // 通信成功でも失敗でも最後に呼ぶ
+        onComplete?.Invoke();
     }
 }
 

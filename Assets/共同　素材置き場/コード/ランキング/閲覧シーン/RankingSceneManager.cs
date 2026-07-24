@@ -48,17 +48,17 @@ public float introTime = 2.5f;
     private bool canControl = false;
 
     void Start()
+{
+    if (topPanel != null)
+        topPanel.SetActive(false);
+
+    RankingAPI.Instance.GetRanking(() =>
     {
         LoadRanking();
-
         CreateRanking();
-
-          if (topPanel != null)
-            topPanel.SetActive(false);
-
         StartCoroutine(IntroAnimation());
-      
-    }
+    });
+}
 
     void Update()
     {
@@ -195,4 +195,5 @@ DOTween.To(
 
     canControl = true;
 }
+   
 }
