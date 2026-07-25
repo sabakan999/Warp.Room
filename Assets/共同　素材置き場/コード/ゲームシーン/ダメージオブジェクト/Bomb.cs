@@ -87,21 +87,32 @@ public class Bomb : MonoBehaviour
             if (bombSprite != null && warningSprite != null)
                 bombSprite.sprite = warningSprite;
 
+            if (warningSE != null)
+        {
+            MultiSEManager.Instance.PlaySE(warningSE);
+        }
+
             StartWarningAnimation();
         }
 
         if (timer <= 0f)
-        {
+         { 
+             MultiSEManager.Instance.StopSE(warningSE);
+                
+                if (explodeSE != null)
+            {
+                
+            MultiSEManager.Instance.PlaySE(explodeSE);
+            }
+
             Explode();
+           
         }
     }
 
     void StartWarningAnimation()
     {
-       if (warningSE != null)
-        {
-            MultiSEManager.Instance.PlaySE(warningSE);
-        }
+       
         
         if (bombSprite == null)
             return;
@@ -116,13 +127,9 @@ public class Bomb : MonoBehaviour
     {
         exploded = true;
 
-        MultiSEManager.Instance.StopSE(warningSE);
+       
 
-        if (explodeSE != null)
-        {
-            
-           MultiSEManager.Instance.PlaySE(explodeSE);
-        }
+        
 
         // 爆弾消す
         if (bombSprite != null)

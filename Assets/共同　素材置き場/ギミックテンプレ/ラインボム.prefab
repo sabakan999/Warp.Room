@@ -648,8 +648,8 @@ MonoBehaviour:
   warningScale: 1.2
   shakeDuration: 0.1
   shakeStrength: 0.4
-  warningSE: {fileID: 8300000, guid: 3f0b2dfb1a2239b4ea9018900aeab52f, type: 3}
-  explodeSE: {fileID: 8300000, guid: 6c724461621cce949b81171be0bec37d, type: 3}
+  warningSE: {fileID: 8300000, guid: a99f9b9154aeac64faaab24dd2e25a16, type: 3}
+  explodeSE: {fileID: 8300000, guid: af9145bd723cb2343babd20ff4e48f50, type: 3}
 --- !u!1 &7281222592947902008
 GameObject:
   m_ObjectHideFlags: 0

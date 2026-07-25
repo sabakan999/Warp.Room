@@ -7,6 +7,10 @@ public class Spring : MonoBehaviour
     public Sprite normalSprite;
     public Sprite pressedSprite;
 
+    [Header("SE")]
+    public AudioSource audioSource;
+    public AudioClip jumpSE;
+
     private SpriteRenderer sr;
 
     private bool isPressed = false;
@@ -15,6 +19,10 @@ public class Spring : MonoBehaviour
     {
         sr = GetComponent<SpriteRenderer>();
         sr.sprite = normalSprite;
+
+        // AudioSourceが設定されていなければ自動取得
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -23,16 +31,20 @@ public class Spring : MonoBehaviour
 
         foreach (ContactPoint2D contact in collision.contacts)
         {
-            // 🔽 上から踏んだ
+            // 上から踏んだ
             if (contact.normal.y < -0.5f)
             {
                 isPressed = true;
                 sr.sprite = pressedSprite;
+                if (audioSource != null && jumpSE != null)
+                        audioSource.PlayOneShot(jumpSE);
+
 
                 Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
                 if (rb != null)
                 {
-                    // 🔥 気持ちいいジャンプにする
+                    
+                    
                     rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
                     rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 }
@@ -48,7 +60,6 @@ public class Spring : MonoBehaviour
 
         if (isPressed)
         {
-            // 🔽 乗ってる間は潰れたまま
             sr.sprite = pressedSprite;
         }
     }
@@ -57,7 +68,6 @@ public class Spring : MonoBehaviour
     {
         if (!collision.gameObject.CompareTag("Player")) return;
 
-        // 🔽 離れたら戻る
         isPressed = false;
         sr.sprite = normalSprite;
     }

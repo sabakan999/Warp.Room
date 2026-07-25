@@ -152,8 +152,8 @@ MonoBehaviour:
   normalBGM: {fileID: 8300000, guid: 789e21934d2da4f4ea2952430cc6759f, type: 3}
   resultBGM: {fileID: 8300000, guid: e25640cee86569f489ba35544e614059, type: 3}
   endlessBGM: {fileID: 8300000, guid: 16e5df975a0d5c64dada2b4526cf4148, type: 3}
-  masterVolume: 1
-  normalVolume: 0.645
+  masterVolume: 0.81
+  normalVolume: 0.615
   resultVolume: 1
   endlessVolume: 1
   fadeTime: 0.5
@@ -1262,7 +1262,7 @@ MonoBehaviour:
   - {fileID: 4529084442889480405, guid: b5e5c3fb68e7ac746a8545f4f6969e17, type: 3}
   - {fileID: 4529084442889480405, guid: c2b92c35522a1a148b1f19293d64cf9a, type: 3}
   testRooms:
-  - {fileID: 4529084442889480405, guid: c2b92c35522a1a148b1f19293d64cf9a, type: 3}
+  - {fileID: 4529084442889480405, guid: de0d6abba5b790f4cb01b22d8883b2f3, type: 3}
   useTestRooms: 1
   currentLevel: 1
 --- !u!4 &632989893

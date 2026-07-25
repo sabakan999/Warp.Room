@@ -96,7 +96,14 @@ public class SniperShot : MonoBehaviour
         // ロックオン待機
         //====================
 
+       
+
         yield return new WaitForSeconds(shootDelay);
+
+         PlaySE(shotSE);
+
+        // 効果音遅延対策
+        yield return new WaitForSeconds(0.1f);
 
         //====================
         // 発射
@@ -117,8 +124,7 @@ public class SniperShot : MonoBehaviour
             }
         }
 
-        // 効果音
-        PlaySE(shotSE);
+        
 
         // カメラシェイク
         if (Camera.main != null)

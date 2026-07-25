@@ -151,4 +151,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b2ace1b047170843b5f2a7c8ee763d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurseItem
-  getSE: {fileID: 0}
+  getSE: {fileID: 8300000, guid: 3db168bd5ece63f429c5d59e2e337720, type: 3}

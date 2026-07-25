@@ -158,14 +158,16 @@ public class BeamCannon : MonoBehaviour
             }
         }
 
-        // 発射前の溜め
-        yield return new WaitForSeconds(flashLeadTime);
-
         if (warningSE != null)
          MultiSEManager.Instance.StopSE(warningSE);
         
         if (beamSE != null)
          MultiSEManager.Instance.PlaySE(beamSE);
+
+        // 発射前の溜め
+        yield return new WaitForSeconds(flashLeadTime);
+
+        
         // カメラシェイク
         if (Camera.main != null)
         {

@@ -5138,8 +5138,8 @@ MonoBehaviour:
   shakeDuration: 0.1
   shakeStrength: 0.1
   audioSource: {fileID: 3061359997309750098}
-  lockOnSE: {fileID: 8300000, guid: 54e2a2026730a794986eee8dcf79fa73, type: 3}
-  shotSE: {fileID: 8300000, guid: a7ee8d86550adbc44aaeb4bdf8fdc510, type: 3}
+  lockOnSE: {fileID: 8300000, guid: fb84bae411416da43ac4309bf2ca3396, type: 3}
+  shotSE: {fileID: 8300000, guid: 888677242ed785348bb4bb23aa15cfd0, type: 3}
 --- !u!1 &5240663502707201043
 GameObject:
   m_ObjectHideFlags: 0
