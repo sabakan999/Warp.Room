@@ -65,6 +65,9 @@ public class SniperShot : MonoBehaviour
 
     IEnumerator SniperRoutine()
     {
+
+        GameManager gm = FindFirstObjectByType<GameManager>();
+
         yield return new WaitForSeconds(startDelay);
 
         //====================
@@ -74,8 +77,10 @@ public class SniperShot : MonoBehaviour
         if (targetMark != null)
         {
             targetMark.SetActive(true);
-
+            if (gm != null && gm.isGameRunning)
+            {
             PlaySE(lockOnSE);
+            }
 
             if (targetSR != null)
             {
@@ -99,8 +104,10 @@ public class SniperShot : MonoBehaviour
        
 
         yield return new WaitForSeconds(shootDelay);
-
+        if (gm != null && gm.isGameRunning)
+        {
          PlaySE(shotSE);
+        }
 
         // 効果音遅延対策
         yield return new WaitForSeconds(0.1f);

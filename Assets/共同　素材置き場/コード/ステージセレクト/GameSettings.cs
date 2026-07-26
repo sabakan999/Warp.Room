@@ -7,4 +7,6 @@ public static class GameSettings
     public static bool isEndlessMode = false;
 
     public static string playerName = "";
+
+    
 }

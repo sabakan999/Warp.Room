@@ -17,10 +17,14 @@ public class DVDEnemy : MonoBehaviour
     [Header("SE")]
     public AudioSource audioSource;
     public AudioClip bounceSE;
+    
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        
+
 
         rb.linearVelocity = startDirection.normalized * speed;
 
@@ -35,7 +39,9 @@ public class DVDEnemy : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         ChangeSprite();
-        if (audioSource != null && bounceSE != null)
+
+        GameManager gm = FindFirstObjectByType<GameManager>();
+        if (audioSource != null && bounceSE != null && gm != null && gm.isGameRunning)
     {
         audioSource.PlayOneShot(bounceSE);
     }

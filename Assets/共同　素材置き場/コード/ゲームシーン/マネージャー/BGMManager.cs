@@ -23,6 +23,11 @@ public class BGMManager : MonoBehaviour
     // =========================
     // 🎵 通常 or 無限BGM
     // =========================
+
+    void Start()
+{
+    masterVolume = OptionSettings.BGMVolume;
+}
     public void PlayNormalBGM()
     {
         if (bgmSource == null) return;

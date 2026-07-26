@@ -348,6 +348,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5867214327204031514}
+  - component: {fileID: 8648453709945919746}
   - component: {fileID: 6969179590602778881}
   m_Layer: 0
   m_Name: Audio Source
@@ -371,6 +372,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3845834727141193997}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8648453709945919746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2261970490923099028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95300646033f5ca4789429ee1c5db6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OptionSE
 --- !u!82 &6969179590602778881
 AudioSource:
   m_ObjectHideFlags: 0

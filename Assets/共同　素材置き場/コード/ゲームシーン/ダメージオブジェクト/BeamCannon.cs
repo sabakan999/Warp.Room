@@ -92,6 +92,8 @@ public class BeamCannon : MonoBehaviour
         // 起動待ち
         yield return new WaitForSeconds(activateDelay);
 
+        GameManager gm = FindFirstObjectByType<GameManager>();
+
         // 砲台出現
         if (cannonVisual != null)
         {
@@ -109,7 +111,7 @@ public class BeamCannon : MonoBehaviour
         if (warningLine != null)
             warningLine.SetActive(true);
 
-        if (warningSE != null)
+        if (warningSE != null && gm != null && gm.isGameRunning)
              MultiSEManager.Instance.PlaySE(warningSE);
 
 
@@ -161,7 +163,7 @@ public class BeamCannon : MonoBehaviour
         if (warningSE != null)
          MultiSEManager.Instance.StopSE(warningSE);
         
-        if (beamSE != null)
+        if (beamSE != null && gm != null && gm.isGameRunning)
          MultiSEManager.Instance.PlaySE(beamSE);
 
         // 発射前の溜め

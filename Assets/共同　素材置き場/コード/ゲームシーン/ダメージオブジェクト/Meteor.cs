@@ -15,6 +15,10 @@ public class Meteor : MonoBehaviour
     [Header("寿命")]
     public float lifeTime = 5f;
 
+    [Header("SE")]
+    public AudioSource audioSource;
+    public AudioClip launchSE;
+
     [HideInInspector]
     public Transform target;
 
@@ -41,6 +45,22 @@ public class Meteor : MonoBehaviour
 }
     void Launch()
     {
+
+        MeteorSpawner spawner = GetComponentInParent<MeteorSpawner>();
+
+        GameManager gm = FindFirstObjectByType<GameManager>();
+
+        if (spawner != null &&
+            spawner.audioSource != null)
+        {
+            spawner.audioSource.Stop();
+        }
+
+        // 発射SE
+        if (audioSource != null && launchSE != null && gm != null && gm.isGameRunning)
+        {
+            audioSource.PlayOneShot(launchSE);
+        }
         if (target != null)
         {
             direction =

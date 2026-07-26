@@ -65,7 +65,7 @@ MonoBehaviour:
   respawn: 1
   respawnTime: 3
   startColor: {r: 1, g: 1, b: 1, a: 1}
-  dangerColor: {r: 1, g: 0, b: 0, a: 1}
+  dangerColor: {r: 1, g: 0, b: 0, a: 0.57254905}
   collideLayers:
     serializedVersion: 2
     m_Bits: 8

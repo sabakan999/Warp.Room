@@ -139,4 +139,9 @@ public class RoomManager : MonoBehaviour
         if (currentRoom != null)
             Destroy(currentRoom);
     }
+
+    public GameObject CurrentRoom
+{
+    get { return currentRoom; }
+}
 }

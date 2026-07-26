@@ -73,7 +73,8 @@ public class Turret : MonoBehaviour
     void Fire()
     {
 
-        if (fireSE != null)
+        GameManager gm = FindFirstObjectByType<GameManager>();
+        if (fireSE != null && gm != null && gm.isGameRunning)
         {
             MultiSEManager.Instance.PlaySE(fireSE);
         }

@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,8 +33,10 @@ public class MultiSEManager : MonoBehaviour
     {
         if (clip == null)
             return;
+            
 
         AudioSource source;
+
 
         // 初めて使うSEならAudioSource生成
         if (!sourceTable.TryGetValue(clip, out source))
@@ -50,6 +53,7 @@ public class MultiSEManager : MonoBehaviour
         // 同じSEが鳴っていたら重ねない
        
         source.clip = clip;
+        source.volume = OptionSettings.SEVolume;
         source.Play();
     }
 
@@ -78,16 +82,6 @@ public class MultiSEManager : MonoBehaviour
         }
     }
 
-    //=========================
-    // 音量変更
-    //=========================
-    public void SetVolume(float value)
-    {
-        volume = Mathf.Clamp01(value);
-
-        foreach (AudioSource source in sourceTable.Values)
-        {
-            source.volume = volume;
-        }
-    }
+    
+    
 }

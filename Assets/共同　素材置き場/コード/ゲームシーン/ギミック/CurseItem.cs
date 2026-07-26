@@ -4,6 +4,7 @@ public class CurseItem : MonoBehaviour
 {
     [Header("取得時SE（任意）")]
     public AudioClip getSE;
+    public AudioSource audioSource;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -19,12 +20,21 @@ public class CurseItem : MonoBehaviour
         health.AddCurse();
 
         // SE
-        if (getSE != null)
-        {
-            SEManager.Instance.PlaySE(getSE);
-        }
+       if (getSE != null && audioSource != null)
+{
+    audioSource.PlayOneShot(getSE);
 
-        // アイテム消滅
-        Destroy(gameObject);
+    GetComponent<Collider2D>().enabled = false;
+
+    SpriteRenderer sr = GetComponent<SpriteRenderer>();
+    if (sr != null)
+        sr.enabled = false;
+
+    Destroy(gameObject, getSE.length);
+}
+else
+{
+    Destroy(gameObject);
+}
     }
 }

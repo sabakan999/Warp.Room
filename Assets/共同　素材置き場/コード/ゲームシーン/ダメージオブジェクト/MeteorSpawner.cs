@@ -11,6 +11,10 @@ public class MeteorSpawner : MonoBehaviour
     [Header("生成範囲")]
     public Vector2 areaSize = new Vector2(20, 10);
 
+    [Header("SE")]
+    public AudioSource audioSource;
+    public AudioClip spawnSE;
+
     
 
     void Start()
@@ -30,6 +34,14 @@ public class MeteorSpawner : MonoBehaviour
 
     void SpawnMeteor()
     {
+        GameManager gm = FindFirstObjectByType<GameManager>();
+        
+
+        if (audioSource != null && spawnSE != null && gm != null && gm.isGameRunning)
+        {
+            
+            audioSource.PlayOneShot(spawnSE);
+        }
         Vector3 pos = transform.position;
 
         pos.x += Random.Range(-areaSize.x * 0.5f, areaSize.x * 0.5f);

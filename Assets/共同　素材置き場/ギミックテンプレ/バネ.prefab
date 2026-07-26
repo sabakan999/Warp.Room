@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5516325578102563326}
   - component: {fileID: 7661804521939885499}
+  - component: {fileID: 5918011927251402300}
   m_Layer: 0
   m_Name: Audio Source
   m_TagString: Untagged
@@ -129,6 +130,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5918011927251402300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4477733981567098338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95300646033f5ca4789429ee1c5db6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OptionSE
 --- !u!1 &4990257159791695718
 GameObject:
   m_ObjectHideFlags: 0

@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
     public bool hasBarrier = false;
 
     private int currentCount = 0;
-    private bool isGameRunning = false;
+    public bool isGameRunning = false;
     private bool isClearing = false;
 
     // 🔥 無限用カウント
@@ -281,4 +281,6 @@ public class GameManager : MonoBehaviour
         if (audioSource == null || clip == null) return;
         audioSource.PlayOneShot(clip);
     }
+
+    
 }

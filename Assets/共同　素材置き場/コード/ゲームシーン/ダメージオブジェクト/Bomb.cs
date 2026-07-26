@@ -54,6 +54,8 @@ public class Bomb : MonoBehaviour
     {
         timer = explodeTime;
 
+       
+
         if (bombSprite == null)
             bombSprite = GetComponent<SpriteRenderer>();
 
@@ -79,6 +81,8 @@ public class Bomb : MonoBehaviour
                 Mathf.Max(timer, 0f).ToString("F1");
         }
 
+        GameManager gm = FindFirstObjectByType<GameManager>();
+
         // 残り1秒
         if (timer <= 1f && !warningStarted)
         {
@@ -87,7 +91,9 @@ public class Bomb : MonoBehaviour
             if (bombSprite != null && warningSprite != null)
                 bombSprite.sprite = warningSprite;
 
-            if (warningSE != null)
+        
+        
+            if (warningSE != null && gm != null && gm.isGameRunning)
         {
             MultiSEManager.Instance.PlaySE(warningSE);
         }
@@ -99,7 +105,8 @@ public class Bomb : MonoBehaviour
          { 
              MultiSEManager.Instance.StopSE(warningSE);
                 
-                if (explodeSE != null)
+            
+                if (explodeSE != null && gm != null && gm.isGameRunning)
             {
                 
             MultiSEManager.Instance.PlaySE(explodeSE);
