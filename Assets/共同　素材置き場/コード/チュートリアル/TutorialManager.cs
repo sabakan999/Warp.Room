@@ -12,9 +12,12 @@ public class TutorialManager : MonoBehaviour
     [Header("プレイヤー")]
     public PlayerController player;
 
+    [Header("チュートリアルシステム")]
+    public TutorialWarpManager tutorialWarpManager;
+
     [Header("チュートリアル用オブジェクト")]
     public GameObject moveTarget;
-    public GameObject JumpTarget;
+    public GameObject jumpTarget;
 
     public enum TutorialStep
     {
@@ -23,6 +26,7 @@ public class TutorialManager : MonoBehaviour
         Jump,
         Jumpplay,
         Timer,
+        Timerplay,
         End
     }
 
@@ -34,8 +38,9 @@ public class TutorialManager : MonoBehaviour
 
         if (moveTarget != null)
             moveTarget.SetActive(false);
-         if (JumpTarget != null)
-            JumpTarget.SetActive(false);
+
+        if (jumpTarget != null)
+            jumpTarget.SetActive(false);
 
         StartStep(currentStep);
     }
@@ -65,19 +70,10 @@ public class TutorialManager : MonoBehaviour
 
         StartStep(currentStep);
     }
-    public void ReportJump()
+
+    public void SetPlayer(PlayerController newPlayer)
     {
-        if (currentStep != TutorialStep.Jumpplay)
-            return;
-
-        missionUI.Hide();
-
-        if (JumpTarget != null)
-            JumpTarget.SetActive(false);
-
-        SetPlayerControl(false);
-
-        NextStep();
+        player = newPlayer;
     }
 
     void SetPlayerControl(bool enable)
@@ -89,8 +85,6 @@ public class TutorialManager : MonoBehaviour
     void StartStep(TutorialStep step)
     {
         Debug.Log("現在のSTEP : " + step);
-
-        Debug.Log(moveTarget);
 
         switch (step)
         {
@@ -104,7 +98,7 @@ public class TutorialManager : MonoBehaviour
                     new string[]
                     {
                         "ようこそ！",
-                        "このゲームの遊び方を説明するよ！",
+                        "初めに操作方法を説明するよ！",
                         "まずは移動から始めよう！"
                     }
                 );
@@ -118,7 +112,7 @@ public class TutorialManager : MonoBehaviour
                 if (moveTarget != null)
                     moveTarget.SetActive(true);
 
-                missionUI.Show("光る玉を取りに行こう！");
+                missionUI.Show("←→入力で移動してフラッグをゲットしよう！");
 
                 break;
 
@@ -135,22 +129,19 @@ public class TutorialManager : MonoBehaviour
                         "移動は完璧！",
                         "次はジャンプしてみよう！"
                     }
-
-                    
                 );
 
                 break;
 
             case TutorialStep.Jumpplay:
 
-                 SetPlayerControl(true);
+                SetPlayerControl(true);
 
-                if (JumpTarget != null)
-                    JumpTarget.SetActive(true);
+                if (jumpTarget != null)
+                    jumpTarget.SetActive(true);
 
-                missionUI.Show("光る玉を取りに行こう！");
+                missionUI.Show("スペースキーでジャンプしてフラッグをゲットしよう！");
 
-                
                 break;
 
             case TutorialStep.Timer:
@@ -159,25 +150,51 @@ public class TutorialManager : MonoBehaviour
 
                 dialogueUI.StartDialogue(
                     guideFace,
-                        "ガイド",
-                        new string[]
-                        {
-                            "ディモールト！",
-                            "素晴らしいジャンプ！",
-                            "次はゲームのルールについて説明するよ。"
-                        }
+                    "ガイド",
+                    new string[]
+                    {
+                        "ディモールト！",
+                        "素晴らしいジャンプ！",
+                        "次はゲームのルールについて説明するよ。",
+                        "このゲームは次々とWarpする部屋を",
+                        "3秒間生き残るゲームなんだ！",
+                        "実際にWarpを体験してみよう！"
+                    }
                 );
 
                 break;
 
+            case TutorialStep.Timerplay:
+
+                SetPlayerControl(true);
+
+                missionUI.Show("3秒間生き残ろう！");
+
+                tutorialWarpManager.StartWarpTimer();
+
+                break;
+
             case TutorialStep.End:
+
+                SetPlayerControl(false);
+
+                dialogueUI.StartDialogue(
+                    guideFace,
+                    "ガイド",
+                    new string[]
+                    {
+                        "今のがWarpだよ！",
+                        "3秒経つと部屋が切り替わるんだ。",
+                        "次は敵について説明するよ！"
+                    }
+                );
 
                 break;
         }
     }
 
     //==============================
-    // 移動ミッション達成
+    // 移動達成
     //==============================
     public void ReportMove()
     {
@@ -188,6 +205,36 @@ public class TutorialManager : MonoBehaviour
 
         if (moveTarget != null)
             moveTarget.SetActive(false);
+
+        SetPlayerControl(false);
+
+        NextStep();
+    }
+
+    //==============================
+    // ジャンプ達成
+    //==============================
+    public void ReportJump()
+    {
+        if (currentStep != TutorialStep.Jumpplay)
+            return;
+
+        missionUI.Hide();
+
+        if (jumpTarget != null)
+            jumpTarget.SetActive(false);
+
+        SetPlayerControl(false);
+
+        NextStep();
+    }
+
+    //==============================
+    // Warp終了通知
+    //==============================
+    public void ReportWarpFinished()
+    {
+        missionUI.Hide();
 
         SetPlayerControl(false);
 
