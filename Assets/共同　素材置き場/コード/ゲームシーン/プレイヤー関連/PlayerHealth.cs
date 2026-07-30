@@ -97,6 +97,12 @@ void Start()
         if (hasBarrier)
         {
             hasBarrier = false;
+            TutorialManager tutorial = FindFirstObjectByType<TutorialManager>();
+
+            if (tutorial != null)
+            {
+                tutorial.ReportBarrierUsed();
+            }
 
             if (gameManager != null)
                 gameManager.hasBarrier = false;
@@ -120,7 +126,7 @@ void Start()
     // =========================
     // 💀 死亡
     // =========================
-    void Die()
+  void Die()
 {
     isDead = true;
 
@@ -132,6 +138,14 @@ void Start()
     Rigidbody2D rb = GetComponent<Rigidbody2D>();
     rb.linearVelocity = Vector2.zero;
     rb.simulated = false;
+
+    TutorialManager tutorial = FindFirstObjectByType<TutorialManager>();
+
+    if (tutorial != null)
+    {
+        tutorial.ReportPlayerDead(gameObject);
+        return;
+    }
 
     gameManager.GameOver();
 }

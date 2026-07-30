@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class TutorialManager : MonoBehaviour
@@ -18,6 +19,15 @@ public class TutorialManager : MonoBehaviour
     [Header("チュートリアル用オブジェクト")]
     public GameObject moveTarget;
     public GameObject jumpTarget;
+    public TutorialEnemySpawner enemySpawner;
+    public TutorialBarrierSpawner barrierSpawner;
+    public TutorialCurseSpawner CurseSpawner;
+    public TutorialEndingManager endingManager;
+    
+    [Header("死亡演出")]
+    public AudioSource deathSESource;
+    public AudioClip deathSE;
+    public GameObject deathEffectPrefab;
 
     public enum TutorialStep
     {
@@ -27,7 +37,15 @@ public class TutorialManager : MonoBehaviour
         Jumpplay,
         Timer,
         Timerplay,
-        End
+        Enemyexplain,
+        Enemyplay,
+        Enemyresult,
+        respawn,
+        barrier,
+        barrierplay,
+        curse,      
+        End,
+        Ending
     }
 
     public TutorialStep currentStep = TutorialStep.Intro;
@@ -155,9 +173,9 @@ public class TutorialManager : MonoBehaviour
                     {
                         "ディモールト！",
                         "素晴らしいジャンプ！",
-                        "次はゲームのルールについて説明するよ。",
-                        "このゲームは次々とWarpする部屋を",
-                        "3秒間生き残るゲームなんだ！",
+                        "次はWarpRoomのルールについて説明するよ。",
+                        "このゲームは次々とWarpする不思議な部屋を",
+                        "3秒間生き残ればクリアだよ！",
                         "実際にWarpを体験してみよう！"
                     }
                 );
@@ -174,7 +192,7 @@ public class TutorialManager : MonoBehaviour
 
                 break;
 
-            case TutorialStep.End:
+            case TutorialStep.Enemyexplain:
 
                 SetPlayerControl(false);
 
@@ -185,11 +203,128 @@ public class TutorialManager : MonoBehaviour
                     {
                         "今のがWarpだよ！",
                         "3秒経つと部屋が切り替わるんだ。",
-                        "次は敵について説明するよ！"
+                        "次は敵について説明するよ！",
+                        "今から出てくる赤いヤツに触ってみよう！"
                     }
                 );
 
                 break;
+
+            case TutorialStep.Enemyplay:
+
+                SetPlayerControl(true);
+                enemySpawner.SpawnEnemy();
+
+                missionUI.Show("触ってみると...？");
+                break;
+
+            case TutorialStep.Enemyresult:
+
+                SetPlayerControl(false);
+
+                dialogueUI.StartDialogue(
+                    guideFace,
+                    "ガイド",
+                    new string[]
+                    {
+                        "こんな風に赤いヤツに触れると",
+                        "やられちゃうから気を付けてね！",
+                        "さてと、本編ではできないけど",
+                        "今回だけ特別に蘇生させよう。",
+                        "えーい！"
+                    }
+                    
+                );
+               
+                break;
+            case TutorialStep.respawn:
+
+                SetPlayerControl(false);
+                tutorialWarpManager.StartWarpTimer();
+                missionUI.Show("蘇生中...");
+                break;
+             case TutorialStep.barrier:
+
+                dialogueUI.StartDialogue(
+                    guideFace,
+                    "ガイド",
+                    new string[]
+                    {
+                        "これでよし。",
+                        "最後に少しお得な情報を",
+                        "教えちゃうね！",
+                        "バリアというアイテムを取得すると",
+                        "一度だけ身を守ってくれるよ！",
+                        "やってみよう！",
+                        
+                    }
+                                         );
+                    
+                    break;
+                case TutorialStep.barrierplay:
+                        SetPlayerControl(true);
+                        barrierSpawner.SpawnBarrier();
+                        enemySpawner.SpawnEnemy();
+
+                        missionUI.Show("バリアで防いでみよう");
+                    break;
+                
+                case TutorialStep.curse:
+                        enemySpawner.DestroyEnemy();
+                        CurseSpawner.SpawnCurse();
+                        CurseSpawner.SpawnAngel();
+                        SetPlayerControl(true);
+                         
+
+                        dialogueUI.StartDialogue(
+                            guideFace,
+                            "ガイド",
+                            new string[]
+                            {
+                                "サイコー！",
+                                "今回はやられずに済んだね！",
+                                "アイテムはプレイヤーを有利にしてくれる",
+                                "効果がほとんどだからドンドンゲットしよう！",
+                                "ただし！",
+                                "呪いどくろというアイテムはプレイヤーを",
+                                "不利にしてしまうので注意！",
+                                "ゲットすると呪い状態になってしまい",
+                                "呪い状態のままワープするとやられてしまう！",
+                                "エンジェルをゲットすれば解呪できるので",
+                                "次のワープまでに急いでエンジェルへ向かおう。"
+                                
+                            }
+                                        );
+                        break;
+
+                case TutorialStep.End:
+                 SetPlayerControl(false);
+
+                    dialogueUI.StartDialogue(
+                        guideFace,
+                        "ガイド",
+                        new string[]
+                        {
+                            "これでチュートリアルはばっちり！",
+                            "きっと本番では新たな仕掛けが",
+                            "待ち受けているけど君なら大丈夫！",
+                            "何度もリトライしてパターンを覚えよう！",
+                            "Have a nice Warp!!"
+                            
+                            
+                        }
+                                            );
+                        
+                        break;
+
+                case TutorialStep.Ending:
+                 SetPlayerControl(false);
+                 endingManager.PlayEnding();
+
+                    
+                        
+                        break;
+                
         }
     }
 
@@ -240,4 +375,90 @@ public class TutorialManager : MonoBehaviour
 
         NextStep();
     }
-}
+    
+    //==============================
+    // 死亡処理
+    //==============================
+
+   public void ReportPlayerDead(GameObject player)
+    {
+        if (currentStep != TutorialStep.Enemyplay)
+            return;
+
+        StartCoroutine(PlayerDeadRoutine(player));
+    }
+
+    IEnumerator PlayerDeadRoutine(GameObject deadPlayer)
+    {
+        // プレイヤー操作停止
+        SetPlayerControl(false);
+
+        // ミッション非表示
+        missionUI.Hide();
+
+        // プレイヤーを見えなくする
+        if (deadPlayer != null)
+        {
+            foreach (SpriteRenderer sr in deadPlayer.GetComponentsInChildren<SpriteRenderer>())
+            {
+                sr.enabled = false;
+            }
+
+            // 当たり判定も消す
+            foreach (Collider2D col in deadPlayer.GetComponentsInChildren<Collider2D>())
+            {
+                col.enabled = false;
+            }
+        }
+
+        // 死亡SE
+        if (deathSESource != null && deathSE != null)
+        {
+            deathSESource.volume = OptionSettings.SEVolume;
+            deathSESource.PlayOneShot(deathSE);
+        }
+
+        // 死亡エフェクト
+        if (deathEffectPrefab != null && deadPlayer != null)
+        {
+            Instantiate(
+                deathEffectPrefab,
+                deadPlayer.transform.position,
+                Quaternion.identity
+            );
+        }
+
+        // 演出待ち
+        yield return new WaitForSeconds(0.6f);
+
+        // プレイヤー削除
+        if (deadPlayer != null)
+            Destroy(deadPlayer);
+
+        // 敵削除
+        if (enemySpawner != null)
+            enemySpawner.DestroyEnemy();
+
+        // 次の会話へ
+        NextStep();
+    }
+
+    public void ReportBarrierUsed()
+    {
+        if (currentStep != TutorialStep.barrierplay)
+            return;
+
+        missionUI.Hide();
+
+        if (barrierSpawner != null)
+            barrierSpawner.DestroyBarrier();
+
+        if (enemySpawner != null)
+            enemySpawner.DestroyEnemy();
+
+        SetPlayerControl(false);
+
+        NextStep();
+    }
+        }
+    

@@ -101,6 +101,8 @@ public AudioClip warpEndSE;
         currentRoom = Instantiate(roomPrefab, roomSpawn.position, Quaternion.identity);
 
         currentPlayer = Instantiate(playerPrefab, playerSpawn.position, Quaternion.identity);
+        PlayerController player = currentPlayer.GetComponent<PlayerController>();
+        tutorialManager.SetPlayer(player);
 
         yield return new WaitForSeconds(0.2f);
 if (warpEndSE != null)
