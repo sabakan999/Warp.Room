@@ -29,6 +29,9 @@ EditorBuildSettings:
   - enabled: 1
     path: "Assets/\u30B7\u30FC\u30F3/\u30E2\u30FC\u30C9\u30BB\u30EC\u30AF\u30C8.unity"
     guid: 2258952384e57f34c88909ee054e3f63
+  - enabled: 1
+    path: "Assets/\u30B7\u30FC\u30F3/\u30C1\u30E5\u30FC\u30C8\u30EA\u30A2\u30EB.unity"
+    guid: 7163b88e392ccdf4384413ddea7f8848
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

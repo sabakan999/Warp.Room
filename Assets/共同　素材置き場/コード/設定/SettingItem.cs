@@ -9,13 +9,13 @@ public class SettingItem : MonoBehaviour
     public virtual void OnSelected()
     {
         if (label != null)
-            label.color = Color.yellow;
+            label.color = new Color(1.0f, 0.55f, 0.0f);   // オレンジ
     }
 
     public virtual void OnDeselected()
     {
         if (label != null)
-            label.color = Color.white;
+            label.color = Color.black;   // 黒
     }
 
     public virtual void OnLeft() { }

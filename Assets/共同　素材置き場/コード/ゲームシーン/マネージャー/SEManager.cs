@@ -1,18 +1,14 @@
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class SEManager : MonoBehaviour
 {
     public static SEManager Instance;
 
-    [Header("音量")]
-    [Range(0f, 1f)]
-    public float masterVolume = 1f;
-
-    private AudioSource audioSource;
-
+    [Header("SE再生用")]
+    [SerializeField] private AudioSource audioSource;
     void Awake()
     {
-        // シングルトン化
         if (Instance == null)
         {
             Instance = this;
@@ -24,28 +20,22 @@ public class SEManager : MonoBehaviour
             return;
         }
 
-        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
     }
 
-    // 🔊 通常再生
+    // 通常再生
     public void PlaySE(AudioClip clip)
     {
         if (clip == null) return;
 
-        audioSource.PlayOneShot(clip, masterVolume);
+        audioSource.PlayOneShot(clip);
     }
 
-    // 🔊 位置付き再生（3Dっぽくしたい時用）
+    // 位置付き再生
     public void PlaySEAtPosition(AudioClip clip, Vector3 pos)
     {
         if (clip == null) return;
 
-        AudioSource.PlayClipAtPoint(clip, pos, masterVolume);
-    }
-
-    // 🔊 音量変更
-    public void SetVolume(float volume)
-    {
-        masterVolume = Mathf.Clamp01(volume);
+        AudioSource.PlayClipAtPoint(clip, pos, OptionSettings.SEVolume);
     }
 }

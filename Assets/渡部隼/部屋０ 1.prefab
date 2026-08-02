@@ -329,7 +329,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Room
   playerSpawnPoint: {fileID: 2965769524850844955}
-  effects: []
 --- !u!1 &5717798884832491255
 GameObject:
   m_ObjectHideFlags: 0
@@ -738,11 +737,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5860195381075546878, guid: 7f21c02b4ce6f584b9c9f953a3d6d66e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.45
+      value: 0.44
       objectReference: {fileID: 0}
     - target: {fileID: 5860195381075546878, guid: 7f21c02b4ce6f584b9c9f953a3d6d66e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.9
+      value: -2.86
       objectReference: {fileID: 0}
     - target: {fileID: 5860195381075546878, guid: 7f21c02b4ce6f584b9c9f953a3d6d66e, type: 3}
       propertyPath: m_LocalPosition.z

@@ -23,10 +23,11 @@ public class TutorialManager : MonoBehaviour
     public TutorialBarrierSpawner barrierSpawner;
     public TutorialCurseSpawner CurseSpawner;
     public TutorialEndingManager endingManager;
+    public TutorialObjectUI tutorialArrow;
     
     [Header("死亡演出")]
     public AudioSource deathSESource;
-    public AudioClip deathSE;
+    
     public GameObject deathEffectPrefab;
 
     public enum TutorialStep
@@ -53,6 +54,7 @@ public class TutorialManager : MonoBehaviour
     void Start()
     {
         missionUI.Hide();
+        tutorialArrow.Hide();
 
         if (moveTarget != null)
             moveTarget.SetActive(false);
@@ -185,6 +187,7 @@ public class TutorialManager : MonoBehaviour
             case TutorialStep.Timerplay:
 
                 SetPlayerControl(true);
+                tutorialArrow.Show();
 
                 missionUI.Show("3秒間生き残ろう！");
 
@@ -195,6 +198,7 @@ public class TutorialManager : MonoBehaviour
             case TutorialStep.Enemyexplain:
 
                 SetPlayerControl(false);
+                tutorialArrow.Hide();
 
                 dialogueUI.StartDialogue(
                     guideFace,
@@ -411,12 +415,7 @@ public class TutorialManager : MonoBehaviour
             }
         }
 
-        // 死亡SE
-        if (deathSESource != null && deathSE != null)
-        {
-            deathSESource.volume = OptionSettings.SEVolume;
-            deathSESource.PlayOneShot(deathSE);
-        }
+       
 
         // 死亡エフェクト
         if (deathEffectPrefab != null && deadPlayer != null)

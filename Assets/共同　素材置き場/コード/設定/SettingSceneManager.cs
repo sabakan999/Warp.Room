@@ -6,6 +6,13 @@ public class SettingSceneManager : MonoBehaviour
     public SettingItem[] items;
 
     private int currentIndex = 0;
+    
+
+    [Header("SE")]
+    public AudioSource audioSource;
+    public AudioClip moveSE;
+    public AudioClip saideSE;
+    public AudioClip decideSE;
 
     void Start()
     {
@@ -34,18 +41,21 @@ public class SettingSceneManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             items[currentIndex].OnLeft();
+            PlaySE(saideSE);
         }
 
         // 右
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             items[currentIndex].OnRight();
+            PlaySE(saideSE);
         }
 
         // 決定
         if (Input.GetKeyDown(KeyCode.Space))
         {
             items[currentIndex].OnSubmit();
+            PlaySE(decideSE);
         }
     }
 
@@ -62,5 +72,13 @@ public class SettingSceneManager : MonoBehaviour
             currentIndex = 0;
 
         items[currentIndex].OnSelected();
+        PlaySE(moveSE);
+    }
+    void PlaySE(AudioClip clip)
+    {
+        if (audioSource == null || clip == null)
+            return;
+
+        audioSource.PlayOneShot(clip);
     }
 }

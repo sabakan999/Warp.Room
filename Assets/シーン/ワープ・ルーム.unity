@@ -242,7 +242,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uFF12\u4F4D\u3000\u30D0\u30AB\u3000\uFF12\uFF18"
+  m_Text: 
 --- !u!222 &210269001
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1655,8 +1655,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6.2862, y: -109.228455}
-  m_SizeDelta: {x: 708.8599, y: 73.0935}
+  m_AnchoredPosition: {x: 6.2862, y: -111.89}
+  m_SizeDelta: {x: 708.8599, y: 78.421}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &730414880
 MonoBehaviour:
@@ -1685,13 +1685,13 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 50
-    m_Alignment: 0
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 0.9
-  m_Text: "4\u4F4D\u3000\u30D0\u30AB\u3000\uFF12\uFF18\n6\n"
+    m_LineSpacing: 1
+  m_Text: 
 --- !u!222 &730414881
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3522,6 +3522,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1523201093}
   - component: {fileID: 1523201092}
+  - component: {fileID: 1523201095}
+  - component: {fileID: 1523201094}
   m_Layer: 0
   m_Name: "SE\u30DE\u30CD\u30FC\u30B8\u30E3"
   m_TagString: Untagged
@@ -3541,7 +3543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc0fe2b813207fb4185e180c3ac6f434, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SEManager
-  masterVolume: 0.421
+  audioSource: {fileID: 1523201095}
 --- !u!4 &1523201093
 Transform:
   m_ObjectHideFlags: 0
@@ -3557,6 +3559,115 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1523201094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523201091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95300646033f5ca4789429ee1c5db6e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OptionSE
+--- !u!82 &1523201095
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523201091}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1558946714
 GameObject:
   m_ObjectHideFlags: 0
@@ -4144,7 +4255,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uFF13\u4F4D\u3000\u30D0\u30AB\u3000\uFF12\uFF18"
+  m_Text: 
 --- !u!222 &1704782292
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4223,7 +4334,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uFF11\u4F4D\u3000\u30D0\u30AB\u3000\uFF12\uFF18"
+  m_Text: 
 --- !u!222 &1768744577
 CanvasRenderer:
   m_ObjectHideFlags: 0

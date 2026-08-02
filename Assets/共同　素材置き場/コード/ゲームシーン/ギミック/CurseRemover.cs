@@ -6,6 +6,8 @@ public class CurseRemover : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip removeSE;
 
+    [SerializeField] private GameObject pickupEffectPrefab;
+
     void Start()
     {
         if (audioSource == null)
@@ -32,6 +34,16 @@ public class CurseRemover : MonoBehaviour
         // 効果音
         if (audioSource != null && removeSE != null)
             audioSource.PlayOneShot(removeSE);
+
+        //演出
+        if (pickupEffectPrefab != null)
+        {
+            Instantiate(
+                pickupEffectPrefab,
+                transform.position,
+                Quaternion.identity
+            );
+        }
 
         Debug.Log("呪い解除");
 

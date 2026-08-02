@@ -436,7 +436,7 @@ MonoBehaviour:
   isPulled: 0
   pulledControlPower: 1
   audioSource: {fileID: 1111564222753234807}
-  jumpSE: {fileID: 8300000, guid: 53e9831b1542a4c41adb84f49651ed02, type: 3}
+  jumpSE: {fileID: 8300000, guid: 7330870772073764abf0d06b91fb786c, type: 3}
 --- !u!114 &8657955575403704075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -452,9 +452,9 @@ MonoBehaviour:
   barrierPrefab: {fileID: 3559161471569584393, guid: 1c00214aaf565bc4388e38bcd894d42a, type: 3}
   invincibleTime: 0.5
   blinkInterval: 0.1
-  damageSE: {fileID: 8300000, guid: 23625e8a3dbd05243b77addbe0d4ffc3, type: 3}
-  barrierBreakSE: {fileID: 8300000, guid: e8d40de7f6c6d4e40becda6f0bc7b318, type: 3}
-  barrierGetSE: {fileID: 8300000, guid: fb8e6e53be60cef49a263ef57f4121ae, type: 3}
+  damageSE: {fileID: 8300000, guid: d13592964f81e9d40a7c7c9bf133ebd2, type: 3}
+  barrierBreakSE: {fileID: 8300000, guid: 80f1916b416cc164394c2d0cfd06d929, type: 3}
+  barrierGetSE: {fileID: 8300000, guid: 7ea10fceffa93c44a958afea87af6e6f, type: 3}
   hasCurse: 0
   curseEffect: {fileID: 8052906676701906341}
 --- !u!61 &2764431948611483441

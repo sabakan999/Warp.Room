@@ -17,9 +17,9 @@ public class ResultUI : MonoBehaviour
     public Text endlessCountText;
 
     [Header("ランキング（1～3位）")]
-   public Text firstText;
-public Text secondText;
-public Text thirdText;
+    public Text firstText;
+    public Text secondText;
+    public Text thirdText;
 
 
     [Header("4～10位")]
@@ -113,12 +113,51 @@ public Text thirdText;
             // ランキング登録
             if (RankingManager.Instance != null)
             {
-                RankingManager.Instance.AddScore(
-                    GameSettings.playerName,
-                    endlessScore
-                );
+                // 初回プレイ
+                if (!RetryData.isRetry)
+                {
+                    RankingAPI.Instance.PostScore(
+                        GameSettings.playerName,
+                        endlessScore,
+                        () =>
+                        {
+                            RankingAPI.Instance.GetRanking(() =>
+                            {
+                                RefreshRanking();
+                            });
+                        });
+                }
+                // リトライ中
+                else
+                {
+                    // 前回以下なら登録しない
+                    if (endlessScore <= RetryData.bestScore)
+                    {
+                        RankingAPI.Instance.GetRanking(() =>
+                        {
+                            RefreshRanking();
+                        });
+                    }
+                    // 更新した
+                    else
+                    {
+                        // ←ここで古い記録を削除
+                        // RankingAPI.Instance.DeleteScore(...)
 
-                RefreshRanking();
+                        RankingAPI.Instance.PostScore(
+                            RetryData.playerName,
+                            endlessScore,
+                            () =>
+                            {
+                                RetryData.bestScore = endlessScore;
+
+                                RankingAPI.Instance.GetRanking(() =>
+                                {
+                                    RefreshRanking();
+                                });
+                            });
+                    }
+                }
             }
 
             UpdateEndlessSelection(true);
@@ -254,13 +293,19 @@ public Text thirdText;
         else
         {
             if (selectedIndex == 0)
-            {
+            {   
+                RetryData.isRetry = true;
+                RetryData.playerName = GameSettings.playerName;
+                RetryData.bestScore = endlessScore;
                 SceneManager.LoadScene(
                     SceneManager.GetActiveScene().name
                 );
             }
             else
             {
+                RetryData.isRetry = false;
+                RetryData.playerName = "";
+                RetryData.bestScore = 0;
                 SceneManager.LoadScene("モードセレクト");
             }
         }
@@ -270,11 +315,10 @@ public Text thirdText;
     {
         
 
-        if (RankingManager.Instance == null)
-            return;
+        if (RankingAPI.Instance == null)
+        return;
 
-        var list = RankingManager.Instance.rankings;
-
+        var list = RankingAPI.Instance.rankings;
         //------------------------
         // 1位
         //------------------------

@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7118200a4f57c1f43a95bd59c1e1882c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BarrierItem
+  pickupEffectPrefab: {fileID: 7679706471425994730, guid: 12de126ac3b0b0d458294af374a20ca9, type: 3}
 --- !u!82 &4279590019015887583
 AudioSource:
   m_ObjectHideFlags: 0

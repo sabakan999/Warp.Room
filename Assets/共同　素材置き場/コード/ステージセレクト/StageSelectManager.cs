@@ -14,14 +14,13 @@ public class StageSelectManager : MonoBehaviour
     public float blinkSpeed = 2f;
     public float selectBlinkSpeed = 12f;
 
-    [Header("戻る設定")]
-    public string modeSelectSceneName = "モードセレクト";
+   
 
     [Header("SE")]
     public AudioSource audioSource;
     public AudioClip moveSE;
     public AudioClip decideSE;
-    public AudioClip backSE;
+    
 
     private int x = 0;
     private int y = 0;
@@ -64,7 +63,7 @@ public class StageSelectManager : MonoBehaviour
         {
             HandleMove();
             HandleSubmit();
-            HandleBack();
+            
         }
 
         UpdateCursorMove();
@@ -169,14 +168,7 @@ public class StageSelectManager : MonoBehaviour
         }
     }
 
-    void HandleBack()
-    {
-        if (Input.GetKeyDown(KeyCode.Backspace) ||
-            Input.GetKeyDown(KeyCode.JoystickButton1))
-        {
-            StartCoroutine(ReturnToModeSelectCoroutine());
-        }
-    }
+   
 
     IEnumerator SelectStageCoroutine()
     {
@@ -197,18 +189,7 @@ public class StageSelectManager : MonoBehaviour
         SceneManager.LoadScene("演出");
     }
 
-    IEnumerator ReturnToModeSelectCoroutine()
-    {
-        isTransitioning = true;
-
-        PlaySE(backSE);
-
-        float wait = (backSE != null) ? backSE.length : 0.2f;
-
-        yield return new WaitForSeconds(wait);
-
-        SceneManager.LoadScene(modeSelectSceneName);
-    }
+   
 
     // =========================
     // 🔊 SE再生

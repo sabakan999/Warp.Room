@@ -31,6 +31,10 @@ public class RankingSceneManager : MonoBehaviour
     public AudioClip scrollSE;
     public AudioClip topSE;
 
+    [Header("BGM")]
+    public AudioSource bgmSource;
+    public AudioClip rankingBGM;
+
 public float introDistance = 3000f;
 public float introTime = 2.5f;
 
@@ -190,6 +194,13 @@ DOTween.To(
             .OnComplete(()=>
             {
                 topPanelRect.DOScale(1f,0.1f);
+
+                if (bgmSource != null && rankingBGM != null)
+                {
+                    bgmSource.clip = rankingBGM;
+                    bgmSource.loop = true;
+                    bgmSource.Play();
+                }
             });
     }
 

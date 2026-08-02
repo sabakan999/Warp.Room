@@ -154,6 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CurseRemover
   audioSource: {fileID: 996650862478749125}
   removeSE: {fileID: 8300000, guid: daec23d2bbdfed04eaf8b6c347942d48, type: 3}
+  pickupEffectPrefab: {fileID: 7679706471425994730, guid: 12de126ac3b0b0d458294af374a20ca9, type: 3}
 --- !u!1 &6973877291519165401
 GameObject:
   m_ObjectHideFlags: 0

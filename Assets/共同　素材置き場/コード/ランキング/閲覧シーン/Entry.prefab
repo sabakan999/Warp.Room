@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -21, y: -5.2369}
   m_SizeDelta: {x: 248.2581, y: 89.3048}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7564128733943081729
@@ -135,7 +135,7 @@ MonoBehaviour:
   nameText: {fileID: 7460509477110643808}
   scoreText: {fileID: 472645196783390595}
   firstColor: {r: 1, g: 0.84, b: 0, a: 1}
-  secondColor: {r: 0.85, g: 0.85, b: 0.85, a: 1}
+  secondColor: {r: 0, g: 0.6362592, b: 0.645283, a: 1}
   thirdColor: {r: 0.8, g: 0.5, b: 0.2, a: 1}
   normalColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &2743290907529876244
@@ -192,7 +192,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -227, y: 0}
+  m_AnchoredPosition: {x: -235, y: -5.2369}
   m_SizeDelta: {x: 101.8583, y: 75.0318}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4617433605266876534
@@ -271,8 +271,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 231.41748, y: 0}
-  m_SizeDelta: {x: 161.5355, y: 78.8309}
+  m_AnchoredPosition: {x: 291.13348, y: -5.2369}
+  m_SizeDelta: {x: 184.5831, y: 78.8309}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7771370102242954208
 CanvasRenderer:
