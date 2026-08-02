@@ -11,6 +11,13 @@ public class Spawner : MonoBehaviour
 
     [Header("生成設定")]
     public float interval = 2f;
+
+    [Header("ランダム間隔設定")]
+    public bool randomInterval = false;
+    public float minInterval = 1f;
+    public float maxInterval = 3f;
+
+    [Header("寿命")]
     public float lifeTime = 10f;
 
     [Header("ランダム力")]
@@ -26,7 +33,15 @@ public class Spawner : MonoBehaviour
         while (true)
         {
             Spawn();
-            yield return new WaitForSeconds(interval);
+
+            float waitTime = interval;
+
+            if (randomInterval)
+            {
+                waitTime = Random.Range(minInterval, maxInterval);
+            }
+
+            yield return new WaitForSeconds(waitTime);
         }
     }
 
@@ -39,7 +54,6 @@ public class Spawner : MonoBehaviour
         GameObject selected = prefabs[Random.Range(0, prefabs.Count)];
         GameObject obj = Instantiate(selected, pos, Quaternion.identity);
 
-        // 🔥 ランダムな力を加える
         AddRandomForce(obj);
 
         Destroy(obj, lifeTime);
@@ -50,7 +64,6 @@ public class Spawner : MonoBehaviour
         Rigidbody2D rb = obj.GetComponent<Rigidbody2D>();
         if (rb == null) return;
 
-        // 🎲 ランダム方向（少し上寄りにすると見栄え良い）
         Vector2 force = new Vector2(
             Random.Range(-1f, 1f),
             Random.Range(0.3f, 1f)

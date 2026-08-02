@@ -30,7 +30,7 @@ public class RoomCounterUI : MonoBehaviour
             roomCount = 0;
 
             prefixText.text = "現在";
-            suffixText.text = "Room目";
+            suffixText.text = "Room";
         }
 
         UpdateUI(false);
