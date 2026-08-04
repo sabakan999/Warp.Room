@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using DG.Tweening;
+using System.Collections.Generic;
 
 public class BeamCannon : MonoBehaviour
 {
@@ -9,11 +10,27 @@ public class BeamCannon : MonoBehaviour
     public float warningTime = 0.5f;
     public float beamDuration = 1f;
 
+    [Header("大砲の位置")]
+    public Transform cannonPoint;
+
     [Header("見た目")]
     public GameObject cannonVisual;
     public GameObject warningLine;
     public Transform beamVisual;
     public GameObject beamHitbox;
+
+    [Header("警告マーク")]
+    public Transform warningIcon;
+    public WarningDetector warningDetector;
+
+    [Header("警告マーク点滅")]
+    public Sprite normalWarningSprite;
+    public Sprite flashWarningSprite;
+
+    public int warningFlashCount = 3;
+    
+
+    private SpriteRenderer warningIconRenderer;
 
     [Header("ビーム演出")]
     public float beamExtendTime = 0.15f;
@@ -49,6 +66,13 @@ public class BeamCannon : MonoBehaviour
     {
         SetupInitialState();
         StartCoroutine(FireRoutine());
+        if(warningIcon != null)
+        {
+            warningIconRenderer =
+                warningIcon.GetComponent<SpriteRenderer>();
+
+            warningIcon.gameObject.SetActive(false);
+        }
     }
 
     void SetupInitialState()
@@ -85,6 +109,10 @@ public class BeamCannon : MonoBehaviour
             cannonVisual.transform.localPosition = cannonStartPos;
             cannonVisual.SetActive(false);
         }
+        if (warningIcon != null)
+        {
+            warningIcon.gameObject.SetActive(false);
+        }
     }
 
     IEnumerator FireRoutine()
@@ -109,7 +137,21 @@ public class BeamCannon : MonoBehaviour
 
         // 警告表示
         if (warningLine != null)
+        {
             warningLine.SetActive(true);
+
+            if (warningDetector != null)
+            {
+                            
+                yield return new WaitForFixedUpdate();
+                Debug.Log("検出数:" + warningDetector.HitCount());
+                UpdateWarningIcon();
+
+                StartCoroutine(
+                    WarningFlashRoutine()
+                );
+            }
+        }
 
         if (warningSE != null && gm != null && gm.isGameRunning)
              MultiSEManager.Instance.PlaySE(warningSE);
@@ -120,6 +162,9 @@ public class BeamCannon : MonoBehaviour
         // 警告非表示
         if (warningLine != null)
             warningLine.SetActive(false);
+
+        if (warningIcon != null)
+            warningIcon.gameObject.SetActive(false);
 
         // =========================
         // 発射予兆エフェクト
@@ -255,5 +300,122 @@ public class BeamCannon : MonoBehaviour
         }
     }
 
+  void UpdateWarningIcon()
+{
+    if (warningIcon == null ||
+        warningDetector == null)
+        return;
+
+        
+
+    List<Vector3> points =
+        warningDetector.GetHitPoints();
+
+
+    Debug.Log("===== Warning Debug =====");
+
+    Debug.Log("BeamCannon(transform) : " + transform.position);
+
+    if (cannonVisual != null)
+        Debug.Log("CannonVisual         : " + cannonVisual.transform.position);
+
+    if (warningLine != null)
+        Debug.Log("WarningLine          : " + warningLine.transform.position);
+
+    Debug.Log("HitPoint Count       : " + points.Count);
+
+    for (int i = 0; i < points.Count; i++)
+    {
+        Debug.Log("HitPoint[" + i + "]      : " + points[i]);
+    }
+
+
+    if (points.Count == 0)
+    {
+        Debug.Log("枠検出なし");
+        return;
+    }
+
+
+    Vector3 target;
+
+
+    // 大砲のワールド座標
+    Vector3 cannonPosition;
+
+    if (cannonVisual != null)
+    {
+        cannonPosition = cannonVisual.transform.position;
+    }
+    else
+    {
+        // 念のため未設定なら親を使用
+        cannonPosition = transform.position;
+    }
+
+
+    // 枠が1つの場合
+    if (points.Count == 1)
+    {
+        target =
+            Vector3.Lerp(
+                cannonPosition,
+                points[0],
+                0.5f
+            );
+    }
+    // 枠が2つ以上の場合
+    else
+    {
+        target =
+            Vector3.Lerp(
+                points[0],
+                points[1],
+                0.5f
+            );
+    }
+
+
+    Debug.Log("Cannon Used         : " + cannonPosition);
+    Debug.Log("Calculated Target   : " + target);
+
+
+    warningIcon.position = target;
+
+    // ⚠マークは常に画面正面
+    warningIcon.rotation = Quaternion.identity;
+
+    warningIcon.gameObject.SetActive(true);
+}
+
+IEnumerator WarningFlashRoutine()
+{
+    if(warningIconRenderer == null)
+        yield break;
+
+
+    float interval =
+        warningTime /
+        (warningFlashCount * 2);
+
+
+    for(int i = 0; i < warningFlashCount; i++)
+    {
+        warningIconRenderer.sprite =
+            normalWarningSprite;
+
+        yield return new WaitForSeconds(interval);
+
+
+        warningIconRenderer.sprite =
+            flashWarningSprite;
+
+        yield return new WaitForSeconds(interval);
+    }
+
+
+    warningIconRenderer.sprite =
+        normalWarningSprite;
+}
     
 }
