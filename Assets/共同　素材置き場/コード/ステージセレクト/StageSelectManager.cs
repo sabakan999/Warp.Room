@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 using UnityEngine.UI;
 using System.Collections;
 
@@ -20,6 +21,15 @@ public class StageSelectManager : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip moveSE;
     public AudioClip decideSE;
+
+    [Header("隠しコマンド")]
+    public float resetHoldTime = 10f;
+    public int unlockTapCount = 30;
+
+    private float escapeHoldTimer = 0f;
+    private int escapeTapCount = 0;
+    private float escapeTapResetTime = 2f;
+    private float lastEscapeTapTime = 0f;
     
 
     private int x = 0;
@@ -35,11 +45,15 @@ public class StageSelectManager : MonoBehaviour
 
     void Start()
     {
-        StageButton[] stageButtons = GetComponentsInChildren<StageButton>();
+        GameSettings.Load();
+
+    StageButton[] stageButtons = GetComponentsInChildren<StageButton>();
+       
 
         int index = 0;
         foreach (StageButton btn in stageButtons)
         {
+             btn.UpdateLock();
             int row = index / 3;
             int col = index % 3;
 
@@ -63,6 +77,8 @@ public class StageSelectManager : MonoBehaviour
         {
             HandleMove();
             HandleSubmit();
+
+             HandleSecretCommand();
             
         }
 
@@ -110,6 +126,57 @@ public class StageSelectManager : MonoBehaviour
 
         UpdateCursor();
     }
+
+
+    // =========================
+// 🔥 隠しコマンド
+// =========================
+void HandleSecretCommand()
+{
+    // ESC長押し
+    if (Input.GetKey(KeyCode.Escape))
+    {
+        escapeHoldTimer += Time.deltaTime;
+
+
+        if (escapeHoldTimer >= resetHoldTime)
+        {
+            ResetProgress();
+
+            escapeHoldTimer = 0f;
+        }
+    }
+    else
+    {
+        escapeHoldTimer = 0f;
+    }
+
+
+
+    // ESC連打
+    if (Input.GetKeyDown(KeyCode.Escape))
+    {
+        if(Time.time - lastEscapeTapTime < escapeTapResetTime)
+        {
+            escapeTapCount++;
+        }
+        else
+        {
+            escapeTapCount = 1;
+        }
+
+
+        lastEscapeTapTime = Time.time;
+
+
+        if(escapeTapCount >= unlockTapCount)
+        {
+            UnlockAllStages();
+
+            escapeTapCount = 0;
+        }
+    }
+}
 
     void UpdateCursor()
     {
@@ -168,12 +235,19 @@ public class StageSelectManager : MonoBehaviour
         }
     }
 
+    
+
    
 
     IEnumerator SelectStageCoroutine()
     {
         StageButton selected = buttons[x, y];
-        if (selected == null) yield break;
+        if (selected == null)
+            yield break;
+         
+         if (!selected.IsUnlocked())
+            yield break;
+        
 
         isTransitioning = true;
 
@@ -188,6 +262,47 @@ public class StageSelectManager : MonoBehaviour
 
         SceneManager.LoadScene("演出");
     }
+
+    void ResetProgress()
+{
+    PlayerPrefs.DeleteKey("UnlockedWorld");
+    PlayerPrefs.DeleteKey("UnlockedStage");
+
+    GameSettings.unlockedWorld = 1;
+    GameSettings.unlockedStage = 1;
+
+    Debug.Log("進行データ初期化");
+     SceneManager.LoadScene(
+        SceneManager.GetActiveScene().name
+    );
+}
+
+void UnlockAllStages()
+{
+    GameSettings.unlockedWorld = 99;
+    GameSettings.unlockedStage = 99;
+
+
+    PlayerPrefs.SetInt(
+        "UnlockedWorld",
+        GameSettings.unlockedWorld
+    );
+
+    PlayerPrefs.SetInt(
+        "UnlockedStage",
+        GameSettings.unlockedStage
+    );
+
+
+    PlayerPrefs.Save();
+     
+     SceneManager.LoadScene(
+        SceneManager.GetActiveScene().name
+    );
+
+
+    Debug.Log("全ステージ解放");
+}
 
    
 

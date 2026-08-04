@@ -214,4 +214,9 @@ void Start()
     {
         return hasCurse;
     }
+
+    public bool IsDead()
+    {
+        return isDead;
+    }
 }

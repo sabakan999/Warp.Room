@@ -71,6 +71,7 @@ public class RankingAPI : MonoBehaviour
     //====================================
     // スコア削除
     //====================================
+ 
     public void DeleteScore(string playerName, int score, System.Action onComplete)
     {
         StartCoroutine(DeleteRoutine(playerName, score, onComplete));
@@ -88,17 +89,18 @@ public class RankingAPI : MonoBehaviour
 
         yield return request.SendWebRequest();
 
-#if UNITY_2020_2_OR_NEWER
+    #if UNITY_2020_2_OR_NEWER
         if (request.result != UnityWebRequest.Result.Success)
-#else
+    #else
         if (request.isNetworkError || request.isHttpError)
-#endif
+    #endif
         {
             Debug.LogError(request.error);
         }
         else
         {
             Debug.Log("削除成功");
+            Debug.Log(request.downloadHandler.text);
         }
 
         onComplete?.Invoke();

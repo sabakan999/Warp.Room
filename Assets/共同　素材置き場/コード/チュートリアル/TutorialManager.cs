@@ -69,6 +69,8 @@ public class TutorialManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+             if (Time.timeScale == 0f)
+                return;
             if (dialogueUI.IsTalking)
             {
                 bool finished = dialogueUI.NextMessage();
@@ -173,9 +175,10 @@ public class TutorialManager : MonoBehaviour
                     "ガイド",
                     new string[]
                     {
-                        "ディモールト！",
+                        "イイ感じ！",
                         "素晴らしいジャンプ！",
-                        "次はWarpRoomのルールについて説明するよ。",
+                        "次はWarpRoomの",
+                        "ルールについて説明するよ。",
                         "このゲームは次々とWarpする不思議な部屋を",
                         "3秒間生き残ればクリアだよ！",
                         "実際にWarpを体験してみよう！"
@@ -290,12 +293,15 @@ public class TutorialManager : MonoBehaviour
                                 "アイテムはプレイヤーを有利にしてくれる",
                                 "効果がほとんどだからドンドンゲットしよう！",
                                 "ただし！",
-                                "呪いどくろというアイテムはプレイヤーを",
-                                "不利にしてしまうので注意！",
+                                "呪いどくろというアイテムは",
+                                "プレイヤーを不利にしてしまうので",
+                                "注意！",
                                 "ゲットすると呪い状態になってしまい",
-                                "呪い状態のままワープするとやられてしまう！",
+                                "呪い状態のままワープすると",
+                                "やられてしまう！",
                                 "エンジェルをゲットすれば解呪できるので",
-                                "次のワープまでに急いでエンジェルへ向かおう。"
+                                "次のワープまでに急いで",
+                                "エンジェルへ向かおう。"
                                 
                             }
                                         );

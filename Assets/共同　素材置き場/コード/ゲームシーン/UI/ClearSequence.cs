@@ -45,6 +45,10 @@ public class ClearSequence : MonoBehaviour
     public AudioClip impactSE;
     public AudioClip decideSE;
 
+    public BGMManager bgmManager;
+
+    
+
     private bool canInput = false;
 
     public void Play(Transform targetPlayer)
@@ -93,12 +97,15 @@ public class ClearSequence : MonoBehaviour
         {
             mainCamera.transform
                 .DOMove(player.position + new Vector3(0, 0, -10), 0.4f)
-                .SetUpdate(true);
+                .SetUpdate(true)
+                .SetLink(mainCamera.gameObject);
+                
 
             mainCamera
                 .DOOrthoSize(zoomInSize, 0.4f)
                 .SetEase(Ease.OutCubic)
-                .SetUpdate(true);
+                .SetUpdate(true)
+                .SetLink(mainCamera.gameObject);
         }
 
         yield return new WaitForSecondsRealtime(0.4f);
@@ -129,7 +136,8 @@ public class ClearSequence : MonoBehaviour
             mainCamera.transform
                 .DOMoveY(targetY, riseDuration)
                 .SetEase(Ease.OutCubic)
-                .SetUpdate(true);
+                .SetUpdate(true)
+                .SetLink(mainCamera.gameObject);
         }
 
         yield return new WaitForSecondsRealtime(riseDuration);
@@ -144,7 +152,8 @@ public class ClearSequence : MonoBehaviour
             mainCamera
                 .DOOrthoSize(zoomOutSize, chargeTime)
                 .SetEase(Ease.InOutQuad)
-                .SetUpdate(true);
+                .SetUpdate(true)
+                .SetLink(mainCamera.gameObject);
         }
 
         yield return new WaitForSecondsRealtime(chargeTime);
@@ -158,6 +167,9 @@ public class ClearSequence : MonoBehaviour
         {
             if (c != null) c.Play();
         }
+        
+        if (bgmManager != null)
+            bgmManager.PlayClearBGM();
 
         player.localScale = Vector3.one * 0.3f;
 
@@ -167,18 +179,21 @@ public class ClearSequence : MonoBehaviour
             .OnComplete(() =>
             {
                 player.DOScale(1f, 0.1f).SetUpdate(true);
-            });
+            })
+            .SetLink(player.gameObject);
 
         if (mainCamera != null)
         {
             mainCamera
                 .DOOrthoSize(zoomImpactSize, 0.2f)
                 .SetEase(Ease.OutExpo)
-                .SetUpdate(true);
+                .SetUpdate(true)
+                .SetLink(mainCamera.gameObject);
 
             mainCamera.transform
                 .DOShakePosition(0.25f, 0.4f)
-                .SetUpdate(true);
+                .SetUpdate(true)
+                .SetLink(mainCamera.gameObject);
         }
 
         if (clearText != null)
@@ -193,7 +208,8 @@ public class ClearSequence : MonoBehaviour
                 .OnComplete(() =>
                 {
                     clearText.transform.DOScale(1f, 0.1f).SetUpdate(true);
-                });
+                })
+                .SetLink(clearText);;
         }
 
         yield return new WaitForSecondsRealtime(0.7f);

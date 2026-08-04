@@ -443,6 +443,7 @@ public class NameInputManager : MonoBehaviour
         float wait = (decideSE != null) ? decideSE.length : 0.2f;
 
         yield return new WaitForSeconds(wait);
+        GameSettings.playerName = playerName;
 
         SceneManager.LoadScene(nextScene);
     }

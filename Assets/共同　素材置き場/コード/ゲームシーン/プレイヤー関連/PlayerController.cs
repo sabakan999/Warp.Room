@@ -54,7 +54,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (!isControllable) return;
+        if (Time.timeScale == 0f)
+            return;
+        if (!isControllable)
+            return;
 
         moveInput = Input.GetAxisRaw("Horizontal");
         Flip(moveInput);
@@ -67,7 +70,10 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!isControllable) return;
+        if (Time.timeScale == 0f)
+            return;
+        if (!isControllable)
+            return;
 
         CheckGround();
         Move();

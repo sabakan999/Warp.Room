@@ -44,7 +44,8 @@ public class GameManager : MonoBehaviour
     public ClearSequence clearSequence;
 
     void Start()
-    {
+    {   
+        
         if (roomManager == null)
             roomManager = FindFirstObjectByType<RoomManager>();
 
@@ -131,8 +132,18 @@ public class GameManager : MonoBehaviour
 
         if (health != null && health.hasCurse)
          {
+            bool hadBarrier = health.HasBarrier(); // ダメージ前
+
             health.TakeDamage();
-            yield break;
+
+            // バリアで防いだなら呪い解除
+            if (hadBarrier)
+            {
+                health.RemoveCurse();
+            }
+
+            if (health.IsDead())
+                yield break;
          }
 
         // 🔥 ここが「クリア確定タイミング」
@@ -230,6 +241,7 @@ public class GameManager : MonoBehaviour
         hasBarrier = false;
 
         yield return new WaitForSeconds(0.8f);
+        FindFirstObjectByType<PauseManager>().canPause = false;
 
         if (resultUI != null)
         {
@@ -240,30 +252,41 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void GameClear()
+   void GameClear()
+{
+    if (isClearing) return;
+
+    isClearing = true;
+    isGameRunning = false;
+
+
+    // ⭐ 次ステージ解放
+    if(!GameSettings.isEndlessMode)
     {
-        if (isClearing) return;
-
-        isClearing = true;
-        isGameRunning = false;
-
-        StopAllCoroutines();
-
-        if (timerUI != null)
-            timerUI.StopTimer();
-
-        if (bgmManager != null)
-            bgmManager.StopBGM();
-
-        PlayerController player = FindFirstObjectByType<PlayerController>();
-
-        if (clearSequence != null && player != null)
-        {
-            clearSequence.Play(player.transform);
-        }
-
-        hasBarrier = false;
+        GameSettings.UnlockNextStage();
     }
+
+
+    StopAllCoroutines();
+
+    if (timerUI != null)
+        timerUI.StopTimer();
+
+    if (bgmManager != null)
+        bgmManager.StopBGM();
+
+
+    PlayerController player = FindFirstObjectByType<PlayerController>();
+    FindFirstObjectByType<PauseManager>().canPause = false;
+
+
+    if (clearSequence != null && player != null)
+    {
+        clearSequence.Play(player.transform);
+    }
+
+    hasBarrier = false;
+}
 
     // =========================
     // 🔥 外部取得用

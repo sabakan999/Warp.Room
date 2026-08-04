@@ -39,6 +39,7 @@ public class ResultUI : MonoBehaviour
     public AudioClip moveSE;
     public AudioClip decideSE;
 
+
     private Text retryLabel;
     private Text stageLabel;
 
@@ -130,6 +131,8 @@ public class ResultUI : MonoBehaviour
                 // リトライ中
                 else
                 {
+                     Debug.Log("旧スコア：" + RetryData.bestScore);
+                     Debug.Log("今回：" + endlessScore);
                     // 前回以下なら登録しない
                     if (endlessScore <= RetryData.bestScore)
                     {
@@ -141,21 +144,24 @@ public class ResultUI : MonoBehaviour
                     // 更新した
                     else
                     {
-                        // ←ここで古い記録を削除
-                        // RankingAPI.Instance.DeleteScore(...)
-
-                        RankingAPI.Instance.PostScore(
-                            RetryData.playerName,
-                            endlessScore,
-                            () =>
-                            {
-                                RetryData.bestScore = endlessScore;
-
-                                RankingAPI.Instance.GetRanking(() =>
+                       RankingAPI.Instance.DeleteScore(
+                        RetryData.playerName,
+                        RetryData.bestScore,
+                        () =>
+                        {
+                            RankingAPI.Instance.PostScore(
+                                RetryData.playerName,
+                                endlessScore,
+                                () =>
                                 {
-                                    RefreshRanking();
+                                    RetryData.bestScore = endlessScore;
+
+                                    RankingAPI.Instance.GetRanking(() =>
+                                    {
+                                        RefreshRanking();
+                                    });
                                 });
-                            });
+                        });
                     }
                 }
             }
@@ -163,6 +169,8 @@ public class ResultUI : MonoBehaviour
             UpdateEndlessSelection(true);
         }
     }
+
+    
 
         void HandleMove()
     {
@@ -294,9 +302,21 @@ public class ResultUI : MonoBehaviour
         {
             if (selectedIndex == 0)
             {   
+                 if (!RetryData.isRetry)
+                {
+                    RetryData.playerName = GameSettings.playerName;
+                    RetryData.bestScore = endlessScore;
+                }
+                else
+                {
+                    RetryData.bestScore = Mathf.Max(RetryData.bestScore, endlessScore);
+                }
                 RetryData.isRetry = true;
-                RetryData.playerName = GameSettings.playerName;
-                RetryData.bestScore = endlessScore;
+                
+
+                Debug.Log("保存した");
+                Debug.Log("name = " + RetryData.playerName);
+                Debug.Log("score = " + RetryData.bestScore);
                 SceneManager.LoadScene(
                     SceneManager.GetActiveScene().name
                 );

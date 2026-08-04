@@ -10,12 +10,14 @@ public class BGMManager : MonoBehaviour
     public AudioClip normalBGM;
     public AudioClip resultBGM;
     public AudioClip endlessBGM; // ★追加
+    public AudioClip clearBGM;
 
     [Header("音量設定")]
     [Range(0f, 1f)] public float masterVolume = 1f;
     [Range(0f, 1f)] public float normalVolume = 1f;
     [Range(0f, 1f)] public float resultVolume = 1f;
     [Range(0f, 1f)] public float endlessVolume = 1f; // ★追加
+    [Range(0f,1f)]  public float clearVolume = 1f;
 
     [Header("フェード設定")]
     public float fadeTime = 0.5f;
@@ -113,16 +115,36 @@ public class BGMManager : MonoBehaviour
     // 🔥 現在のBGMに応じた音量
     // =========================
     float GetCurrentTargetVolume()
-    {
-        if (bgmSource.clip == normalBGM)
-            return masterVolume * normalVolume;
+{
+    if (bgmSource.clip == normalBGM)
+        return masterVolume * normalVolume;
 
-        if (bgmSource.clip == resultBGM)
-            return masterVolume * resultVolume;
+    if (bgmSource.clip == resultBGM)
+        return masterVolume * resultVolume;
 
-        if (bgmSource.clip == endlessBGM)
-            return masterVolume * endlessVolume;
+    if (bgmSource.clip == endlessBGM)
+        return masterVolume * endlessVolume;
 
-        return masterVolume;
-    }
+    if (bgmSource.clip == clearBGM)
+        return masterVolume * clearVolume;
+
+    return masterVolume;
 }
+
+    public void PlayClearBGM()
+{
+    if (bgmSource == null || clearBGM == null)
+        return;
+
+    bgmSource.DOKill();
+
+    bgmSource.Stop();
+
+    bgmSource.clip = clearBGM;
+    bgmSource.loop = true;
+    bgmSource.volume = 0f;
+    bgmSource.Play();
+
+    bgmSource.DOFade(GetCurrentTargetVolume(), fadeTime);
+}
+    }
