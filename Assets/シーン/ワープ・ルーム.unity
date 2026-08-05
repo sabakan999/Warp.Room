@@ -335,11 +335,13 @@ MonoBehaviour:
   resultBGM: {fileID: 8300000, guid: e25640cee86569f489ba35544e614059, type: 3}
   endlessBGM: {fileID: 8300000, guid: 16e5df975a0d5c64dada2b4526cf4148, type: 3}
   clearBGM: {fileID: 8300000, guid: 03b102ba85f6576449fc0feee1a3c4f8, type: 3}
+  bossBGM: {fileID: 8300000, guid: 466128111ecde1a4bbfe2b809b60c2bb, type: 3}
   masterVolume: 0.81
   normalVolume: 0.615
   resultVolume: 1
   endlessVolume: 1
   clearVolume: 1
+  bossVolume: 1
   fadeTime: 0.5
 --- !u!4 &120701248
 Transform:
@@ -985,8 +987,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2059416370}
-  - {fileID: 660327928}
   - {fileID: 684445903}
+  - {fileID: 762123049}
   - {fileID: 1558946715}
   - {fileID: 958879004}
   - {fileID: 276613141}
@@ -2961,6 +2963,7 @@ MonoBehaviour:
   - {fileID: 4529084442889480405, guid: 20c507932b894ca4dba4d63dc14fd2c8, type: 3}
   useTestRooms: 1
   currentLevel: 1
+  bossRoomPrefab: {fileID: 4529084442889480405, guid: 28de5dd2a63663b418233549f40c8413, type: 3}
 --- !u!4 &632989893
 Transform:
   m_ObjectHideFlags: 0
@@ -3172,19 +3175,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 660327927}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1335076781}
   - {fileID: 979571649}
-  - {fileID: 762123049}
-  m_Father: {fileID: 254974170}
+  m_Father: {fileID: 2059416370}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 329.03433, y: 147.11469}
+  m_AnchoredPosition: {x: 5.3342896, y: -3.8453674}
   m_SizeDelta: {x: 89.5777, y: 84.6623}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &660327929
@@ -3703,11 +3705,11 @@ RectTransform:
   - {fileID: 1480875040}
   - {fileID: 260742754}
   - {fileID: 1420524441}
-  m_Father: {fileID: 660327928}
+  m_Father: {fileID: 254974170}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -663.47046, y: 10.785278}
+  m_AnchoredPosition: {x: -334.43613, y: 157.89993}
   m_SizeDelta: {x: 131.1278, y: 170.9386}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &762123050
@@ -3820,8 +3822,7 @@ Transform:
   m_LocalPosition: {x: -2.4022, y: -0.21242, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1663693426}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &789755897
@@ -5838,6 +5839,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimerUI
   gauge: {fileID: 1335076783}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  bossColor: {r: 1, g: 0, b: 0, a: 1}
+  timerRoot: {fileID: 2059416370}
 --- !u!114 &1335076783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8171,11 +8175,11 @@ Transform:
   m_GameObject: {fileID: 1663693424}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 49.705738, y: 28.144419, z: 0}
+  m_LocalPosition: {x: 47.30354, y: 27.932, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 778569784}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1663693427
 MonoBehaviour:
@@ -8908,6 +8912,69 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1844902687}
   m_CullTransparentMesh: 1
+--- !u!1 &1849710509
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1849710512}
+  - component: {fileID: 1849710511}
+  - component: {fileID: 1849710510}
+  m_Layer: 0
+  m_Name: "\u30DC\u30B9\u30DE\u30CD\u30FC\u30B8\u30E3\u30FC"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1849710510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849710509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b87aa3c8ac0d1d4395e93d3983fb1fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossController
+--- !u!114 &1849710511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849710509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e692f6584d10bb4798ceb29411a1de9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossBattleIntro
+  bossVisual: {fileID: 1495720016961950188, guid: 4d240403d9bb8ea4684912c5b035f4f1, type: 3}
+  shakeTime: 0.8
+  chargeTime: 2.5
+  bossAppearDelay: 0.5
+  battleStartDelay: 2
+  bossAppearSE: {fileID: 8300000, guid: 8ae7812a8fd3ed045a2ed6b5be1adb51, type: 3}
+--- !u!4 &1849710512
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849710509}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.66778, y: 6.14807, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1864401801
 GameObject:
   m_ObjectHideFlags: 0
@@ -9801,7 +9868,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 660327928}
   m_Father: {fileID: 254974170}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -10323,8 +10391,10 @@ SceneRoots:
   - {fileID: 1185674306}
   - {fileID: 1644902195}
   - {fileID: 1502022699}
+  - {fileID: 1663693426}
   - {fileID: 1523201093}
   - {fileID: 850863739}
   - {fileID: 800653870}
   - {fileID: 1323239385}
   - {fileID: 1490824704}
+  - {fileID: 1849710512}

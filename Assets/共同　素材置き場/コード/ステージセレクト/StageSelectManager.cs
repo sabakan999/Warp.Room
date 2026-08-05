@@ -21,6 +21,7 @@ public class StageSelectManager : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip moveSE;
     public AudioClip decideSE;
+    public AudioClip falseSE;
 
     [Header("隠しコマンド")]
     public float resetHoldTime = 10f;
@@ -246,7 +247,10 @@ void HandleSecretCommand()
             yield break;
          
          if (!selected.IsUnlocked())
+         {
+            PlaySE(falseSE);
             yield break;
+         }
         
 
         isTransitioning = true;

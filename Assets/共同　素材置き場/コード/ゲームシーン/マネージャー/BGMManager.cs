@@ -11,6 +11,7 @@ public class BGMManager : MonoBehaviour
     public AudioClip resultBGM;
     public AudioClip endlessBGM; // ★追加
     public AudioClip clearBGM;
+    public AudioClip bossBGM;
 
     [Header("音量設定")]
     [Range(0f, 1f)] public float masterVolume = 1f;
@@ -18,6 +19,7 @@ public class BGMManager : MonoBehaviour
     [Range(0f, 1f)] public float resultVolume = 1f;
     [Range(0f, 1f)] public float endlessVolume = 1f; // ★追加
     [Range(0f,1f)]  public float clearVolume = 1f;
+    [Range(0f,1f)]public float bossVolume = 1f;
 
     [Header("フェード設定")]
     public float fadeTime = 0.5f;
@@ -128,9 +130,11 @@ public class BGMManager : MonoBehaviour
     if (bgmSource.clip == clearBGM)
         return masterVolume * clearVolume;
 
+    if (bgmSource.clip == bossBGM)
+        return masterVolume * bossVolume;
+
     return masterVolume;
 }
-
     public void PlayClearBGM()
 {
     if (bgmSource == null || clearBGM == null)
@@ -141,6 +145,23 @@ public class BGMManager : MonoBehaviour
     bgmSource.Stop();
 
     bgmSource.clip = clearBGM;
+    bgmSource.loop = true;
+    bgmSource.volume = 0f;
+    bgmSource.Play();
+
+    bgmSource.DOFade(GetCurrentTargetVolume(), fadeTime);
+}
+
+public void PlayBossBGM()
+{
+    if (bgmSource == null || bossBGM == null)
+        return;
+
+    bgmSource.DOKill();
+
+    bgmSource.Stop();
+
+    bgmSource.clip = bossBGM;
     bgmSource.loop = true;
     bgmSource.volume = 0f;
     bgmSource.Play();

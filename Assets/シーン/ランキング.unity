@@ -419,7 +419,7 @@ MonoBehaviour:
   scrollSE: {fileID: 8300000, guid: 3eba4c3f5cb9a0742973f72f43702a38, type: 3}
   topSE: {fileID: 8300000, guid: 1ca20405cf50dcd4f9259338f93c0625, type: 3}
   bgmSource: {fileID: 974202226}
-  rankingBGM: {fileID: 8300000, guid: d68ea18ea3aa12d4081034e4386d6d73, type: 3}
+  rankingBGM: {fileID: 8300000, guid: 4f7d0aa1c0ae61043a6403dec5405e19, type: 3}
   introDistance: 3000
   introTime: 1.5
 --- !u!4 &273496257

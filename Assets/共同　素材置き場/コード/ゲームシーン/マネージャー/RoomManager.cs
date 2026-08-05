@@ -18,6 +18,8 @@ public class RoomManager : MonoBehaviour
     [Header("現在のレベル")]
     public int currentLevel = 1;
 
+    public GameObject bossRoomPrefab;
+
     private bool usedTestRoom = false;
     private GameObject currentRoom;
 
@@ -138,6 +140,16 @@ public class RoomManager : MonoBehaviour
         }
         if (currentRoom != null)
             Destroy(currentRoom);
+    }
+
+        public GameObject SpawnBossRoom()
+    {
+        currentRoom = Instantiate(
+            bossRoomPrefab,
+            spawnPoint.position,
+            Quaternion.identity);
+
+        return currentRoom;
     }
 
     public GameObject CurrentRoom

@@ -114,6 +114,9 @@ public class GameManager : MonoBehaviour
     IEnumerator PlayOneRoom()
     {
         GameObject room = roomManager.SpawnRoom();
+        bool isFinalBossStage =
+        GameSettings.selectedWorld == 3 &&
+        GameSettings.selectedStage == 3;
 
         Transform spawnPoint = room.GetComponent<Room>().GetSpawnPoint();
         playerSpawner.SpawnPlayer(spawnPoint);
@@ -156,8 +159,17 @@ public class GameManager : MonoBehaviour
 
         if (isLastRoom)
         {
-            GameClear();
-            yield break;
+            
+            if (isFinalBossStage)
+            {
+                FinalBossIntro();
+                yield break;
+            }
+            else
+            {
+                GameClear();
+                yield break;
+            }
         }
 
         // =========================
@@ -295,6 +307,100 @@ public class GameManager : MonoBehaviour
     {
         return endlessClearCount;
     }
+
+   void FinalBossIntro()
+{
+    if (isClearing) return;
+
+    isClearing = true;
+    isGameRunning = false;
+
+    StopAllCoroutines();
+
+    timerUI.StopTimer();
+    bgmManager.StopBGM();
+
+    clearSequence.OnBossWarp -= BossWarp;
+    clearSequence.OnBossWarp += BossWarp;
+
+    PlayerController player =
+        FindFirstObjectByType<PlayerController>();
+
+    FindFirstObjectByType<PauseManager>().canPause = false;
+
+    clearSequence.PlayFinalBossIntro(player.transform);
+
+    hasBarrier = false;
+}
+
+IEnumerator BossWarpRoutine()
+{
+    Room room = roomManager.CurrentRoom.GetComponent<Room>();
+    room.OnRoomEnd();
+
+    if (fadePanel != null)
+    {
+        PlaySE(warpStartSE);
+        fadePanel.SetActive(true);
+    }
+
+    yield return new WaitForSecondsRealtime(fadeDuration);
+
+    roomManager.ClearCurrentRoom();
+
+    GameObject bossRoom = roomManager.SpawnBossRoom();
+
+    PlayerController player =
+        FindFirstObjectByType<PlayerController>();
+
+    Transform spawn =
+        bossRoom.GetComponent<Room>().GetSpawnPoint();
+
+    player.transform.position = spawn.position;
+
+    Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+
+    if (rb != null)
+    {
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.simulated = true;
+    }
+    
+
+    Animator anim = player.GetComponent<Animator>();
+    if (anim != null)
+        anim.enabled = true;
+
+    Collider2D col = player.GetComponent<Collider2D>();
+    if (col != null)
+        col.enabled = true;
+
+    player.enabled = true;
+
+    bossRoom.GetComponent<Room>().OnRoomStart();
+
+    PlaySE(warpEndSE);
+
+    if (fadePanel != null)
+        fadePanel.SetActive(false);
+
+    clearSequence.OnBossWarp -= BossWarp;
+    clearSequence.ShowUIObjects();
+
+    clearSequence.RestoreCamera();
+    
+
+    BossBattleIntro intro =
+    bossRoom.GetComponent<BossBattleIntro>();
+
+intro.StartIntro();
+}
+
+void BossWarp()
+{
+    StartCoroutine(BossWarpRoutine());
+}
 
     // =========================
     // 🔊 SE

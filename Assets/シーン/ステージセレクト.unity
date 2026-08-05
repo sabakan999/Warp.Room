@@ -3078,6 +3078,9 @@ MonoBehaviour:
   audioSource: {fileID: 2104462297}
   moveSE: {fileID: 8300000, guid: ee40aae0960a5274c86d5848e610f0a7, type: 3}
   decideSE: {fileID: 8300000, guid: 66b98f89e5d3f4549aef1daee25d051a, type: 3}
+  falseSE: {fileID: 8300000, guid: 2cf83bb1710d7064a986a32a13f6f5f2, type: 3}
+  resetHoldTime: 10
+  unlockTapCount: 30
 --- !u!114 &1472356079
 MonoBehaviour:
   m_ObjectHideFlags: 0

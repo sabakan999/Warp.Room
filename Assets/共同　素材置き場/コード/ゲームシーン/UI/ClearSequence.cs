@@ -29,6 +29,8 @@ public class ClearSequence : MonoBehaviour
     public float zoomInSize = 3f;
     public float zoomOutSize = 7f;
     public float zoomImpactSize = 2.2f;
+    private Vector3 savedCameraPosition;
+    private float savedCameraSize;
 
     [Header("スプライト")]
     public Sprite risingSprite;
@@ -46,6 +48,8 @@ public class ClearSequence : MonoBehaviour
     public AudioClip decideSE;
 
     public BGMManager bgmManager;
+
+    public System.Action OnBossWarp;
 
     
 
@@ -92,6 +96,8 @@ public class ClearSequence : MonoBehaviour
     IEnumerator Sequence()
     {
         Time.timeScale = slowTimeScale;
+        savedCameraPosition = mainCamera.transform.position;
+        savedCameraSize = mainCamera.orthographicSize;
 
         if (mainCamera != null)
         {
@@ -251,4 +257,103 @@ public class ClearSequence : MonoBehaviour
         if (audioSource == null || clip == null) return;
         audioSource.PlayOneShot(clip);
     }
+
+  public void PlayFinalBossIntro(Transform targetPlayer)
+{
+    player = targetPlayer;
+
+    rb = player.GetComponent<Rigidbody2D>();
+    col = player.GetComponent<Collider2D>();
+    sr = player.GetComponent<SpriteRenderer>();
+    anim = player.GetComponent<Animator>();
+
+    HideUIObjects();
+
+    StartCoroutine(FinalBossIntroSequence());
+}
+IEnumerator FinalBossIntroSequence()
+{
+    Time.timeScale = slowTimeScale;
+    savedCameraPosition = mainCamera.transform.position;
+savedCameraSize = mainCamera.orthographicSize;
+
+    if (mainCamera != null)
+    {
+        mainCamera.transform
+            .DOMove(player.position + new Vector3(0, 0, -10), 0.4f)
+            .SetUpdate(true);
+
+        mainCamera
+            .DOOrthoSize(zoomInSize, 0.4f)
+            .SetEase(Ease.OutCubic)
+            .SetUpdate(true);
+    }
+
+    yield return new WaitForSecondsRealtime(0.4f);
+
+    var pc = player.GetComponent<PlayerController>();
+    if (pc != null) pc.enabled = false;
+
+    if (anim != null) anim.enabled = false;
+    if (col != null) col.enabled = false;
+
+    if (rb != null)
+    {
+        rb.linearVelocity = Vector2.zero;
+        rb.simulated = false;
+    }
+
+    if (sr != null && risingSprite != null)
+        sr.sprite = risingSprite;
+
+    PlaySE(riseSE);
+
+    float targetY = player.position.y + riseHeight;
+
+    player.DOMoveY(targetY, riseDuration)
+          .SetEase(Ease.OutCubic)
+          .SetUpdate(true);
+
+    if (mainCamera != null)
+    {
+        mainCamera.transform
+            .DOMoveY(targetY, riseDuration)
+            .SetEase(Ease.OutCubic)
+            .SetUpdate(true);
+    }
+
+    // 上昇途中
+    yield return new WaitForSecondsRealtime(0.8f);
+
+    // ★Tween停止
+    player.DOKill();
+
+    if (mainCamera != null)
+    {
+        mainCamera.transform.DOKill();
+        mainCamera.DOKill();
+    }
+
+    Time.timeScale = 1f;
+
+    // ★GameManagerへ処理を渡す
+    OnBossWarp?.Invoke();
+}
+
+public void RestoreCamera()
+{
+    if (mainCamera == null) return;
+
+    mainCamera.transform.position = savedCameraPosition;
+    mainCamera.orthographicSize = savedCameraSize;
+}
+
+public void ShowUIObjects()
+{
+    foreach (var obj in hideUIObjects)
+    {
+        if (obj != null)
+            obj.SetActive(true);
+    }
+}
 }
