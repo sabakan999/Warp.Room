@@ -3275,7 +3275,11 @@ MonoBehaviour:
   - {fileID: 4529084442889480405, guid: b5e5c3fb68e7ac746a8545f4f6969e17, type: 3}
   - {fileID: 4529084442889480405, guid: c2b92c35522a1a148b1f19293d64cf9a, type: 3}
   testRooms: []
+
   useTestRooms: 0
+
+
+ dbe872c9b1685d35a121dc62b0c9cd7bc128821d
   currentLevel: 1
   bossRoomPrefab: {fileID: 4529084442889480405, guid: 28de5dd2a63663b418233549f40c8413, type: 3}
 --- !u!4 &632989893
