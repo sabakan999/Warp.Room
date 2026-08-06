@@ -1261,8 +1261,7 @@ MonoBehaviour:
   - {fileID: 4529084442889480405, guid: a6444a27ab93b6f439bdb8ad933121a0, type: 3}
   - {fileID: 4529084442889480405, guid: b5e5c3fb68e7ac746a8545f4f6969e17, type: 3}
   - {fileID: 4529084442889480405, guid: c2b92c35522a1a148b1f19293d64cf9a, type: 3}
-  testRooms:
-  - {fileID: 4529084442889480405, guid: 20c507932b894ca4dba4d63dc14fd2c8, type: 3}
+  testRooms: []
   useTestRooms: 1
   currentLevel: 1
 --- !u!4 &632989893
