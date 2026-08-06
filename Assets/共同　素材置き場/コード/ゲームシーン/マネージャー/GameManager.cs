@@ -381,7 +381,10 @@ IEnumerator BossWarpRoutine()
     bossRoom.GetComponent<Room>().OnRoomStart();
 
     PlaySE(warpEndSE);
-
+    // ★ボス戦開始なので状態リセット
+    isClearing = false;
+    isGameRunning = true;
+    FindFirstObjectByType<PauseManager>().canPause = true;
     if (fadePanel != null)
         fadePanel.SetActive(false);
 

@@ -323,8 +323,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 42, y: 1319}
-  m_SizeDelta: {x: 2509.5898, y: 1510.5613}
+  m_AnchoredPosition: {x: 0, y: 1252}
+  m_SizeDelta: {x: 2509.5898, y: 1434.9807}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &189290146
 MonoBehaviour:
@@ -339,14 +339,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 7200047314951271493, guid: 98c5d288ace26b046843b427d5b5797d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2281,6 +2281,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimerUI
   gauge: {fileID: 1439680540}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  bossColor: {r: 1, g: 0, b: 0, a: 1}
+  timerRoot: {fileID: 0}
 --- !u!222 &1439680539
 CanvasRenderer:
   m_ObjectHideFlags: 0

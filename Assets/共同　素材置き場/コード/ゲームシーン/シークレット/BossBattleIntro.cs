@@ -19,10 +19,18 @@ public class BossBattleIntro : MonoBehaviour
     public float bossAppearDelay = 0.5f;
     public float battleStartDelay = 2f;
 
+    private Vector3 defaultScale;
+
     [Header("SE")]
     public AudioClip bossAppearSE;
 
     bool isPlaying = false;
+
+void Start()
+{
+    bossVisual.SetActive(false);
+    defaultScale = bossVisual.transform.localScale;
+}
 
   public void StartIntro()
 {
@@ -40,7 +48,7 @@ public class BossBattleIntro : MonoBehaviour
     }
 
     Debug.Log("===== BossBattleIntro =====");
-
+  Debug.Log("BossBattleIntro Instance : " + gameObject.name);
     Debug.Log($"TimerUI        : {(timerUI != null ? timerUI.name : "NULL")}");
     Debug.Log($"BossController : {(bossController != null ? bossController.name : "NULL")}");
     Debug.Log($"BGMManager     : {(bgmManager != null ? bgmManager.name : "NULL")}");
@@ -83,16 +91,22 @@ public class BossBattleIntro : MonoBehaviour
         if (bossVisual != null)
         {
             bossVisual.SetActive(true);
-            bossVisual.transform.localScale = Vector3.zero;
+           bossVisual.transform.localScale = Vector3.zero;
 
-            bossVisual.transform
-                .DOScale(1.2f, 0.25f)
-                .SetEase(Ease.OutBack)
-                .OnComplete(() =>
-                {
-                    bossVisual.transform.DOScale(1f, 0.1f);
-                });
+bossVisual.transform
+    .DOScale(defaultScale * 1.2f, 0.25f)
+    .SetEase(Ease.OutBack)
+    .OnComplete(() =>
+    {
+        bossVisual.transform.DOScale(defaultScale, 0.1f);
+    });
+
+    BossVisualController visual =
+    bossVisual.GetComponent<BossVisualController>();
+
+bossController.SetBossVisual(visual);
         }
+
 
         if (audioSource != null && bossAppearSE != null)
             audioSource.PlayOneShot(bossAppearSE);

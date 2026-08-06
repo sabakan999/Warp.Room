@@ -31,6 +31,13 @@ public class ModeSelectManager : MonoBehaviour
     [Header("フレームフェード")]
     public float fadeTime = 0.25f;
 
+    [Header("決定演出")]
+public float pressScale = 0.85f;
+public float pressTime = 0.08f;
+
+public float popScale = 1.35f;
+public float popTime = 0.15f;
+
     [Header("次シーン")]
     public string normalNextScene = "ステージセレクト";
     public string endlessNextScene = "ワープ・ルーム";
@@ -260,10 +267,12 @@ void UpdateOtherFrame(bool instant)
     {
         isDeciding = true;
 
-        DOTween.KillAll();
+    
 
         // 🔊 決定音
         PlaySE(decideSE);
+
+         yield return StartCoroutine(PlayDecisionEffect());
 
         // 🔥 音が鳴り終わるまで待つ
         float waitTime = 0.2f;
@@ -313,6 +322,25 @@ else
 }
     }
 
+RectTransform GetSelectedButton()
+{
+    if (pageIndex == 0)
+    {
+        // ゲームページ
+        return selectedIndex == 0
+            ? normalButton
+            : endlessButton;
+    }
+    else
+    {
+        // その他ページ
+        return selectedIndex == 0
+            ? rankingButton
+            : settingButton;
+    }
+}
+    
+
     // =========================
     // 🔊 SE再生
     // =========================
@@ -359,5 +387,35 @@ void UpdatePage(bool instant)
 
     if(page2!=null)
         page2.SetActive(pageIndex==1);
+}
+IEnumerator PlayDecisionEffect()
+{
+    RectTransform target = GetSelectedButton();
+
+    if (target == null)
+        yield break;
+
+
+    target.DOKill();
+
+
+    // 押し込む
+    yield return target
+        .DOScale(pressScale, pressTime)
+        .SetEase(Ease.OutQuad)
+        .SetLink(target.gameObject)
+        .WaitForCompletion();
+
+
+    // 弾むように拡大
+    yield return target
+        .DOScale(popScale, popTime)
+        .SetEase(Ease.OutBack)
+        .SetLink(target.gameObject)
+        .WaitForCompletion();
+
+
+    // 少し待つ
+    yield return new WaitForSeconds(0.05f);
 }
 }
