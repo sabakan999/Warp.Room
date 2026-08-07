@@ -254,14 +254,22 @@ void UpdateOtherFrame(bool instant)
     // =========================
     // 🎮 決定
     // =========================
-    void HandleSubmit()
+   void HandleSubmit()
+{
+    // Aボタン（決定）
+    if (Input.GetKeyDown(KeyCode.Space) ||
+        Input.GetKeyDown(KeyCode.Return) ||
+        Input.GetButtonDown("Submit"))
     {
-        if (Input.GetKeyDown(KeyCode.Space) ||
-            Input.GetKeyDown(KeyCode.Return))
-        {
-            StartCoroutine(SelectModeCoroutine());
-        }
+        StartCoroutine(SelectModeCoroutine());
+        return;
     }
+
+
+
+   
+}
+
 
     IEnumerator SelectModeCoroutine()
     {

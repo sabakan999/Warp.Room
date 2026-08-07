@@ -83,7 +83,7 @@ public class TimerUI : MonoBehaviour
     /// <summary>
     /// 空ゲージから満タンまで回復
     /// </summary>
-    public IEnumerator PlayBossCharge(float duration)
+  public IEnumerator PlayBossCharge(float duration)
 {
     gameObject.SetActive(true);
 
@@ -97,9 +97,6 @@ public class TimerUI : MonoBehaviour
         .SetEase(Ease.Linear);
 
     yield return t.WaitForCompletion();
-
-    // ★ここで60秒タイマー開始
-    StartTimer(60f);
 }
 
     /// <summary>
@@ -109,4 +106,17 @@ public class TimerUI : MonoBehaviour
     {
         gauge.DOColor(bossColor, 0.2f);
     }
+
+    public void StartBossTimer(float duration)
+{
+    if (gauge != null)
+        gauge.enabled = true;
+
+    maxTime = duration;
+    currentTime = duration;
+    isRunning = true;
+
+    gauge.fillAmount = 1f;
+    gauge.color = bossColor;
+}
 }

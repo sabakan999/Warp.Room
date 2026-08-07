@@ -14,6 +14,10 @@ public class SettingSceneManager : MonoBehaviour
     public AudioClip saideSE;
     public AudioClip decideSE;
 
+    float prevH = 0f;
+    float prevV = 0f;
+
+
     void Start()
     {
         // 最初の項目を選択
@@ -24,40 +28,57 @@ public class SettingSceneManager : MonoBehaviour
     }
 
     void Update()
+{
+    float h = Input.GetAxisRaw("Horizontal");
+    float v = Input.GetAxisRaw("Vertical");
+
+    // ▼ 下移動
+    if (Input.GetKeyDown(KeyCode.DownArrow) ||
+        (v < -0.5f && prevV >= -0.5f))
     {
-        // 下
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            MoveCursor(1);
-        }
-
-        // 上
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            MoveCursor(-1);
-        }
-
-        // 左
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            items[currentIndex].OnLeft();
-            PlaySE(saideSE);
-        }
-
-        // 右
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            items[currentIndex].OnRight();
-            PlaySE(saideSE);
-        }
-
-        // 決定
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            items[currentIndex].OnSubmit();
-            PlaySE(decideSE);
-        }
+        MoveCursor(1);
     }
+
+    // ▼ 上移動
+    if (Input.GetKeyDown(KeyCode.UpArrow) ||
+        (v > 0.5f && prevV <= 0.5f))
+    {
+        MoveCursor(-1);
+    }
+
+    // ▼ 左操作
+    if (Input.GetKeyDown(KeyCode.LeftArrow) ||
+        (h < -0.5f && prevH >= -0.5f))
+    {
+        items[currentIndex].OnLeft();
+        PlaySE(saideSE);
+    }
+
+    // ▼ 右操作
+    if (Input.GetKeyDown(KeyCode.RightArrow) ||
+        (h > 0.5f && prevH <= 0.5f))
+    {
+        items[currentIndex].OnRight();
+        PlaySE(saideSE);
+    }
+
+    // ▼ 決定（A）
+    if (Input.GetKeyDown(KeyCode.Space) ||
+        Input.GetKeyDown(KeyCode.Return) ||
+        Input.GetButtonDown("Submit"))
+    {
+        items[currentIndex].OnSubmit();
+        PlaySE(decideSE);
+    }
+
+    
+
+    
+
+    prevH = h;
+    prevV = v;
+}
+
 
     void MoveCursor(int direction)
     {

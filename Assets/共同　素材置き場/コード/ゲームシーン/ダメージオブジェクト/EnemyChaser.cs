@@ -24,6 +24,7 @@ public class EnemyChaser : MonoBehaviour
     void Update()
     {
         if (player == null) return;
+        
 
         Vector3 dir = (player.position - transform.position).normalized;
 

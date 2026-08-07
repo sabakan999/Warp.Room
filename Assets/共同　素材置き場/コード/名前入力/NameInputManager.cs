@@ -31,6 +31,10 @@ public class NameInputManager : MonoBehaviour
     public AudioClip selectSE;
     public AudioClip decideSE;
 
+    float prevH = 0f;
+    float prevV = 0f;
+
+
     private readonly string[] parentList =
     {
         "あ","か","さ","た","な",
@@ -148,119 +152,123 @@ public class NameInputManager : MonoBehaviour
         };
         }
 
-    void HandleHorizontal()
+   void HandleHorizontal()
+{
+    float h = Input.GetAxisRaw("Horizontal");
+
+    bool left = Input.GetKeyDown(KeyCode.LeftArrow) || (h < -0.5f && prevH >= -0.5f);
+    bool right = Input.GetKeyDown(KeyCode.RightArrow) || (h > 0.5f && prevH <= 0.5f);
+
+    if (left)
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            parentIndex--;
+        parentIndex--;
+        if (parentIndex < 0)
+            parentIndex = parentList.Length - 1;
 
-            if (parentIndex < 0)
-                parentIndex = parentList.Length - 1;
-
-            childIndex = 0;
-            if (audioSource != null && cursorSE != null)
-                audioSource.PlayOneShot(cursorSE);
-            RefreshUI();
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            parentIndex++;
-
-            if (parentIndex >= parentList.Length)
-                parentIndex = 0;
-
-            childIndex = 0;
-            if (audioSource != null && cursorSE != null)
-                audioSource.PlayOneShot(cursorSE);
-            RefreshUI();
-        }
-    }
-
-    void HandleVertical()
-    {
-        string[] list = childTable[parentIndex];
-
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            childIndex--;
-
-            if (childIndex < 0)
-                childIndex = list.Length - 1;
-            if (audioSource != null && cursorSE != null)
-                audioSource.PlayOneShot(cursorSE);
-            RefreshUI();
-        }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            childIndex++;
-
-            if (childIndex >= list.Length)
-                childIndex = 0;
-
-            if (audioSource != null && cursorSE != null)
-                audioSource.PlayOneShot(cursorSE);
-            RefreshUI();
-        }
-    }
-    void HandleSubmit()
-    {
-        if (!Input.GetKeyDown(KeyCode.Space))
-            return;
-
-        if (audioSource != null && selectSE != null)
-            audioSource.PlayOneShot(selectSE);
-
-        string selected = childTable[parentIndex][childIndex];
-
-        switch (selected)
-        {
-            case "゛":
-                AddDakuten();
-                break;
-
-            case "゜":
-                AddHandakuten();
-                break;
-
-            case "削除":
-
-                if (playerName.Length > 0)
-                {
-                    playerName = playerName.Substring(0, playerName.Length - 1);
-                }
-
-                break;
-
-            case "決定":
-
-                 if (playerName.Length > 0)
-                {   
-                    if (audioSource != null && decideSE != null)
-                        audioSource.PlayOneShot(decideSE);
-
-                    StartCoroutine(DecideRoutine());
-                }
-                break;
-            case "小":
-                AddSmallKana();
-            
-
-                break;
-
-            default:
-
-                if (playerName.Length < MaxLength)
-                {
-                    playerName += selected;
-                }
-
-                break;
-        }
-
+        childIndex = 0;
+        PlayCursorSE();
         RefreshUI();
     }
+
+    if (right)
+    {
+        parentIndex++;
+        if (parentIndex >= parentList.Length)
+            parentIndex = 0;
+
+        childIndex = 0;
+        PlayCursorSE();
+        RefreshUI();
+    }
+
+    prevH = h;
+}
+
+
+   void HandleVertical()
+{
+    string[] list = childTable[parentIndex];
+    float v = Input.GetAxisRaw("Vertical");
+
+    bool up = Input.GetKeyDown(KeyCode.UpArrow) || (v > 0.5f && prevV <= 0.5f);
+    bool down = Input.GetKeyDown(KeyCode.DownArrow) || (v < -0.5f && prevV >= -0.5f);
+
+    if (up)
+    {
+        childIndex--;
+        if (childIndex < 0)
+            childIndex = list.Length - 1;
+
+        PlayCursorSE();
+        RefreshUI();
+    }
+
+    if (down)
+    {
+        childIndex++;
+        if (childIndex >= list.Length)
+            childIndex = 0;
+
+        PlayCursorSE();
+        RefreshUI();
+    }
+
+    prevV = v;
+}
+   void HandleSubmit()
+{
+    if (Input.GetKeyDown(KeyCode.Space) ||
+        Input.GetKeyDown(KeyCode.Return) ||
+        Input.GetButtonDown("Submit"))   // ← Aボタン対応
+    {
+        OnSelect();
+    }
+
+   
+}
+
+void OnSelect()
+{
+    if (audioSource != null && selectSE != null)
+        audioSource.PlayOneShot(selectSE);
+
+    string selected = childTable[parentIndex][childIndex];
+
+    switch (selected)
+    {
+        case "゛": AddDakuten(); break;
+        case "゜": AddHandakuten(); break;
+        case "小": AddSmallKana(); break;
+
+        case "削除":
+            DeleteOne();
+            break;
+
+        case "決定":
+            if (playerName.Length > 0)
+            {
+                if (audioSource != null && decideSE != null)
+                    audioSource.PlayOneShot(decideSE);
+
+                StartCoroutine(DecideRoutine());
+            }
+            break;
+
+        default:
+            if (playerName.Length < MaxLength)
+                playerName += selected;
+            break;
+    }
+
+    RefreshUI();
+}
+
+void DeleteOne()
+{
+    if (playerName.Length > 0)
+        playerName = playerName.Substring(0, playerName.Length - 1);
+}
+
 
 
 
@@ -447,4 +455,11 @@ public class NameInputManager : MonoBehaviour
 
         SceneManager.LoadScene(nextScene);
     }
+
+    void PlayCursorSE()
+{
+    if (audioSource != null && cursorSE != null)
+        audioSource.PlayOneShot(cursorSE);
+}
+
 }

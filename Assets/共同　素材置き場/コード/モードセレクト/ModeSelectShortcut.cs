@@ -21,15 +21,25 @@ public class ModeSelectShortcut : MonoBehaviour
     private bool isTransitioning = false;
 
     void Update()
-    {
-        if (isTransitioning)
-            return;
+{
+    if (isTransitioning)
+        return;
 
-        if (Input.GetKeyDown(tutorialKey))
-        {
-            StartCoroutine(TutorialCoroutine());
-        }
+    // ESC（キーボード）
+    if (Input.GetKeyDown(tutorialKey))
+    {
+        StartCoroutine(TutorialCoroutine());
+        return;
     }
+
+
+    // ＋ボタン（PauseButton）
+    if (Input.GetButtonDown("PauseButton"))
+    {
+        StartCoroutine(TutorialCoroutine());
+        return;
+    }
+}
 
     IEnumerator TutorialCoroutine()
     {

@@ -1084,6 +1084,10 @@ PrefabInstance:
       value: "\u843D\u3061\u308B\u8DB3\u5834"
       objectReference: {fileID: 0}
     - target: {fileID: 6911574415720227805, guid: 006bbcdc849aa874bb0b84c667fa5c42, type: 3}
+      propertyPath: fallDelay
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6911574415720227805, guid: 006bbcdc849aa874bb0b84c667fa5c42, type: 3}
       propertyPath: respawnTime
       value: 1
       objectReference: {fileID: 0}

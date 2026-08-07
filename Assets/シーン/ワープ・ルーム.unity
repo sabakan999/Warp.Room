@@ -371,7 +371,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u4F01\u753B\n\u30B5\u30D0\u7F36\n\n\u30B7\u30CA\u30EA\u30AA\n\u30B5\u30D0\u7F36\n\n\u30E1\u30A4\u30F3\u30B7\u30B9\u30C6\u30E0\u8A2D\u8A08\u30FB\u958B\u767A\n\u30B5\u30D0\u7F36\n\n\u958B\u767A\n\u3075\u3057\u3093\u3057\u3083\n\u4E2D\u5D0E\u7460\u83DC\n\u5C0F\u5DDD\u7FD4\u5E73\n\u30B5\u30D0\u7F36\n\n\u30A4\u30E9\u30B9\u30C8\u88FD\u4F5C\n\u30B5\u30D0\u7F36\nH\u30FBA\u3055\u3093\n\nUI\n\u30B5\u30D0\u7F36\n\n\u30B5\u30A6\u30F3\u30C9\nBGM\n\u30B9\u30A8\u30CE\u30D6\u69D8\u300C\u9003\u3052\u8DB3\u3060\u3051\u306F\u4E00\u4EBA\u524D\uFF01\u300D\nKyatto\u69D8\u300CFizzy\u300D\nKyatto\u69D8\u300CListen\u300D\nKyatto\u69D8\u300CPeelaboo\u300D\nKyatto\u69D8\u300CForward\u300D\nKyatto\u69D8\u300CFried-Egg\u300D\nKyatto\u69D8\u300CBunnyhop\u300D\n\u306B\u3083\u308B\u3071\u304BBGM\u5DE5\u623F\u69D8\u300C\u3077\u308B\u3077\u308B\u30D7\u30EA\u30F3\u300D\n\u3053\u3093\u3069\u3045\u3075\u3047\u69D8\u300C\u30B7\u30FC\u30B5\u30A4\u30C9\u30FB\u30AF\u30C3\u30AD\u30FC\u300D\n\u3055\u3093\u3046\u3055\u304E\u69D8\u300C\u4ECA\u3059\u3050\u3001\u9003\u3052\u308D\u300D\nPeriTune\u69D8\u300CClown_Circus\u300D\n\nSE\n\u52B9\u679C\u97F3\u30E9\u30DC\u69D8\n\u9B54\u738B\u9B42\u69D8\nSpringin\u69D8\n\n\u30B9\u30DA\u30B7\u30E3\u30EB\u30B5\u30F3\u30AF\u30B9\nchatGPT\u69D8\n\n\n\n\n\u88FD\u4F5C\n\u30B2\u30FC\u30E0\u958B\u767A\u30B5\u30FC\u30AF\u30EB\u300CISC\u30AF\u30EA\u30A8\u30A4\u30BF\u30FC\u30BA\u300D\nWarpRoom\uFF01\u30D7\u30ED\u30B8\u30A7\u30AF\u30C8\u30C1\u30FC\u30E0\n\n\n\n\n\n\n\n\n\nThank
+  m_Text: "\u4F01\u753B\u30FB\u7ACB\u6848\n\u30B5\u30D0\u7F36\n\n\u30B7\u30CA\u30EA\u30AA\n\u30B5\u30D0\u7F36\n\n\u30E1\u30A4\u30F3\u30B7\u30B9\u30C6\u30E0\u8A2D\u8A08\u30FB\u958B\u767A\n\u30B5\u30D0\u7F36\n\n\u958B\u767A\u5354\u529B\n\u3075\u3057\u3093\u3057\u3083\n\u5742\u540D\n\u5C0F\u5DDD\u7FD4\u5E73\n\u30B5\u30D0\u7F36\n\n\u30A4\u30E9\u30B9\u30C8\u88FD\u4F5C\n\u30B5\u30D0\u7F36\nH\u30FBA\u3055\u3093\n\nUI\n\u30B5\u30D0\u7F36\n\n\u30B5\u30A6\u30F3\u30C9\nBGM\n\u30B9\u30A8\u30CE\u30D6\u69D8\u300C\u9003\u3052\u8DB3\u3060\u3051\u306F\u4E00\u4EBA\u524D\uFF01\u300D\nKyatto\u69D8\u300CFizzy\u300D\nKyatto\u69D8\u300CListen\u300D\nKyatto\u69D8\u300CPeelaboo\u300D\nKyatto\u69D8\u300CForward\u300D\nKyatto\u69D8\u300CFried-Egg\u300D\nKyatto\u69D8\u300CBunnyhop\u300D\n\u306B\u3083\u308B\u3071\u304BBGM\u5DE5\u623F\u69D8\u300C\u3077\u308B\u3077\u308B\u30D7\u30EA\u30F3\u300D\n\u3053\u3093\u3069\u3045\u3075\u3047\u69D8\u300C\u30B7\u30FC\u30B5\u30A4\u30C9\u30FB\u30AF\u30C3\u30AD\u30FC\u300D\n\u3055\u3093\u3046\u3055\u304E\u69D8\u300C\u4ECA\u3059\u3050\u3001\u9003\u3052\u308D\u300D\nPeriTune\u69D8\u300CClown_Circus\u300D\n\nSE\n\u52B9\u679C\u97F3\u30E9\u30DC\u69D8\n\u9B54\u738B\u9B42\u69D8\nSpringin\u69D8\n\n\u30B9\u30DA\u30B7\u30E3\u30EB\u30B5\u30F3\u30AF\u30B9\nchatGPT\u69D8\n\n\n\n\n\u88FD\u4F5C\n\u30B2\u30FC\u30E0\u958B\u767A\u30B5\u30FC\u30AF\u30EB\u300CISC\u30AF\u30EA\u30A8\u30A4\u30BF\u30FC\u30BA\u300D\nWarpRoom\uFF01\u30D7\u30ED\u30B8\u30A7\u30AF\u30C8\u30C1\u30FC\u30E0\n\n\n\n\n\n\n\n\n\nThank
     you for playing\uFF01\n"
 --- !u!222 &59324286
 CanvasRenderer:
@@ -406,12 +406,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 114515778}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1988674716}
+  m_Father: {fileID: 1700081265}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2803,6 +2803,7 @@ MonoBehaviour:
   - Enemy
   - Item
   - Player
+  - trap
   normalAlpha: 1
   overlapAlpha: 0.8
   fadeTime: 0.2
@@ -3254,6 +3255,9 @@ MonoBehaviour:
   - {fileID: 4529084442889480405, guid: 60039f665f2752b4aaf032303a79b17c, type: 3}
   - {fileID: 4529084442889480405, guid: 9ab9c08a2d26a9146a9c22b77367722b, type: 3}
   - {fileID: 4529084442889480405, guid: 75438ef79f940694bbf61a16c68d1bc0, type: 3}
+  - {fileID: 4529084442889480405, guid: f54823ad5548a8341ae2ff42c83a7721, type: 3}
+  - {fileID: 8365123639203131050, guid: 19f4f86e8f8f0164082e0370002b53c4, type: 3}
+  - {fileID: 4529084442889480405, guid: d6359f2ff985cd14dba14b12cdc2267b, type: 3}
   level2Rooms:
   - {fileID: 4529084442889480405, guid: d92f6fa83570ea849a23f3d4a38c6c97, type: 3}
   - {fileID: 4529084442889480405, guid: 0fe66b8d1647ab347acd1f0c26b69ff6, type: 3}
@@ -3268,18 +3272,31 @@ MonoBehaviour:
   - {fileID: 4529084442889480405, guid: 428ded8cd46f23d4d90cb7bda2b61ee7, type: 3}
   - {fileID: 4529084442889480405, guid: 508d631d543334c4093e7f8e1aa10cce, type: 3}
   - {fileID: 4529084442889480405, guid: 83a8af4e4f34d1b46b81fefa3c6c007f, type: 3}
+  - {fileID: 4372789117832830614, guid: c443634be07203e46987f66a00a504cb, type: 3}
   level3Rooms:
   - {fileID: 4529084442889480405, guid: d5c445e371efc464681bde9b6b887cd3, type: 3}
+  - {fileID: 8028778741627086136, guid: 9cae7543cc932404192e9f4aea60aabb, type: 3}
   - {fileID: 4529084442889480405, guid: a855e764a946e014194ee2ee7690d29e, type: 3}
   - {fileID: 4529084442889480405, guid: a6444a27ab93b6f439bdb8ad933121a0, type: 3}
   - {fileID: 4529084442889480405, guid: b5e5c3fb68e7ac746a8545f4f6969e17, type: 3}
   - {fileID: 4529084442889480405, guid: c2b92c35522a1a148b1f19293d64cf9a, type: 3}
-  testRooms: []
-
-  useTestRooms: 0
-
-
- dbe872c9b1685d35a121dc62b0c9cd7bc128821d
+  - {fileID: 4529084442889480405, guid: 2521fe632ae99534ca8a5e3b251f20ee, type: 3}
+  - {fileID: 4529084442889480405, guid: 3cc324286346150438c795161d5bda1a, type: 3}
+  - {fileID: 4529084442889480405, guid: 8a86e81c260d08e4485d229ec91d6e0f, type: 3}
+  - {fileID: 4529084442889480405, guid: 8a86e81c260d08e4485d229ec91d6e0f, type: 3}
+  - {fileID: 4529084442889480405, guid: bba0dbf6a6389ea40a806fefbe3b2248, type: 3}
+  - {fileID: 4529084442889480405, guid: 4c58365f682f0824db0c057fddc2bc1f, type: 3}
+  - {fileID: 4529084442889480405, guid: 612b0e91a6a89c647bb0dff77d7d86e7, type: 3}
+  - {fileID: 4529084442889480405, guid: 1ed6bffc9c419c244ab0253161102283, type: 3}
+  - {fileID: 4529084442889480405, guid: 9141ab82809056c4382849d8f1966835, type: 3}
+  - {fileID: 4529084442889480405, guid: bc08400c5b708e64fbf19708827fee13, type: 3}
+  - {fileID: 4529084442889480405, guid: 828fc356f1fd3454986c846f27a66b82, type: 3}
+  - {fileID: 4529084442889480405, guid: 907d2b6c7e4d21f4c8cfbfe15cacc3f0, type: 3}
+  - {fileID: 4529084442889480405, guid: 6f71e1a2dcb02be4089ac8bf09288b59, type: 3}
+  - {fileID: 4529084442889480405, guid: 2226f8267906e864d8ad1cc9f76de269, type: 3}
+  testRooms:
+  - {fileID: 0}
+  useTestRooms: 1
   currentLevel: 1
   bossRoomPrefab: {fileID: 4529084442889480405, guid: 28de5dd2a63663b418233549f40c8413, type: 3}
 --- !u!4 &632989893
@@ -4605,14 +4622,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 857975068}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 790022900}
   - {fileID: 1429809118}
-  m_Father: {fileID: 1988674716}
+  m_Father: {fileID: 1700081265}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -8972,6 +8989,45 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1698070222}
   m_CullTransparentMesh: 1
+--- !u!1 &1700081264
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1700081265}
+  m_Layer: 5
+  m_Name: "\u30EB\u30FC\u30C8"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1700081265
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700081264}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 857975069}
+  - {fileID: 1749398887}
+  - {fileID: 114515779}
+  - {fileID: 2030074540}
+  m_Father: {fileID: 1988674716}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1704782289
 GameObject:
   m_ObjectHideFlags: 0
@@ -9167,12 +9223,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1749398886}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1988674716}
+  m_Father: {fileID: 1700081265}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -9720,10 +9776,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossController
   attackPatterns:
   - {fileID: 8837390316770000483, guid: 25b18a6d9231a6a4dba96ba22c45a656, type: 3}
+  - {fileID: 8837390316770000483, guid: b79c3835ddc6ff14687d635ab51fc819, type: 3}
+  - {fileID: 774529570901832517, guid: 3474671e669af9c4d83c8dd6fb0ae8cf, type: 3}
+  - {fileID: 2044413532403321089, guid: 4b091bf72774a6a448bfe926a64290b6, type: 3}
+  - {fileID: 2069611901786330851, guid: b839536adb210b248930f5a739d273ac, type: 3}
+  - {fileID: 7720256812681874125, guid: 43309c2b4b7ebfc4cbb035e79d274534, type: 3}
+  - {fileID: 6908255708683408434, guid: 4c89146e454c25c4b8be5a8fc32dae9e, type: 3}
+  - {fileID: 2403445534008683866, guid: 06bb7bdbe0c218740ba903348ef5a5e8, type: 3}
+  - {fileID: 8837390316770000483, guid: f87e1e315c10dc64ab1156d4942391b1, type: 3}
+  - {fileID: 8837390316770000483, guid: 04ee0408982e8d44ca3e0b279948080b, type: 3}
+  - {fileID: 3335535264520768457, guid: 4c401ff03dc58034b94f7a8abe2b379c, type: 3}
+  - {fileID: 7629266759670391950, guid: 3b30a7dda07d77f4fa3f959b7294089a, type: 3}
+  - {fileID: 7629266759670391950, guid: b8b47465cbb569c40bfdcb71a86e1d97, type: 3}
+  - {fileID: 3504342622578374816, guid: 6fd476ee27aed2543981ee4d4fc16378, type: 3}
+  - {fileID: 6774922351389601563, guid: 3d3da4ae0de20734d9c6e8f277a414d8, type: 3}
+  - {fileID: 8837390316770000483, guid: 06ae22f29eed28241a8eab521451ec5a, type: 3}
+  - {fileID: 3130131995984233942, guid: 0cf5cb1083d950a48b55030d37405e8a, type: 3}
   attackSpawnPoint: {fileID: 4448740927054004889}
   battleTime: 60
-  attackInterval: 5
-  attackMotionTime: 0.5
   bossVisual: {fileID: 0}
   bossClearSequence: {fileID: 1849710513}
 --- !u!4 &1849710512
@@ -9754,7 +9824,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossClearSequence
   dialogueUI: {fileID: 1988674717}
-  bossFace: {fileID: 5766034536131629430, guid: 4de003351ae96004bab8542beea03405, type: 3}
+  bossFace: {fileID: 21300000, guid: 721997a7fdcfd1e4090b66ba4e5906d6, type: 3}
   curtain: {fileID: 904277834}
   curtainStart: {x: -0.0000019073, y: 508.02}
   curtainEnd: {x: -0.0000019073, y: 11.99999}
@@ -9763,7 +9833,7 @@ MonoBehaviour:
   endRollManager: {fileID: 1849710514}
   bgmManager: {fileID: 120701247}
   audioSource: {fileID: 1663693425}
-  fingerSnapSE: {fileID: 8300000, guid: 7330870772073764abf0d06b91fb786c, type: 3}
+  fingerSnapSE: {fileID: 8300000, guid: afd27cb47c78c784cbb5949d35bd7e87, type: 3}
 --- !u!114 &1849710514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10190,7 +10260,7 @@ MonoBehaviour:
   - {fileID: 1290470587}
   - {fileID: 1884134673}
   - {fileID: 2012919747}
-  audioSource: {fileID: 945363059}
+  audioSource: {fileID: 1663693425}
   moveSE: {fileID: 8300000, guid: ee40aae0960a5274c86d5848e610f0a7, type: 3}
   decideSE: {fileID: 8300000, guid: 66b98f89e5d3f4549aef1daee25d051a, type: 3}
   canPause: 1
@@ -10494,10 +10564,7 @@ RectTransform:
   m_LocalScale: {x: 0.41666666, y: 0.41666666, z: 0.41666666}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 857975069}
-  - {fileID: 1749398887}
-  - {fileID: 114515779}
-  - {fileID: 2030074540}
+  - {fileID: 1700081265}
   m_Father: {fileID: 254974170}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -10517,7 +10584,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eefc655a499b9154baa11ba6a18f2610, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueUI
-  root: {fileID: 1988674715}
+  root: {fileID: 1700081264}
   portrait: {fileID: 1749398888}
   speakerName: {fileID: 114515780}
   message: {fileID: 2030074541}
@@ -10728,12 +10795,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2030074539}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1988674716}
+  m_Father: {fileID: 1700081265}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

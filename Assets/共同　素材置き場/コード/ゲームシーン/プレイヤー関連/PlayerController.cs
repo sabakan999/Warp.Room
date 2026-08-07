@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
     private float moveInput;
     private bool isGrounded;
     private bool isControllable = true;
+    public bool CanControl => isControllable;
 
     void Awake()
     {
@@ -140,9 +141,16 @@ public class PlayerController : MonoBehaviour
     public void DisableControl()
     {
         isControllable = false;
-        rb.linearVelocity = Vector2.zero;
-        rb.simulated = false;
+    rb.linearVelocity = Vector2.zero;
     }
+
+        public void EnableControl()
+    {
+        isControllable = true;
+        
+    }
+
+   
 
     void OnDrawGizmosSelected()
     {

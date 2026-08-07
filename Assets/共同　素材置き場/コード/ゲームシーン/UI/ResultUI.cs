@@ -193,14 +193,38 @@ public class ResultUI : MonoBehaviour
         }
     }
 
-    void HandleSubmit()
+   void HandleSubmit()
+{
+    // Aボタン（決定）
+    if (Input.GetKeyDown(KeyCode.Space) ||
+        Input.GetKeyDown(KeyCode.Return) ||
+        Input.GetButtonDown("Submit"))
     {
-        if (Input.GetKeyDown(KeyCode.Space) ||
-            Input.GetKeyDown(KeyCode.Return))
-        {
-            StartCoroutine(DecideCoroutine());
-        }
+        StartCoroutine(DecideCoroutine());
+        return;
     }
+
+    
+}
+
+
+void OnBack()
+{
+    if (!isEndless)
+    {
+        // 通常モード → ステージセレクトへ
+        SceneManager.LoadScene("ステージセレクト");
+    }
+    else
+    {
+        // エンドレス → Back を選んだのと同じ動作
+        RetryData.isRetry = false;
+        RetryData.playerName = "";
+        RetryData.bestScore = 0;
+
+        SceneManager.LoadScene("モードセレクト");
+    }
+}
 
     void UpdateSelection(bool instant)
     {

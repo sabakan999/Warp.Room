@@ -33,12 +33,14 @@ public class SniperShot : MonoBehaviour
     public float shakeStrength = 0.35f;
 
     [Header("SE")]
-    public AudioSource audioSource;
     public AudioClip lockOnSE;
     public AudioClip shotSE;
 
+
     private SpriteRenderer targetSR;
     private SpriteRenderer hitSR;
+
+
 
     void Start()
     {
@@ -60,15 +62,19 @@ public class SniperShot : MonoBehaviour
         if (hitParticle != null)
             hitParticle.gameObject.SetActive(false);
 
+
         StartCoroutine(SniperRoutine());
     }
 
+
+
     IEnumerator SniperRoutine()
     {
-
         GameManager gm = FindFirstObjectByType<GameManager>();
 
         yield return new WaitForSeconds(startDelay);
+
+
 
         //====================
         // ターゲット表示
@@ -77,10 +83,12 @@ public class SniperShot : MonoBehaviour
         if (targetMark != null)
         {
             targetMark.SetActive(true);
+
             if (gm != null && gm.isGameRunning)
             {
-            PlaySE(lockOnSE);
+                PlaySE(lockOnSE);
             }
+
 
             if (targetSR != null)
             {
@@ -88,29 +96,36 @@ public class SniperShot : MonoBehaviour
                 c.a = 0f;
                 targetSR.color = c;
 
+
                 targetSR
                     .DOFade(1f, aimFadeTime)
                     .SetEase(Ease.Linear)
                     .SetLink(gameObject);
 
+
                 yield return new WaitForSeconds(aimFadeTime);
             }
         }
 
-        //====================
-        // ロックオン待機
-        //====================
 
-       
+
+        //====================
+        // 発射待機
+        //====================
 
         yield return new WaitForSeconds(shootDelay);
+
+
         if (gm != null && gm.isGameRunning)
         {
-         PlaySE(shotSE);
+            PlaySE(shotSE);
         }
+
 
         // 効果音遅延対策
         yield return new WaitForSeconds(0.1f);
+
+
 
         //====================
         // 発射
@@ -119,9 +134,12 @@ public class SniperShot : MonoBehaviour
         if (targetMark != null)
             targetMark.SetActive(false);
 
+
+
         if (hitMark != null)
         {
             hitMark.SetActive(true);
+
 
             if (hitSR != null)
             {
@@ -131,9 +149,12 @@ public class SniperShot : MonoBehaviour
             }
         }
 
-        
 
+
+        //====================
         // カメラシェイク
+        //====================
+
         if (Camera.main != null)
         {
             Camera.main.transform
@@ -144,20 +165,30 @@ public class SniperShot : MonoBehaviour
                 .SetLink(gameObject);
         }
 
+
+
+        //====================
         // 破片パーティクル
+        //====================
+
         if (hitParticle != null)
         {
             hitParticle.gameObject.SetActive(true);
             hitParticle.Play();
         }
 
+
         StartCoroutine(DamageRoutine());
+
+
 
         //====================
         // 着弾跡維持
         //====================
 
         yield return new WaitForSeconds(hitStayTime);
+
+
 
         //====================
         // フェードアウト
@@ -170,29 +201,47 @@ public class SniperShot : MonoBehaviour
                 .SetEase(Ease.OutQuad)
                 .SetLink(gameObject);
 
+
             yield return new WaitForSeconds(hitFadeTime);
         }
 
+
+
         Destroy(gameObject);
     }
+
+
+
+
 
     IEnumerator DamageRoutine()
     {
         if (damageArea == null)
             yield break;
 
+
         damageArea.SetActive(true);
 
+
         yield return new WaitForSeconds(damageDuration);
+
 
         damageArea.SetActive(false);
     }
 
+
+
+
+
     void PlaySE(AudioClip clip)
     {
-        if (audioSource == null || clip == null)
+        if (clip == null)
             return;
 
-        audioSource.PlayOneShot(clip);
+
+        if (MultiSEManager.Instance != null)
+        {
+            MultiSEManager.Instance.PlaySE(clip);
+        }
     }
 }

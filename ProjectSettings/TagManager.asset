@@ -9,6 +9,7 @@ TagManager:
   - Item
   - RoomFrame
   - BossRoomInside
+  - trap
   layers:
   - Default
   - TransparentFX

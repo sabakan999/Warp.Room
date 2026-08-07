@@ -66,22 +66,25 @@ public class TutorialManager : MonoBehaviour
     }
 
     void Update()
+{
+    if (Input.GetKeyDown(KeyCode.Space) ||
+        Input.GetKeyDown(KeyCode.Return) ||
+        Input.GetButtonDown("Submit"))   // ← Aボタン対応
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-             if (Time.timeScale == 0f)
-                return;
-            if (dialogueUI.IsTalking)
-            {
-                bool finished = dialogueUI.NextMessage();
+        if (Time.timeScale == 0f)
+            return;
 
-                if (finished)
-                {
-                    NextStep();
-                }
+        if (dialogueUI.IsTalking)
+        {
+            bool finished = dialogueUI.NextMessage();
+
+            if (finished)
+            {
+                NextStep();
             }
         }
     }
+}
 
     public void NextStep()
     {

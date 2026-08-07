@@ -96,16 +96,18 @@ public class EndRollManager : MonoBehaviour
 
 
     void Update()
+{
+    if (!finished || isEnding)
+        return;
+
+    // Aボタン（タイトルへ戻る）
+    if (Input.GetKeyDown(KeyCode.Space) ||
+        Input.GetKeyDown(KeyCode.Return) ||
+        Input.GetButtonDown("Submit"))   // ← Aボタン対応
     {
-        if (!finished || isEnding)
-            return;
-
-
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            StartCoroutine(ReturnTitle());
-        }
+        StartCoroutine(ReturnTitle());
     }
+}
 
 
 

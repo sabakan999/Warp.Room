@@ -43,6 +43,8 @@ public class BossClearSequence : MonoBehaviour
 
     private bool waitingInput = false;
 
+    private PlayerController playerController;
+
 
 
     string[] bossMessages =
@@ -54,6 +56,8 @@ public class BossClearSequence : MonoBehaviour
         "どうやら僕のWarpエネルギーを\n全て使い切ってしまったようだ。",
 
         "タイマーをムリヤリ動かすのに僕の\nWarpエネルギーは全て使ってしまったからね。",
+        "タイマーが0になってしまえば\n君はこの部屋から簡単に出られる。",
+
 
         "ははっ！完敗だ！",
 
@@ -71,21 +75,22 @@ public class BossClearSequence : MonoBehaviour
 
         "ははっ！それは失礼！",
 
-        "いやぁ、100年ぶりに\nお客さんが来てくれたものでね。",
+        "いやぁ、100年ぶりに\nお客さんが近くに来てくれたものでね。",
 
         "なんせ僕はここから\n出られないんだ。",
 
         "僕の力を危険に思った人間が\nここへ閉じ込めてしまったのさ。",
 
-        "僕はただショーが\nしたかっただけなのにね。",
+        "僕はただ、ショーが\nしたかっただけなのにね。",
 
-        "だから、ありがとう！",
+        "だから、僕と\nあそんでくれてありがとう！",
 
         "またいつでも来てくれたまえ！",
+        "…",
 
-        "おっと忘れるところだった。",
+        "…おっと、カーテンコールを\n忘れるところだった。",
 
-        "最高のショーには\n最高のフィナーレが必要さ！"
+        "最高のショーには\n最高のフィナーレがお似合いさ！"
     };
 
 
@@ -103,9 +108,11 @@ public class BossClearSequence : MonoBehaviour
         if(endRoll != null)
             endRoll.SetActive(false);
 
+        
 
-        if(dialogueUI != null)
-            dialogueUI.gameObject.SetActive(false);
+        
+
+       
     }
 
 
@@ -124,6 +131,9 @@ public class BossClearSequence : MonoBehaviour
 
     IEnumerator ClearRoutine()
     {
+        playerController ??= FindFirstObjectByType<PlayerController>();
+
+
         // ボスBGM停止
         if(bgmManager != null)
         {
@@ -134,9 +144,15 @@ public class BossClearSequence : MonoBehaviour
         // 勝利後の静寂
         yield return new WaitForSeconds(3f);
 
+       
+
+        
 
 
-
+            if(playerController != null)
+            {
+                playerController.DisableControl();
+            }
         // 会話UI表示
         if(dialogueUI != null)
             dialogueUI.gameObject.SetActive(true);
@@ -158,27 +174,24 @@ public class BossClearSequence : MonoBehaviour
 
 
     void Update()
+{
+    if (!waitingInput)
+        return;
+
+    // Aボタン（会話送り）
+    if (Input.GetKeyDown(KeyCode.Space) ||
+        Input.GetKeyDown(KeyCode.Return) ||
+        Input.GetButtonDown("Submit"))   // ← Aボタン対応
     {
-        if(!waitingInput)
-            return;
+        bool finished = dialogueUI.NextMessage();
 
-
-
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (finished)
         {
-            bool finished =
-                dialogueUI.NextMessage();
-
-
-
-            if(finished)
-            {
-                waitingInput = false;
-
-                StartCoroutine(Finale());
-            }
+            waitingInput = false;
+            StartCoroutine(Finale());
         }
     }
+}
 
 
 

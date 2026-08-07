@@ -21,16 +21,27 @@ public class BackSceneManager : MonoBehaviour
     private bool isTransitioning = false;
 
     void Update()
-    {
-        if (isTransitioning)
-            return;
+{
+    if (isTransitioning)
+        return;
 
-        if (Input.GetKeyDown(backKey) ||
-            Input.GetKeyDown(KeyCode.JoystickButton1))
-        {
-            StartCoroutine(ReturnCoroutine());
-        }
+    // キーボード（Backspace）
+    if (Input.GetKeyDown(backKey))
+    {
+        StartCoroutine(ReturnCoroutine());
+        return;
     }
+
+    // Bボタン（Cancel）
+    if (Input.GetButtonDown("Cancel"))
+    {
+        StartCoroutine(ReturnCoroutine());
+        return;
+    }
+
+    
+}
+
 
     IEnumerator ReturnCoroutine()
     {

@@ -36,7 +36,8 @@ public class AreaEffect : MonoBehaviour
             .SetLink(gameObject);
 
       // 効果音
-if (audioSource != null && appearSE != null)
+      GameManager gm = FindFirstObjectByType<GameManager>();
+if (audioSource != null && appearSE != null && gm != null && gm.isGameRunning)
 {
     audioSource.PlayOneShot(appearSE);
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7618024961933444788}
   - component: {fileID: 2115839376312623901}
   m_Layer: 0
-  m_Name: "\u30EC\u30FC\u30B6\u30FC\u653B\u6483"
+  m_Name: "\u30EC\u30FC\u30B6\u30FC\u653B\u6483 2"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,7 +50,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca2961499b8b584d95a35197c0dd3d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossAttack
-  duration: 3
+  duration: 4
+  spawnEffectPrefab: {fileID: 7679706471425994730, guid: 12de126ac3b0b0d458294af374a20ca9, type: 3}
+  spawnEffectTags:
+  - Trap
+  - Enemy
+  - Item
 --- !u!1001 &337177603837845490
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -187,7 +192,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4326417152859319192, guid: 43897f134c703954f966070832903f69, type: 3}
       propertyPath: activateDelay
-      value: 1.8
+      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -261,7 +266,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4326417152859319192, guid: 43897f134c703954f966070832903f69, type: 3}
       propertyPath: activateDelay
-      value: 0.8
+      value: 0.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -335,7 +340,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4326417152859319192, guid: 43897f134c703954f966070832903f69, type: 3}
       propertyPath: activateDelay
-      value: 0.4
+      value: 0.8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -409,7 +414,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4326417152859319192, guid: 43897f134c703954f966070832903f69, type: 3}
       propertyPath: activateDelay
-      value: 0
+      value: 1.8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -483,7 +488,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4326417152859319192, guid: 43897f134c703954f966070832903f69, type: 3}
       propertyPath: activateDelay
-      value: 0.2
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

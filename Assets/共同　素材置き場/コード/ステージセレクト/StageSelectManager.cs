@@ -134,16 +134,15 @@ public class StageSelectManager : MonoBehaviour
 // =========================
 void HandleSecretCommand()
 {
-    // ESC長押し
-    if (Input.GetKey(KeyCode.Escape))
+    // ESC長押し ＋ PauseButton長押し
+    if (Input.GetKey(KeyCode.Escape) ||
+        Input.GetButton("PauseButton"))   // ← 追加
     {
         escapeHoldTimer += Time.deltaTime;
-
 
         if (escapeHoldTimer >= resetHoldTime)
         {
             ResetProgress();
-
             escapeHoldTimer = 0f;
         }
     }
@@ -152,12 +151,11 @@ void HandleSecretCommand()
         escapeHoldTimer = 0f;
     }
 
-
-
-    // ESC連打
-    if (Input.GetKeyDown(KeyCode.Escape))
+    // ESC連打 ＋ PauseButton連打
+    if (Input.GetKeyDown(KeyCode.Escape) ||
+        Input.GetButtonDown("PauseButton"))   // ← 追加
     {
-        if(Time.time - lastEscapeTapTime < escapeTapResetTime)
+        if (Time.time - lastEscapeTapTime < escapeTapResetTime)
         {
             escapeTapCount++;
         }
@@ -166,14 +164,11 @@ void HandleSecretCommand()
             escapeTapCount = 1;
         }
 
-
         lastEscapeTapTime = Time.time;
 
-
-        if(escapeTapCount >= unlockTapCount)
+        if (escapeTapCount >= unlockTapCount)
         {
             UnlockAllStages();
-
             escapeTapCount = 0;
         }
     }
@@ -227,14 +222,21 @@ void HandleSecretCommand()
         cursorImage.color = c;
     }
 
-    void HandleSubmit()
+   void HandleSubmit()
+{
+    // Aボタン（決定）
+    if (Input.GetKeyDown(KeyCode.Space) ||
+        Input.GetKeyDown(KeyCode.Return) ||
+        Input.GetButtonDown("Submit"))
     {
-        if (Input.GetKeyDown(KeyCode.Space) ||
-            Input.GetKeyDown(KeyCode.Return))
-        {
-            StartCoroutine(SelectStageCoroutine());
-        }
+        StartCoroutine(SelectStageCoroutine());
+        return;
     }
+
+   
+
+    
+}
 
     
 

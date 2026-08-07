@@ -19,8 +19,16 @@ public class BossVisualController : MonoBehaviour
     public Transform talkPoint;
     public float returnTime = 1f;
 
-    bool isMoving = true;
+    [Header("SE")]
+    public AudioSource audioSource;
+    public AudioClip snapSE;
 
+    [Header("エフェクト")]
+    public GameObject snapEffect;
+
+    private BossController bossController;
+
+    bool isMoving = true;
     Vector3 startPosition;
 
     void Start()
@@ -29,6 +37,11 @@ public class BossVisualController : MonoBehaviour
 
         if (animator == null)
             animator = GetComponent<Animator>();
+
+        bossController = FindFirstObjectByType<BossController>();
+
+        if (snapEffect != null)
+            snapEffect.SetActive(false);
 
         MoveRandom();
     }
@@ -56,23 +69,61 @@ public class BossVisualController : MonoBehaviour
     //========================
     public void BeginAttack()
     {
-         Debug.Log("BeginAttack");
-
         isMoving = false;
 
         transform.DOKill();
 
-        if (animator != null)
-            animator.SetTrigger(attackTrigger);
+        animator.SetTrigger(attackTrigger);
     }
 
-    //========================
-    // 攻撃終了
-    //========================
+    //================================================
+    // Animation Event
+    // 指パッチンの瞬間
+    //================================================
+    public void SpawnAttack()
+    {
+        // SE
+        GameManager gm = FindFirstObjectByType<GameManager>();
+        if (audioSource != null && snapSE != null && gm != null && gm.isGameRunning)
+            audioSource.PlayOneShot(snapSE);
+
+        // エフェクト
+        if (snapEffect != null)
+        {
+            snapEffect.SetActive(true);
+
+            Animator effectAnimator = snapEffect.GetComponent<Animator>();
+
+            if (effectAnimator != null)
+            {
+                effectAnimator.Rebind();
+                effectAnimator.Update(0f);
+                effectAnimator.Play(0, 0, 0f);
+            }
+        }
+
+        // 攻撃生成
+        if (bossController != null)
+            bossController.SpawnRandomAttack();
+    }
+
+    //================================================
+    // Animation Event
+    // エフェクト終了時に呼ぶ
+    //================================================
+    public void HideEffect()
+    {
+        if (snapEffect != null)
+            snapEffect.SetActive(false);
+    }
+
+    //================================================
+    // Animation Event
+    // アニメーション終了
+    //================================================
     public void EndAttack()
     {
         isMoving = true;
-
         MoveRandom();
     }
 

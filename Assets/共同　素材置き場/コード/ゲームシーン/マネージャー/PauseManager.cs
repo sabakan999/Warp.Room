@@ -38,46 +38,51 @@ public class PauseManager : MonoBehaviour
     private GameObject currentPanel;
     public bool canPause = true;
 
+    // --- スティック長押し防止用 ---
+    bool stickUpPrev = false;
+    bool stickDownPrev = false;
+
     void Start()
     {
-        
-    if (tutorialPanel != null)
-        tutorialPanel.SetActive(false);
+        if (tutorialPanel != null)
+            tutorialPanel.SetActive(false);
 
-    if (normalPanel != null)
-        normalPanel.SetActive(false);
+        if (normalPanel != null)
+            normalPanel.SetActive(false);
 
-    if (endlessPanel != null)
-        endlessPanel.SetActive(false);
+        if (endlessPanel != null)
+            endlessPanel.SetActive(false);
 
-    if (cursor != null)
-        cursor.gameObject.SetActive(false);
+        if (cursor != null)
+            cursor.gameObject.SetActive(false);
 
-    canPause = true;
+        canPause = true;
     }
 
     void Update()
-{
-    if (!canPause)
-        return;
-
-    if (isDeciding)
-        return;
-
-    if (Input.GetKeyDown(KeyCode.Escape))
     {
+        if (!canPause)
+            return;
+
+        if (isDeciding)
+            return;
+
+        // --- Pause / Resume ---
+        if (Input.GetKeyDown(KeyCode.Escape) ||
+            Input.GetButtonDown("PauseButton")) 
+        {
+            if (!isPaused)
+                Pause();
+            else
+                Resume();
+        }
+
         if (!isPaused)
-            Pause();
-        else
-            Resume();
+            return;
+
+        HandleMove();
+        HandleSubmit();
     }
-
-    if (!isPaused)
-        return;
-
-    HandleMove();
-    HandleSubmit();
-}
 
     //---------------------------------
     // ポーズ開始
@@ -90,9 +95,6 @@ public class PauseManager : MonoBehaviour
 
         currentIndex = 0;
 
-        //---------------------------------
-        // パネル決定
-        //---------------------------------
         if (isTutorial)
         {
             currentPanel = tutorialPanel;
@@ -109,17 +111,16 @@ public class PauseManager : MonoBehaviour
             currentItems = normalItems;
         }
 
-       if (currentPanel != null)
-    currentPanel.SetActive(true);
+        if (currentPanel != null)
+            currentPanel.SetActive(true);
 
-    if (cursor != null &&
-        currentItems != null &&
-        currentItems.Length > 0)
-    {
-
-        cursor.gameObject.SetActive(true);
-        cursor.position = currentItems[currentIndex].position;
-    }
+        if (cursor != null &&
+            currentItems != null &&
+            currentItems.Length > 0)
+        {
+            cursor.gameObject.SetActive(true);
+            cursor.position = currentItems[currentIndex].position;
+        }
     }
 
     //---------------------------------
@@ -138,49 +139,72 @@ public class PauseManager : MonoBehaviour
     }
 
     //---------------------------------
-    // カーソル移動
+    // カーソル移動（長押し禁止 + 高レスポンス）
     //---------------------------------
     void HandleMove()
     {
         int old = currentIndex;
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        // --- キーボード ---
+        bool upKey = Input.GetKeyDown(KeyCode.UpArrow);
+        bool downKey = Input.GetKeyDown(KeyCode.DownArrow);
+
+        // --- コントローラー（左スティック） ---
+        float v = Input.GetAxis("Vertical");
+
+        bool stickUpNow = v > 0.5f;
+        bool stickDownNow = v < -0.5f;
+
+        // 「前フレームは入力なし → 今フレーム入力あり」だけ反応
+        bool upJoy = !stickUpPrev && stickUpNow;
+        bool downJoy = !stickDownPrev && stickDownNow;
+
+        // --- 上移動 ---
+        if (upKey || upJoy)
         {
             currentIndex--;
-
             if (currentIndex < 0)
                 currentIndex = currentItems.Length - 1;
         }
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        // --- 下移動 ---
+        if (downKey || downJoy)
         {
             currentIndex++;
-
             if (currentIndex >= currentItems.Length)
                 currentIndex = 0;
         }
 
+        // --- カーソル更新 ---
         if (old != currentIndex)
         {
             PlaySE(moveSE);
-
-            cursor.position =
-                currentItems[currentIndex].position;
+            cursor.position = currentItems[currentIndex].position;
         }
+
+        // 入力状態を記録
+        stickUpPrev = stickUpNow;
+        stickDownPrev = stickDownNow;
     }
 
     //---------------------------------
-    // 決定
+    // 決定（キーボード + Aボタン）
     //---------------------------------
     void HandleSubmit()
     {
-        if (Input.GetKeyDown(KeyCode.Space) ||
-            Input.GetKeyDown(KeyCode.Return))
+        bool keySubmit =
+            Input.GetKeyDown(KeyCode.Space) ||
+            Input.GetKeyDown(KeyCode.Return);
+
+        bool joySubmit = Input.GetButtonDown("Submit"); // Aボタン
+
+        if (keySubmit || joySubmit)
         {
             StartCoroutine(DecideRoutine());
         }
     }
-        //---------------------------------
+
+    //---------------------------------
     // 決定処理
     //---------------------------------
     System.Collections.IEnumerator DecideRoutine()
@@ -195,39 +219,28 @@ public class PauseManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(wait);
 
-        //---------------------------------
-        // チュートリアル
-        //---------------------------------
         if (isTutorial)
         {
             switch (currentIndex)
             {
-                // 続ける
                 case 0:
                     Resume();
                     break;
 
-                // チュートリアル終了
                 case 1:
                     Time.timeScale = 1f;
                     SceneManager.LoadScene("モードセレクト");
                     break;
             }
         }
-
-        //---------------------------------
-        // エンドレス
-        //---------------------------------
         else if (GameSettings.isEndlessMode)
         {
             switch (currentIndex)
             {
-                // 続ける
                 case 0:
                     Resume();
                     break;
 
-                // リトライ
                 case 1:
                     Time.timeScale = 1f;
                     SceneManager.LoadScene(
@@ -235,27 +248,20 @@ public class PauseManager : MonoBehaviour
                     );
                     break;
 
-                // モードセレクト
                 case 2:
                     Time.timeScale = 1f;
                     SceneManager.LoadScene("モードセレクト");
                     break;
             }
         }
-
-        //---------------------------------
-        // ノーマル
-        //---------------------------------
         else
         {
             switch (currentIndex)
             {
-                // 続ける
                 case 0:
                     Resume();
                     break;
 
-                // リトライ
                 case 1:
                     Time.timeScale = 1f;
                     SceneManager.LoadScene(
@@ -263,13 +269,11 @@ public class PauseManager : MonoBehaviour
                     );
                     break;
 
-                // ステージセレクト
                 case 2:
                     Time.timeScale = 1f;
                     SceneManager.LoadScene("ステージセレクト");
                     break;
 
-                // モードセレクト
                 case 3:
                     Time.timeScale = 1f;
                     SceneManager.LoadScene("モードセレクト");

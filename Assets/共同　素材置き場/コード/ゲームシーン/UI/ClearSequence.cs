@@ -87,10 +87,27 @@ public class ClearSequence : MonoBehaviour
     {
         if (!canInput) return;
 
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
-        {
-            StartCoroutine(ReturnToStageSelect());
-        }
+       // Aボタン（提出）
+    // Aボタン（提出）
+    if (Input.GetKeyDown(KeyCode.Space) ||
+        Input.GetKeyDown(KeyCode.Return) ||
+        Input.GetButtonDown("Submit"))
+    {
+        StartCoroutine(ReturnToStageSelect());
+    }
+
+    // Bボタン（キャンセル）
+    if (Input.GetKeyDown(KeyCode.Backspace) ||
+        Input.GetButtonDown("Cancel"))
+    {
+        StartCoroutine(ReturnToStageSelect());
+    }
+
+    // ＋ボタン（PauseButton）
+    if (Input.GetButtonDown("PauseButton"))
+    {
+        StartCoroutine(ReturnToStageSelect());
+    }
     }
 
     IEnumerator Sequence()

@@ -13,6 +13,12 @@ public class BossBattleIntro : MonoBehaviour
     [Header("ボス見た目")]
     public GameObject bossVisual;
 
+    [Header("会話")]
+    public DialogueUI dialogueUI;
+
+    [Header("ボス顔")]
+    public Sprite bossFace;
+
     [Header("演出時間")]
     public float shakeTime = 0.8f;
     public float chargeTime = 2.5f;
@@ -24,42 +30,60 @@ public class BossBattleIntro : MonoBehaviour
     [Header("SE")]
     public AudioClip bossAppearSE;
 
-    bool isPlaying = false;
+    private bool isPlaying = false;
+    private bool waitingDialogue = false;
+    private PlayerController playerController;
 
-void Start()
-{
-    bossVisual.SetActive(false);
-    defaultScale = bossVisual.transform.localScale;
-}
-
-  public void StartIntro()
-{
-    if (isPlaying) return;
-
-    timerUI ??= FindFirstObjectByType<TimerUI>();
-    bossController ??= FindFirstObjectByType<BossController>();
-    bgmManager ??= FindFirstObjectByType<BGMManager>();
-
-    if (audioSource == null)
+    string[] introMessages =
     {
-        GameObject se = GameObject.Find("SE");
-        if (se != null)
-            audioSource = se.GetComponent<AudioSource>();
+        "やぁ！",
+        "もしかして君は今\n「もうこれで終わりか。」",
+        "なーんて思ったかい？",
+        "残念！僕のショー、「WarpRoom」\nはまだ終わらないよ！",
+        "なーにそんな顔してるのさ？\n今まで君は楽しんでいたじゃないか！",
+        "僕のwarp、\n最高にスリリングだっただろ？",
+        "それに久しぶりのお客さんなんだ。\nそう簡単には帰さないさ。",
+        "とはいえ今君をここに呼び寄せて\n留めるために僕のwarp魔法はすべて",
+        "あのタイマーを増やすのに使ってしまった。\nもうwarpは使えない。",
+        "つまりさっきのが正真正銘、\n最後のwarpさ。",
+        "さぁ、一世一代の\n最高のショーを始めよう！"
+    };
+
+    void Start()
+    {
+        bossVisual.SetActive(false);
+        defaultScale = bossVisual.transform.localScale;
+
+        
+         dialogueUI ??= FindFirstObjectByType<DialogueUI>();
+        Debug.Log(dialogueUI == null ? "DialogueUI = NULL" : "DialogueUI = " + dialogueUI.name);
     }
 
-    Debug.Log("===== BossBattleIntro =====");
-  Debug.Log("BossBattleIntro Instance : " + gameObject.name);
-    Debug.Log($"TimerUI        : {(timerUI != null ? timerUI.name : "NULL")}");
-    Debug.Log($"BossController : {(bossController != null ? bossController.name : "NULL")}");
-    Debug.Log($"BGMManager     : {(bgmManager != null ? bgmManager.name : "NULL")}");
-    Debug.Log($"AudioSource    : {(audioSource != null ? audioSource.gameObject.name : "NULL")}");
-    Debug.Log($"BossVisual     : {(bossVisual != null ? bossVisual.name : "NULL")}");
+    public void StartIntro()
+    {
+        if (isPlaying) return;
 
-    isPlaying = true;
-    StartCoroutine(IntroSequence());
-}
+        dialogueUI ??= FindFirstObjectByType<DialogueUI>();
+        playerController ??= FindFirstObjectByType<PlayerController>();
 
-  
+        timerUI ??= FindFirstObjectByType<TimerUI>();
+        bossController ??= FindFirstObjectByType<BossController>();
+        bgmManager ??= FindFirstObjectByType<BGMManager>();
+
+        if (audioSource == null)
+        {
+            GameObject se = GameObject.Find("SE");
+
+            if (se != null)
+                audioSource = se.GetComponent<AudioSource>();
+        }
+
+        Debug.Log("===== BossBattleIntro =====");
+
+        isPlaying = true;
+
+        StartCoroutine(IntroSequence());
+    }
 
     IEnumerator IntroSequence()
     {
@@ -91,22 +115,22 @@ void Start()
         if (bossVisual != null)
         {
             bossVisual.SetActive(true);
-           bossVisual.transform.localScale = Vector3.zero;
 
-bossVisual.transform
-    .DOScale(defaultScale * 1.2f, 0.25f)
-    .SetEase(Ease.OutBack)
-    .OnComplete(() =>
-    {
-        bossVisual.transform.DOScale(defaultScale, 0.1f);
-    });
+            bossVisual.transform.localScale = Vector3.zero;
 
-    BossVisualController visual =
-    bossVisual.GetComponent<BossVisualController>();
+            bossVisual.transform
+                .DOScale(defaultScale * 1.2f, 0.25f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() =>
+                {
+                    bossVisual.transform.DOScale(defaultScale, 0.1f);
+                });
 
-bossController.SetBossVisual(visual);
+            BossVisualController visual =
+                bossVisual.GetComponent<BossVisualController>();
+
+            bossController.SetBossVisual(visual);
         }
-
 
         if (audioSource != null && bossAppearSE != null)
             audioSource.PlayOneShot(bossAppearSE);
@@ -114,19 +138,78 @@ bossController.SetBossVisual(visual);
         yield return new WaitForSeconds(bossAppearDelay);
 
         //--------------------------------------------------
-        // ⑤ ボスBGM
+        // ⑤ ボス会話
+        //--------------------------------------------------
+        if (dialogueUI != null)
+        {
+            if (bossController != null && bossController.bossVisual != null)
+            {
+                bossController.bossVisual.MoveToTalkPosition();
+            }
+
+            if(playerController != null)
+            {
+                playerController.DisableControl();
+            }
+             Debug.Log("会話開始");
+            dialogueUI.gameObject.SetActive(true);
+
+            dialogueUI.StartDialogue(
+                bossFace,
+                "アルドラ",
+                introMessages
+            );
+
+            waitingDialogue = true;
+
+            yield return new WaitUntil(() => waitingDialogue == false);
+
+            dialogueUI.gameObject.SetActive(false);
+            
+            if(playerController != null)
+            {
+                playerController.EnableControl();
+            }
+        }
+
+        //--------------------------------------------------
+        // ⑥ ボスBGM
         //--------------------------------------------------
         if (bgmManager != null)
             bgmManager.PlayBossBGM();
 
         yield return new WaitForSeconds(battleStartDelay);
 
+                if (timerUI != null)
+        {
+            timerUI.StartBossTimer(60f);
+        }
+
         //--------------------------------------------------
-        // ⑥ 戦闘開始
+        // ⑦ 戦闘開始
         //--------------------------------------------------
         if (bossController != null)
             bossController.BeginBattle();
 
         isPlaying = false;
     }
+
+    void Update()
+{
+    if (!waitingDialogue)
+        return;
+
+    // Aボタン（会話送り）
+    if (Input.GetKeyDown(KeyCode.Space) ||
+        Input.GetKeyDown(KeyCode.Return) ||
+        Input.GetButtonDown("Submit"))   // ← Aボタン対応
+    {
+        bool finished = dialogueUI.NextMessage();
+
+        if (finished)
+        {
+            waitingDialogue = false;
+        }
+    }
+}
 }

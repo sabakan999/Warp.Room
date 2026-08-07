@@ -73,25 +73,29 @@ public float introTime = 2.5f;
     }
 
     void HandleScroll()
-    {
-        if (scrollRect == null)
-            return;
+{
+    if (scrollRect == null)
+        return;
 
-        float move = 0f;
+    float move = 0f;
 
-        if (Input.GetKey(KeyCode.UpArrow))
-            move = scrollSpeed;
+    // キーボード
+    if (Input.GetKey(KeyCode.UpArrow))
+        move = scrollSpeed;
 
-        if (Input.GetKey(KeyCode.DownArrow))
-            move = -scrollSpeed;
+    if (Input.GetKey(KeyCode.DownArrow))
+        move = -scrollSpeed;
 
-        scrollRect.verticalNormalizedPosition =
-            Mathf.Clamp01(
-                scrollRect.verticalNormalizedPosition +
-                move * Time.deltaTime
-            );
-    }
+    // コントローラー（左スティック）
+    float v = Input.GetAxis("Vertical");
+    move += v * scrollSpeed;
 
+    scrollRect.verticalNormalizedPosition =
+        Mathf.Clamp01(
+            scrollRect.verticalNormalizedPosition +
+            move * Time.deltaTime
+        );
+}
     void LoadRanking()
     {
         if (RankingManager.Instance == null)

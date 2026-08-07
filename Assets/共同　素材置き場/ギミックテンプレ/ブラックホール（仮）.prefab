@@ -5048,8 +5048,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlackHole
   radius: 2.5
-  force: 20
-  maxForce: 100
+  force: 70
+  maxForce: 150
   targetTag: Player
   forceCurve:
     serializedVersion: 2

@@ -5088,7 +5088,7 @@ GameObject:
   - component: {fileID: 4092997315944139053}
   m_Layer: 0
   m_Name: "\u30D4\u30B9\u30C8\u30EB\u30AE\u30DF\u30C3\u30AF"
-  m_TagString: Trap
+  m_TagString: trap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

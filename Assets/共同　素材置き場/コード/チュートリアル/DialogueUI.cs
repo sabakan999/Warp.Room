@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class DialogueUI : MonoBehaviour
 {
+    [Header("UI")]
     public GameObject root;
 
     public Image portrait;
@@ -14,9 +15,19 @@ public class DialogueUI : MonoBehaviour
 
     public bool IsTalking { get; private set; }
 
+    void Awake()
+    {
+        // 起動時は自分で非表示
+        if (root != null)
+            root.SetActive(false);
+
+        IsTalking = false;
+    }
+
     public void StartDialogue(Sprite face, string name, string[] texts)
     {
-        root.SetActive(true);
+        if (root != null)
+            root.SetActive(true);
 
         portrait.sprite = face;
         speakerName.text = name;
@@ -45,7 +56,9 @@ public class DialogueUI : MonoBehaviour
 
     public void Hide()
     {
-        root.SetActive(false);
+        if (root != null)
+            root.SetActive(false);
+
         IsTalking = false;
     }
 }

@@ -68,18 +68,39 @@ public class TitleInput : MonoBehaviour
         canInput = true;
     }
 
-    void Update()
-    {
-        if (!canInput || isTransitioning)
-            return;
+   void Update()
+{
+    if (!canInput || isTransitioning)
+        return;
 
-        if (Input.GetButtonDown("Submit") ||
-            Input.GetKeyDown(KeyCode.Space))
-        {
-            isTransitioning = true;
-            StartCoroutine(GoNextCoroutine());
-        }
+    // Aボタン（決定）
+    if (Input.GetKeyDown(KeyCode.Space) ||
+        Input.GetKeyDown(KeyCode.Return) ||
+        Input.GetButtonDown("Submit"))
+    {
+        isTransitioning = true;
+        StartCoroutine(GoNextCoroutine());
+        return;
     }
+
+    // Bボタン（キャンセル → タイトルは戻る場所がないので同じ動作）
+    if (Input.GetKeyDown(KeyCode.Backspace) ||
+        Input.GetButtonDown("Cancel"))
+    {
+        isTransitioning = true;
+        StartCoroutine(GoNextCoroutine());
+        return;
+    }
+
+    // ＋ボタン（PauseButton → 同じく決定扱い）
+    if (Input.GetButtonDown("PauseButton"))
+    {
+        isTransitioning = true;
+        StartCoroutine(GoNextCoroutine());
+        return;
+    }
+}
+
 
     IEnumerator GoNextCoroutine()
     {

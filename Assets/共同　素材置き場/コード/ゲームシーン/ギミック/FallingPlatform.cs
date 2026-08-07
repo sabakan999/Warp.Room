@@ -25,7 +25,8 @@ public class FallingPlatform : MonoBehaviour
     public LayerMask collideLayers;
 
     [Header("一方通行設定")]
-    public float oneWayThreshold = 0.1f; // 上から判定の余裕
+    public float oneWayThreshold = 0.1f;
+
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -34,9 +35,12 @@ public class FallingPlatform : MonoBehaviour
     private Vector3 startPosition;
 
     private float timer = 0f;
+
     private bool isStepped = false;
     private bool isFalling = false;
     private bool respawnScheduled = false;
+
+
 
     void Awake()
     {
@@ -44,11 +48,18 @@ public class FallingPlatform : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
 
+
         rb.bodyType = RigidbodyType2D.Kinematic;
 
+
         startPosition = transform.position;
+
         sr.color = startColor;
     }
+
+
+
+
 
     void Update()
     {
@@ -59,11 +70,18 @@ public class FallingPlatform : MonoBehaviour
         {
             timer += Time.deltaTime;
 
+
             if (fallDelay > 0f)
             {
                 float t = Mathf.Clamp01(timer / fallDelay);
-                sr.color = Color.Lerp(startColor, dangerColor, t);
+
+                sr.color = Color.Lerp(
+                    startColor,
+                    dangerColor,
+                    t
+                );
             }
+
 
             if (timer >= fallDelay)
             {
@@ -71,20 +89,32 @@ public class FallingPlatform : MonoBehaviour
             }
         }
 
+
+
         // =========================
-        // ⬇ 落下（物理じゃなく移動）
+        // ⬇ 落下（物理ではなく移動）
         // =========================
         if (isFalling)
         {
-            transform.position += Vector3.down * fallSpeed * Time.deltaTime;
+            transform.position +=
+                Vector3.down * fallSpeed * Time.deltaTime;
+
 
             if (respawn && !respawnScheduled)
             {
                 respawnScheduled = true;
-                Invoke(nameof(Respawn), respawnTime);
+
+                Invoke(
+                    nameof(Respawn),
+                    respawnTime
+                );
             }
         }
     }
+
+
+
+
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -94,64 +124,116 @@ public class FallingPlatform : MonoBehaviour
         if ((collideLayers.value & (1 << collision.gameObject.layer)) == 0)
             return;
 
+
+
         // =========================
-        // ⬆ 上から乗ったか判定
+        // ⬆ 上から乗った判定
         // =========================
         foreach (ContactPoint2D contact in collision.contacts)
         {
-            // 接触点が上からならOK
             if (contact.normal.y < -0.5f)
             {
                 isStepped = true;
 
+
                 if (fallDelay <= 0f)
                 {
                     sr.color = dangerColor;
+
                     isFalling = true;
                 }
+
 
                 return;
             }
         }
 
-        // 横や下からはすり抜け
-        Physics2D.IgnoreCollision(col, collision.collider, true);
+
+
+        // 横や下からは無視
+        Physics2D.IgnoreCollision(
+            col,
+            collision.collider,
+            true
+        );
     }
+
+
+
+
 
     void OnCollisionExit2D(Collision2D collision)
     {
         if ((collideLayers.value & (1 << collision.gameObject.layer)) == 0)
             return;
 
+
+
+        // =========================
+        // 落下開始後は戻さない
+        // =========================
+        if (isFalling)
+            return;
+
+
+
         isStepped = false;
+
         timer = 0f;
+
         sr.color = startColor;
 
-        // 念のため衝突戻す
-        Physics2D.IgnoreCollision(col, collision.collider, false);
+
+
+        Physics2D.IgnoreCollision(
+            col,
+            collision.collider,
+            false
+        );
     }
+
+
+
+
 
     void Respawn()
     {
         gameObject.SetActive(false);
+
         gameObject.SetActive(true);
     }
+
+
+
+
 
     void OnEnable()
     {
         ResetPlatform();
     }
 
+
+
+
+
     void ResetPlatform()
     {
         transform.position = startPosition;
 
+
         timer = 0f;
+
         isStepped = false;
+
         isFalling = false;
+
         respawnScheduled = false;
 
+
+
         if (sr != null)
+        {
             sr.color = startColor;
+        }
     }
 }

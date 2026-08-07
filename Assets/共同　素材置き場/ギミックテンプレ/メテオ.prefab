@@ -317,7 +317,7 @@ GameObject:
   - component: {fileID: 1640803343552073836}
   m_Layer: 0
   m_Name: "\u30E1\u30C6\u30AA"
-  m_TagString: Untagged
+  m_TagString: Trap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
