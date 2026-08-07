@@ -26,33 +26,28 @@ public static class GameSettings
 
 
 
-    public static void UnlockNextStage()
+   public static void UnlockNextStage()
+{
+    int nextWorld = selectedWorld;
+    int nextStage = selectedStage + 1;
+
+    if (selectedStage >= 3)
     {
-        // 次のステージ
-        if(selectedStage < 3)
-        {
-            unlockedWorld = selectedWorld;
-            unlockedStage = selectedStage + 1;
-        }
-        // 3クリア → 次ワールド
-        else
-        {
-            unlockedWorld = selectedWorld + 1;
-            unlockedStage = 1;
-        }
+        nextWorld = selectedWorld + 1;
+        nextStage = 1;
+    }
 
+    // 緊張修正箇所
+    if (nextWorld > unlockedWorld ||
+        (nextWorld == unlockedWorld && nextStage > unlockedStage))
+    {
+        unlockedWorld = nextWorld;
+        unlockedStage = nextStage;
 
-        PlayerPrefs.SetInt(
-            "UnlockedWorld",
-            unlockedWorld
-        );
-
-        PlayerPrefs.SetInt(
-            "UnlockedStage",
-            unlockedStage
-        );
-
+        PlayerPrefs.SetInt("UnlockedWorld", unlockedWorld);
+        PlayerPrefs.SetInt("UnlockedStage", unlockedStage);
         PlayerPrefs.Save();
     }
+}
     
 }

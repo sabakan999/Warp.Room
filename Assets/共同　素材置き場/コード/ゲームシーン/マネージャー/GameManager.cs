@@ -52,11 +52,16 @@ public class GameManager : MonoBehaviour
         if (playerSpawner == null)
             playerSpawner = FindFirstObjectByType<PlayerSpawner>();
 
-        if (!GameSettings.isEndlessMode)
-        {
-            roomManager.currentLevel = GameSettings.selectedWorld;
-            targetRoomCount = GameSettings.selectedStage * 3;
-        }
+       if (!GameSettings.isEndlessMode)
+{
+    roomManager.currentLevel = GameSettings.selectedWorld;
+
+    // ★ selectedStage ではなく unlockedStage を使う
+    int stageToPlay = GameSettings.selectedStage;
+
+    // ステージの長さは「遊ぶステージ」に依存するのでそのまま
+    targetRoomCount = stageToPlay * 3;
+}
         else
         {
             roomManager.currentLevel = -1;
