@@ -25,7 +25,7 @@ public class RoomManager : MonoBehaviour
 
     private GameObject lastRoomPrefab = null;
 
-    // 🔥 進行度
+    //  進行度
     private int progress = 0;
 
     // =========================
@@ -39,7 +39,7 @@ public class RoomManager : MonoBehaviour
     {
         GameObject roomPrefab = null;
 
-        // テスト部屋
+        // テスト部屋を使う場合の処理
         if (useTestRooms && !usedTestRoom && testRooms != null && testRooms.Count > 0)
         {
             roomPrefab = testRooms[Random.Range(0, testRooms.Count)];
@@ -57,7 +57,7 @@ public class RoomManager : MonoBehaviour
     // =========================
     GameObject GetRoomByMode()
     {
-        // 🔥 無限モード
+        //  無限モード
         if (currentLevel == -1)
         {
             return GetWeightedRandomRoom();
@@ -69,7 +69,7 @@ public class RoomManager : MonoBehaviour
     }
 
     // =========================
-    // 🔥 重み付き抽選（ここが本体）
+    //  重み付き抽選
     // =========================
     GameObject GetWeightedRandomRoom()
     {
