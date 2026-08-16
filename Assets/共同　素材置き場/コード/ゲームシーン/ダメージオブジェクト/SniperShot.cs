@@ -41,18 +41,21 @@ public class SniperShot : MonoBehaviour
     private SpriteRenderer hitSR;
 
 
-
     void Start()
     {
         if (targetMark != null)
         {
-            targetSR = targetMark.GetComponent<SpriteRenderer>();
+            targetSR =
+                targetMark.GetComponent<SpriteRenderer>();
+
             targetMark.SetActive(false);
         }
 
         if (hitMark != null)
         {
-            hitSR = hitMark.GetComponent<SpriteRenderer>();
+            hitSR =
+                hitMark.GetComponent<SpriteRenderer>();
+
             hitMark.SetActive(false);
         }
 
@@ -67,24 +70,29 @@ public class SniperShot : MonoBehaviour
     }
 
 
-
     IEnumerator SniperRoutine()
     {
-        GameManager gm = FindFirstObjectByType<GameManager>();
+        GameManager gm =
+            FindFirstObjectByType<GameManager>();
+
+
+        // ========================================
+        // 起動待機
+        // ========================================
 
         yield return new WaitForSeconds(startDelay);
 
 
-
-        //====================
+        // ========================================
         // ターゲット表示
-        //====================
+        // ========================================
 
         if (targetMark != null)
         {
             targetMark.SetActive(true);
 
-            if (gm != null && gm.isGameRunning)
+            if (gm != null &&
+                gm.isGameRunning)
             {
                 PlaySE(lockOnSE);
             }
@@ -98,25 +106,32 @@ public class SniperShot : MonoBehaviour
 
 
                 targetSR
-                    .DOFade(1f, aimFadeTime)
+                    .DOFade(
+                        1f,
+                        aimFadeTime
+                    )
                     .SetEase(Ease.Linear)
                     .SetLink(gameObject);
 
 
-                yield return new WaitForSeconds(aimFadeTime);
+                yield return new WaitForSeconds(
+                    aimFadeTime
+                );
             }
         }
 
 
-
-        //====================
+        // ========================================
         // 発射待機
-        //====================
+        // ========================================
 
-        yield return new WaitForSeconds(shootDelay);
+        yield return new WaitForSeconds(
+            shootDelay
+        );
 
 
-        if (gm != null && gm.isGameRunning)
+        if (gm != null &&
+            gm.isGameRunning)
         {
             PlaySE(shotSE);
         }
@@ -126,15 +141,17 @@ public class SniperShot : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
 
-
-        //====================
+        // ========================================
         // 発射
-        //====================
+        // ========================================
 
         if (targetMark != null)
             targetMark.SetActive(false);
 
 
+        // ========================================
+        // 着弾マーク表示
+        // ========================================
 
         if (hitMark != null)
         {
@@ -150,26 +167,9 @@ public class SniperShot : MonoBehaviour
         }
 
 
-
-        //====================
-        // カメラシェイク
-        //====================
-
-        if (Camera.main != null)
-        {
-            Camera.main.transform
-                .DOShakePosition(
-                    shakeDuration,
-                    shakeStrength
-                )
-                .SetLink(gameObject);
-        }
-
-
-
-        //====================
+        // ========================================
         // 破片パーティクル
-        //====================
+        // ========================================
 
         if (hitParticle != null)
         {
@@ -178,41 +178,123 @@ public class SniperShot : MonoBehaviour
         }
 
 
-        StartCoroutine(DamageRoutine());
+        // ========================================
+        // ダメージ判定
+        // ========================================
+
+        StartCoroutine(
+            DamageRoutine()
+        );
 
 
+        // ========================================
+        // カメラシェイク
+        //
+        // 着弾演出と同時に開始
+        // ========================================
 
-        //====================
+        StartCameraShake();
+
+
+        // ========================================
         // 着弾跡維持
-        //====================
+        // ========================================
 
-        yield return new WaitForSeconds(hitStayTime);
+        yield return new WaitForSeconds(
+            hitStayTime
+        );
 
 
-
-        //====================
+        // ========================================
         // フェードアウト
-        //====================
+        // ========================================
 
         if (hitSR != null)
         {
             hitSR
-                .DOFade(0f, hitFadeTime)
+                .DOFade(
+                    0f,
+                    hitFadeTime
+                )
                 .SetEase(Ease.OutQuad)
                 .SetLink(gameObject);
 
 
-            yield return new WaitForSeconds(hitFadeTime);
+            yield return new WaitForSeconds(
+                hitFadeTime
+            );
         }
 
 
+        // ========================================
+        // 最後に自身を破棄
+        // ========================================
 
         Destroy(gameObject);
     }
 
 
+    // ========================================
+    // カメラシェイク
+    // ========================================
+
+    void StartCameraShake()
+    {
+        if (Camera.main == null)
+            return;
 
 
+        Transform cameraTransform =
+            Camera.main.transform;
+
+
+        // ----------------------------------------
+        // シェイク開始前のカメラ状態を保存
+        // ----------------------------------------
+
+        Vector3 originalCameraPosition =
+            cameraTransform.position;
+
+        Quaternion originalCameraRotation =
+            cameraTransform.rotation;
+
+
+        // ----------------------------------------
+        // 念のため既存のカメラTweenを停止
+        // ----------------------------------------
+
+        cameraTransform.DOKill();
+
+
+        // ----------------------------------------
+        // カメラシェイク
+        //
+        // SniperShot自身とはリンクさせない
+        // ----------------------------------------
+
+        cameraTransform
+            .DOShakePosition(
+                shakeDuration,
+                shakeStrength
+            )
+            .OnComplete(() =>
+            {
+                // --------------------------------
+                // シェイク終了後に必ず元へ戻す
+                // --------------------------------
+
+                cameraTransform.position =
+                    originalCameraPosition;
+
+                cameraTransform.rotation =
+                    originalCameraRotation;
+            });
+    }
+
+
+    // ========================================
+    // ダメージ判定
+    // ========================================
 
     IEnumerator DamageRoutine()
     {
@@ -223,15 +305,18 @@ public class SniperShot : MonoBehaviour
         damageArea.SetActive(true);
 
 
-        yield return new WaitForSeconds(damageDuration);
+        yield return new WaitForSeconds(
+            damageDuration
+        );
 
 
         damageArea.SetActive(false);
     }
 
 
-
-
+    // ========================================
+    // SE
+    // ========================================
 
     void PlaySE(AudioClip clip)
     {

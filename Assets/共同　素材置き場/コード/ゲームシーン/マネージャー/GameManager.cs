@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
@@ -37,11 +38,14 @@ public class GameManager : MonoBehaviour
     public bool isGameRunning = false;
     private bool isClearing = false;
 
-    // 🔥 無限用カウント
+    // 無限用カウント
     private int endlessClearCount = 0;
 
     public BGMManager bgmManager;
     public ClearSequence clearSequence;
+
+    private Vector3 initialCameraPosition;
+    private Quaternion initialCameraRotation;
 
     void Start()
     {   
@@ -53,15 +57,15 @@ public class GameManager : MonoBehaviour
             playerSpawner = FindFirstObjectByType<PlayerSpawner>();
 
        if (!GameSettings.isEndlessMode)
-{
-    roomManager.currentLevel = GameSettings.selectedWorld;
+        {
+            roomManager.currentLevel = GameSettings.selectedWorld;
 
-    // ★ selectedStage ではなく unlockedStage を使う
-    int stageToPlay = GameSettings.selectedStage;
+            
+            int stageToPlay = GameSettings.selectedStage;
 
-    // ステージの長さは「遊ぶステージ」に依存するのでそのまま
-    targetRoomCount = stageToPlay * 3;
-}
+            
+            targetRoomCount = stageToPlay * 3;
+        }
         else
         {
             roomManager.currentLevel = -1;
@@ -74,7 +78,15 @@ public class GameManager : MonoBehaviour
         if (fadePanel != null)
             fadePanel.SetActive(false);
 
+         //カメラシェイクなどのカメラ位置修正
+        if (Camera.main != null)
+        {
+            initialCameraPosition = Camera.main.transform.position;
+            initialCameraRotation = Camera.main.transform.rotation;
+        }
+
         StartCoroutine(GameFlow());
+       
     }
 
     IEnumerator GameFlow()
@@ -110,7 +122,7 @@ public class GameManager : MonoBehaviour
 
                 if (isClearing) yield break;
 
-                // 🔥 無限はここでは増やさない（下で増やす）
+                
                 currentCount++;
             }
         }
@@ -154,7 +166,7 @@ public class GameManager : MonoBehaviour
                 yield break;
          }
 
-        // 🔥 ここが「クリア確定タイミング」
+        //ここが「クリア確定タイミング」
         if (GameSettings.isEndlessMode)
         {
             endlessClearCount++;
@@ -178,9 +190,11 @@ public class GameManager : MonoBehaviour
         }
 
         // =========================
-        // 🔥 ワープ処理
+        // ワープ処理
         // =========================
         room.GetComponent<Room>().OnRoomEnd();
+
+        RestoreCamera();
 
         if (fadePanel != null)
         {
@@ -201,6 +215,18 @@ public class GameManager : MonoBehaviour
 
         if (roomCounterUI != null)
             roomCounterUI.DecreaseRoom();
+    }
+    
+    //ワープ時のカメラ位置バグ対策
+    void RestoreCamera()
+    {
+        if (Camera.main == null)
+            return;
+
+        Camera.main.transform.DOKill();
+
+        Camera.main.transform.position = initialCameraPosition;
+        Camera.main.transform.rotation = initialCameraRotation;
     }
 
     IEnumerator Countdown()
@@ -277,7 +303,7 @@ public class GameManager : MonoBehaviour
     isGameRunning = false;
 
 
-    // ⭐ 次ステージ解放
+    // 次ステージ解放
     if(!GameSettings.isEndlessMode)
     {
         GameSettings.UnlockNextStage();
@@ -306,7 +332,7 @@ public class GameManager : MonoBehaviour
 }
 
     // =========================
-    // 🔥 外部取得用
+    //  外部取得用
     // =========================
     public int GetEndlessClearCount()
     {
@@ -411,7 +437,7 @@ void BossWarp()
 }
 
     // =========================
-    // 🔊 SE
+    //  SE
     // =========================
     void PlaySE(AudioClip clip)
     {

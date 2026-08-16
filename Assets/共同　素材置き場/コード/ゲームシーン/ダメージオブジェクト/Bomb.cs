@@ -50,11 +50,10 @@ public class Bomb : MonoBehaviour
 
     private Vector3 bombOriginalScale;
 
+
     void Start()
     {
         timer = explodeTime;
-
-       
 
         if (bombSprite == null)
             bombSprite = GetComponent<SpriteRenderer>();
@@ -67,6 +66,7 @@ public class Bomb : MonoBehaviour
         if (bombSprite != null && normalSprite != null)
             bombSprite.sprite = normalSprite;
     }
+
 
     void Update()
     {
@@ -81,9 +81,14 @@ public class Bomb : MonoBehaviour
                 Mathf.Max(timer, 0f).ToString("F1");
         }
 
-        GameManager gm = FindFirstObjectByType<GameManager>();
+        GameManager gm =
+            FindFirstObjectByType<GameManager>();
 
+
+        // ========================================
         // 残り1秒
+        // ========================================
+
         if (timer <= 1f && !warningStarted)
         {
             warningStarted = true;
@@ -91,88 +96,171 @@ public class Bomb : MonoBehaviour
             if (bombSprite != null && warningSprite != null)
                 bombSprite.sprite = warningSprite;
 
-        
-        
-            if (warningSE != null && gm != null && gm.isGameRunning)
-        {
-            MultiSEManager.Instance.PlaySE(warningSE);
-        }
+
+            if (warningSE != null &&
+                gm != null &&
+                gm.isGameRunning)
+            {
+                MultiSEManager.Instance.PlaySE(warningSE);
+            }
 
             StartWarningAnimation();
         }
 
+
+        // ========================================
+        // 爆発
+        // ========================================
+
         if (timer <= 0f)
-         { 
-             MultiSEManager.Instance.StopSE(warningSE);
-                
-            
-                if (explodeSE != null && gm != null && gm.isGameRunning)
+        {
+            if (MultiSEManager.Instance != null)
             {
-                
-            MultiSEManager.Instance.PlaySE(explodeSE);
+                MultiSEManager.Instance.StopSE(warningSE);
+            }
+
+
+            if (explodeSE != null &&
+                gm != null &&
+                gm.isGameRunning)
+            {
+                MultiSEManager.Instance.PlaySE(explodeSE);
             }
 
             Explode();
-           
         }
     }
 
+
+    // ========================================
+    // 警告アニメーション
+    // ========================================
+
     void StartWarningAnimation()
     {
-       
-        
         if (bombSprite == null)
             return;
 
         bombSprite.transform
-            .DOScale(bombOriginalScale * warningScale, 1f)
+            .DOScale(
+                bombOriginalScale * warningScale,
+                1f
+            )
             .SetEase(Ease.Linear)
             .SetLink(gameObject);
     }
+
+
+    // ========================================
+    // 爆発
+    // ========================================
 
     void Explode()
     {
         exploded = true;
 
-       
 
-        
+        // ========================================
+        // 爆弾本体を消す
+        // ========================================
 
-        // 爆弾消す
         if (bombSprite != null)
             bombSprite.enabled = false;
 
-        // カウント消す
+
+        // ========================================
+        // カウント表示を消す
+        // ========================================
+
         if (countdownText != null)
             countdownText.gameObject.SetActive(false);
 
+
+        // ========================================
+        // 爆炎を即座に表示
+        // ========================================
+
+        ShowAllFire();
+
+
+        // ========================================
         // カメラシェイク
+        // ========================================
+
         if (Camera.main != null)
         {
-            Camera.main.transform
+            Transform cameraTransform =
+                Camera.main.transform;
+
+            // シェイク開始前のカメラ位置を保存
+            Vector3 originalCameraPosition =
+                cameraTransform.position;
+
+            Quaternion originalCameraRotation =
+                cameraTransform.rotation;
+
+
+            // 念のため既存のカメラTweenを停止
+            cameraTransform.DOKill();
+
+
+            cameraTransform
                 .DOShakePosition(
                     shakeDuration,
                     shakeStrength
                 )
-                .SetLink(gameObject);
+                .OnComplete(() =>
+                {
+                    // ====================================
+                    // シェイク終了後に必ず元の位置へ戻す
+                    // ====================================
+
+                    cameraTransform.position =
+                        originalCameraPosition;
+
+                    cameraTransform.rotation =
+                        originalCameraRotation;
+                });
         }
 
-        ShowFire(upFire, useUp);
-        ShowFire(downFire, useDown);
-        ShowFire(leftFire, useLeft);
-        ShowFire(rightFire, useRight);
+
+        // ========================================
+        // 爆炎終了処理
+        // ========================================
 
         StartCoroutine(HideFire());
     }
 
-    void ShowFire(GameObject fire, bool enabledDirection)
+
+    // ========================================
+    // 爆炎をすべて表示
+    // ========================================
+
+    void ShowAllFire()
+    {
+        ShowFire(upFire, useUp);
+        ShowFire(downFire, useDown);
+        ShowFire(leftFire, useLeft);
+        ShowFire(rightFire, useRight);
+    }
+
+
+    // ========================================
+    // 爆炎表示
+    // ========================================
+
+    void ShowFire(
+        GameObject fire,
+        bool enabledDirection)
     {
         if (!enabledDirection || fire == null)
             return;
 
         fire.SetActive(true);
 
-        Vector3 targetScale = fire.transform.localScale;
+        Vector3 targetScale =
+            fire.transform.localScale;
+
 
         // 最初は細い
         fire.transform.localScale =
@@ -182,35 +270,67 @@ public class Bomb : MonoBehaviour
                 targetScale.z
             );
 
+
         // パッと伸びる
         fire.transform
-            .DOScale(targetScale, 0.08f)
+            .DOScale(
+                targetScale,
+                0.08f
+            )
             .SetEase(Ease.OutQuad)
             .SetLink(gameObject);
     }
 
+
+    // ========================================
+    // 爆炎終了
+    // ========================================
+
     IEnumerator HideFire()
     {
-        yield return new WaitForSeconds(fireDuration);
+        // 爆炎を設定時間維持
+        yield return new WaitForSeconds(
+            fireDuration
+        );
 
+
+        // 爆炎を縮める
         HideFireAnimation(upFire);
         HideFireAnimation(downFire);
         HideFireAnimation(leftFire);
         HideFireAnimation(rightFire);
 
+
+        // 縮小アニメーション待ち
         yield return new WaitForSeconds(0.08f);
 
+
+        // 爆炎を非表示
         DisableAllFire();
+
+
+        // ========================================
+        // すべての演出終了後にBombを破棄
+        // ========================================
 
         Destroy(gameObject);
     }
 
+
+    // ========================================
+    // 爆炎消滅アニメーション
+    // ========================================
+
     void HideFireAnimation(GameObject fire)
     {
-        if (fire == null || !fire.activeSelf)
+        if (fire == null ||
+            !fire.activeSelf)
             return;
 
-        Vector3 scale = fire.transform.localScale;
+
+        Vector3 scale =
+            fire.transform.localScale;
+
 
         fire.transform
             .DOScale(
@@ -225,11 +345,23 @@ public class Bomb : MonoBehaviour
             .SetLink(gameObject);
     }
 
+
+    // ========================================
+    // 爆炎を非表示
+    // ========================================
+
     void DisableAllFire()
     {
-        if (upFire != null) upFire.SetActive(false);
-        if (downFire != null) downFire.SetActive(false);
-        if (leftFire != null) leftFire.SetActive(false);
-        if (rightFire != null) rightFire.SetActive(false);
+        if (upFire != null)
+            upFire.SetActive(false);
+
+        if (downFire != null)
+            downFire.SetActive(false);
+
+        if (leftFire != null)
+            leftFire.SetActive(false);
+
+        if (rightFire != null)
+            rightFire.SetActive(false);
     }
 }

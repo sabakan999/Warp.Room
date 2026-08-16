@@ -28,8 +28,8 @@ public class BossVisualController : MonoBehaviour
 
     private BossController bossController;
 
-    bool isMoving = true;
-    Vector3 startPosition;
+    private bool isMoving = true;
+    private Vector3 startPosition;
 
     void Start()
     {
@@ -57,23 +57,37 @@ public class BossVisualController : MonoBehaviour
             transform.position.z
         );
 
-        float time = Random.Range(moveTime * 0.7f, moveTime * 1.3f);
+        float time = Random.Range(
+            moveTime * 0.7f,
+            moveTime * 1.3f
+        );
 
         transform.DOMove(target, time)
             .SetEase(Ease.InOutSine)
             .OnComplete(MoveRandom);
     }
 
-    //========================
+    //================================================
     // 攻撃開始
-    //========================
+    //================================================
     public void BeginAttack()
     {
         isMoving = false;
 
         transform.DOKill();
 
-        animator.SetTrigger(attackTrigger);
+        // 攻撃モーション開始
+        if (animator != null)
+        {
+            animator.SetTrigger(attackTrigger);
+        }
+
+        // ★攻撃モーション開始時点で
+        // ★攻撃Prefabを生成して警告状態にする
+        if (bossController != null)
+        {
+            bossController.PrepareAttack();
+        }
     }
 
     //================================================
@@ -84,15 +98,22 @@ public class BossVisualController : MonoBehaviour
     {
         // SE
         GameManager gm = FindFirstObjectByType<GameManager>();
-        if (audioSource != null && snapSE != null && gm != null && gm.isGameRunning)
+
+        if (audioSource != null &&
+            snapSE != null &&
+            gm != null &&
+            gm.isGameRunning)
+        {
             audioSource.PlayOneShot(snapSE);
+        }
 
         // エフェクト
         if (snapEffect != null)
         {
             snapEffect.SetActive(true);
 
-            Animator effectAnimator = snapEffect.GetComponent<Animator>();
+            Animator effectAnimator =
+                snapEffect.GetComponent<Animator>();
 
             if (effectAnimator != null)
             {
@@ -102,14 +123,16 @@ public class BossVisualController : MonoBehaviour
             }
         }
 
-        // 攻撃生成
+        // ★指パッチンの瞬間に攻撃を実体化
         if (bossController != null)
-            bossController.SpawnRandomAttack();
+        {
+            bossController.ActivateAttack();
+        }
     }
 
     //================================================
     // Animation Event
-    // エフェクト終了時に呼ぶ
+    // エフェクト終了時
     //================================================
     public void HideEffect()
     {
@@ -119,17 +142,18 @@ public class BossVisualController : MonoBehaviour
 
     //================================================
     // Animation Event
-    // アニメーション終了
+    // 攻撃アニメーション終了
     //================================================
     public void EndAttack()
     {
         isMoving = true;
+
         MoveRandom();
     }
 
-    //========================
+    //================================================
     // 会話開始
-    //========================
+    //================================================
     public void MoveToTalkPosition()
     {
         isMoving = false;
@@ -137,9 +161,9 @@ public class BossVisualController : MonoBehaviour
         transform.DOKill();
 
         Vector3 target =
-            talkPoint != null ?
-            talkPoint.position :
-            startPosition;
+            talkPoint != null
+                ? talkPoint.position
+                : startPosition;
 
         transform.DOMove(target, returnTime)
             .SetEase(Ease.OutSine);
